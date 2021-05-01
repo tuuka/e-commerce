@@ -30,15 +30,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ProductAndCategoryEntitiesTest {
 
-    static private String sku = "someSKU_13245#";
-    static private String name = "some name (может быть и UTF-8)";
-    static private String description = "some description";
-    static private Double unitPrice = 123.99;
-    static private String imageUrl = "/static/images/cat1/1.jpg";
-    static private Boolean active = true;
-    static private Integer unitsInStock = 198;
-    static private ZonedDateTime created = ZonedDateTime.now();
-    static private ZonedDateTime lastUpdated = ZonedDateTime.now().plusMinutes(10);
+    static private final String sku = "someSKU_13245#";
+    static private final String name = "some name (может быть и UTF-8)";
+    static private final String description = "some description";
+    static private final Double unitPrice = 123.99;
+    static private final String imageUrl = "/static/images/cat1/1.jpg";
+    static private final Boolean active = true;
+    static private final Integer unitsInStock = 198;
 
     @Test
     void givenProductData_whenCreatingProduct_shouldCreateProductWithDateOfCreationAndUpdate() {
@@ -60,7 +58,6 @@ class ProductAndCategoryEntitiesTest {
         ZonedDateTime end = ZonedDateTime.now().plusSeconds(2);
 
         // then
-        System.out.println(start.isBefore(product.getCreated()));
         assertTrue(start.isBefore(product.getCreated()),
                 "DateTime of creation must point to time after constructor call.");
         assertTrue(end.isAfter(product.getCreated()),
@@ -69,6 +66,28 @@ class ProductAndCategoryEntitiesTest {
         assertTrue(product.getCreated().isEqual(product.getLastUpdated()),
                 "Creation time and lastUpdate time must be equal when Product" +
                         "just instantiated.");
+    }
+
+    @Test
+    void givenProductAndCategory_whenCreatingProduct_shouldCreateProductWithCategory() {
+        // given
+        String categoryName = "some category";
+
+        // when
+        ProductCategory productCategory = new ProductCategory(categoryName);
+        Product product = new Product(
+                sku,
+                name,
+                description,
+                unitPrice,
+                imageUrl,
+                active,
+                unitsInStock
+        );
+        product.setCategory(productCategory);
+
+        // then
+        assertTrue(categoryName, product.getCategory().getName());
     }
 
 }
