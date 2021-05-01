@@ -66,6 +66,8 @@ class ProductAndCategoryEntitiesTest {
         assertTrue(product.getCreated().isEqual(product.getLastUpdated()),
                 "Creation time and lastUpdate time must be equal when Product" +
                         "just instantiated.");
+        assertEquals(name, product.getName(), "Saved and read name must be equal. " +
+                "May be should check UTF-8 support.");
     }
 
     @Test
@@ -87,7 +89,7 @@ class ProductAndCategoryEntitiesTest {
         product.setCategory(productCategory);
 
         // then
-        assertTrue(categoryName, product.getCategory().getName());
+        assertEquals(categoryName, product.getCategory().getName());
     }
 
 }

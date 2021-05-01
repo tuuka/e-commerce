@@ -4,10 +4,7 @@ import lombok.*;
 
 import java.time.ZonedDateTime;
 
-@Setter
-@Getter
-@EqualsAndHashCode
-@ToString
+@Data
 public class Product {
     private Long id;
     private String sku;                 // not null
@@ -17,8 +14,9 @@ public class Product {
     private String imageUrl;
     private Boolean active;             // not null
     private Integer unitsInStock;
-    private ZonedDateTime created;      // not null
+    private final ZonedDateTime created;// not null
     private ZonedDateTime lastUpdated;  // not null
+    private ProductCategory category;
 
     public Product(String sku,
                    String name,
@@ -34,7 +32,7 @@ public class Product {
         this.imageUrl = imageUrl;
         this.active = active;
         this.unitsInStock = unitsInStock;
-        this.setCreated(ZonedDateTime.now());
+        this.created = ZonedDateTime.now();
         this.setLastUpdated(this.getCreated());
     }
 }
