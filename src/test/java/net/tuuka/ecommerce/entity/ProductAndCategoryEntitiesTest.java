@@ -41,13 +41,13 @@ class ProductAndCategoryEntitiesTest {
     static private ZonedDateTime lastUpdated = ZonedDateTime.now().plusMinutes(10);
 
     @Test
-    void givenProductData_whenCreatingProduct_shouldCreateProductWithDateOfCreationAndUpdate(){
+    void givenProductData_whenCreatingProduct_shouldCreateProductWithDateOfCreationAndUpdate() {
         // given
         // When creating Product date of creation and date od update have to be set
         // automatically if absent in constructor args
 
         // when
-        ZonedDateTime start = ZonedDateTime.now();
+        ZonedDateTime start = ZonedDateTime.now().minusSeconds(2);
         Product product = new Product(
                 sku,
                 name,
@@ -57,11 +57,18 @@ class ProductAndCategoryEntitiesTest {
                 active,
                 unitsInStock
         );
-        ZonedDateTime end = ZonedDateTime.now();
+        ZonedDateTime end = ZonedDateTime.now().plusSeconds(2);
 
         // then
-        assertTrue(start.isBefore(product.getCreated) &&
-                end.isAfter(product.getCreated));
+        System.out.println(start.isBefore(product.getCreated()));
+        assertTrue(start.isBefore(product.getCreated()),
+                "DateTime of creation must point to time after constructor call.");
+        assertTrue(end.isAfter(product.getCreated()),
+                "DateTime of creation must point to time before " +
+                        "object is completely constructed.");
+        assertTrue(product.getCreated().isEqual(product.getLastUpdated()),
+                "Creation time and lastUpdate time must be equal when Product" +
+                        "just instantiated.");
     }
 
 }
