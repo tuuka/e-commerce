@@ -2,15 +2,14 @@ package net.tuuka.ecommerce.entity;
 
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /*
-    Just checking that Product class has necessary fields and that fields
-    are not null.
-    Assume Product class has next fields:
+    Just checking that Product and Category classes have necessary fields.
+    Assume Product class has following fields:
         private Long id;
         private String sku;                 // not null
         private String name;                // not null

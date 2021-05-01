@@ -1,21 +1,54 @@
 package net.tuuka.ecommerce.entity;
 
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import javax.persistence.*;
 import java.time.ZonedDateTime;
 
 @Data
+@NoArgsConstructor
+@Entity
+@Table(name = "product", uniqueConstraints = {
+        @UniqueConstraint(name = "product_sku", columnNames = "sku")
+})
 public class Product {
+
+    @Id
+    @SequenceGenerator(name = "productSequence",
+            sequenceName = "product_sequence",
+            initialValue = 1, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "productSequence")
     private Long id;
+
+    @Column(nullable = false)
     private String sku;                 // not null
+
+    @Column(nullable = false)
     private String name;                // not null
+
     private String description;
     private Double unitPrice;
     private String imageUrl;
+
+    @Column(nullable = false)
     private Boolean active;             // not null
+
     private Integer unitsInStock;
-    private final ZonedDateTime created;// not null
+
+    @Column(nullable = false)
+    @CreationTimestamp
+    private ZonedDateTime created;      // not null
+
+    @Column(nullable = false)
+    @UpdateTimestamp
     private ZonedDateTime lastUpdated;  // not null
+
+    @ManyToOne()
+    @JoinColumn(name = "category_id",
+            foreignKey = @ForeignKey(name = "product_category_fk"))
     private ProductCategory category;
 
     public Product(String sku,
