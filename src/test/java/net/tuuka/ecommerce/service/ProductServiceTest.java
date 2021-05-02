@@ -19,7 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.util.ArrayList;
 import java.util.List;
 
-@SpringBootTest
+@SpringBootTest(classes = {ProductService.class})
 class ProductServiceTest {
 
     @MockBean
@@ -35,7 +35,7 @@ class ProductServiceTest {
     List<ProductCategory> productCategories;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         products =
                 new ArrayList<>(FakeProductGenerator.getFakeProductList());
         productCategories =
@@ -43,13 +43,13 @@ class ProductServiceTest {
     }
 
     @AfterEach
-    void tearDown(){
+    void tearDown() {
         products = null;
         productCategories = null;
     }
 
     @Test
-    void givenProductWithCat_whenSave_ShouldSaveBoth(){
+    void givenProductWithCat_whenSave_ShouldSaveBoth() {
         // given
 
         // when
