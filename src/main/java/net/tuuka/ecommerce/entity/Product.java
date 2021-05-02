@@ -19,7 +19,7 @@ public class Product {
     @Id
     @SequenceGenerator(name = "productSequence",
             sequenceName = "product_sequence",
-            initialValue = 1, allocationSize = 1)
+            allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "productSequence")
     private Long id;
 
@@ -30,6 +30,8 @@ public class Product {
     private String name;                // not null
 
     private String description;
+
+    @Column(columnDefinition = "DECIMAL(10,2)")
     private Double unitPrice;
     private String imageUrl;
 
