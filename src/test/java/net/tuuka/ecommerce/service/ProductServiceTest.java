@@ -12,12 +12,19 @@ import net.tuuka.ecommerce.util.FakeProductGenerator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.invocation.InvocationOnMock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 
 @SpringBootTest(classes = {ProductService.class})
 class ProductServiceTest {
@@ -50,11 +57,29 @@ class ProductServiceTest {
 
     @Test
     void givenProductWithCat_whenSave_ShouldSaveBoth() {
-        // given
+        // given product with category
+        Product product = products.get(0);
+        given(productRepository.save(isA(Product.class)))
+                .will((InvocationOnMock invocation) -> {
+                    Product tempProduct = invocation.getArgument(0);
+                    tempProduct.setId(1L);
+                    return tempProduct;
+                });
+        given(productCategoryRepository.save(isA(ProductCategory.class)))
+                .will((InvocationOnMock invocation) -> {
+                    ProductCategory tempCategory = invocation.getArgument(0);
+                    tempCategory.setId(1L);
+                    return tempCategory;
+                });
+        // when save
+        Product savedProduct = productService.save(product);
 
-        // when
-
-        // then
+        // then should get saved product back with category
+        assertEquals(product, savedProduct);
+        assertEquals(1, savedProduct.getId());
+        assertEquals(1, savedProduct.getCategory().getId());
+        then(productRepository).should().save(eq(product));
+        then(productCategoryRepository).should().save(eq(product.getCategory()));
     }
 
 }
