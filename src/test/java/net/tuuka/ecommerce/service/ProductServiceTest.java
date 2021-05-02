@@ -57,6 +57,7 @@ class ProductServiceTest {
 
     @Test
     void givenProductWithCat_whenSave_ShouldSaveBoth() {
+
         // given product with category
         Product product = products.get(0);
         given(productRepository.save(isA(Product.class)))
@@ -71,6 +72,7 @@ class ProductServiceTest {
                     tempCategory.setId(1L);
                     return tempCategory;
                 });
+
         // when save
         Product savedProduct = productService.save(product);
 
@@ -80,6 +82,7 @@ class ProductServiceTest {
         assertEquals(1, savedProduct.getCategory().getId());
         then(productRepository).should().save(eq(product));
         then(productCategoryRepository).should().save(eq(product.getCategory()));
+
     }
 
 }
