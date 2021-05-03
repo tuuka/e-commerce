@@ -2,6 +2,7 @@ package net.tuuka.ecommerce.service;
 
 /*
     ProductService should provide at least all CRUD operation on Product repository.
+    Mocking repositories here.
 */
 
 import net.tuuka.ecommerce.dao.ProductCategoryRepository;
@@ -19,6 +20,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
@@ -43,6 +45,7 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
+        // using lists of product and categories with null ids
         products =
                 new ArrayList<>(FakeProductGenerator.getFakeProductList());
         productCategories =
@@ -56,7 +59,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void givenProductWithCat_whenSave_ShouldSaveBoth() {
+    void givenProductWithCat_whenSave_shouldSaveBoth() {
 
         // given product with category
         Product product = products.get(0);
@@ -83,6 +86,34 @@ class ProductServiceTest {
         then(productRepository).should().save(eq(product));
         then(productCategoryRepository).should().save(eq(product.getCategory()));
 
+    }
+
+    @Test
+    void whenGetAllProducts_shouldReturnAllProductList() {
+
+        // given
+        this.setIds(products);
+        given(productRepository.findAll()).willReturn(products);
+
+        // when
+        List<Product> fetchedProducts = productService.getAllProducts();
+
+        // then
+        assertEquals(products, fetchedProducts);
+        then(productRepository).should().findAll();
+
+    }
+
+
+    // Repositories assign ids automatically. As we mocking repos in
+    // this test class we assign ids manually
+    private void setIds(List<Product> productList) {
+        IntStream.range(0, productList.size()).forEach(i ->
+        {
+            productList.get(i).setId((long) i + 1);
+            ProductCategory cat = productList.get(i).getCategory();
+            cat.setId(Long.parseLong(cat.getName().split("_")[1]));
+        });
     }
 
 }

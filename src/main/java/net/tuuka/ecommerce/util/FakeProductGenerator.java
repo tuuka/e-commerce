@@ -29,6 +29,8 @@ public class FakeProductGenerator {
         private static final List<Product> products = new ArrayList<>();
         private static final Random random = new Random();
 
+        // basically for testing purposes, don't change 'naming' strategy
+        // '_' may be using to split and get ids
         static {
             Product product;
             for (int i = 0; i < NUMBER_OF_CATEGORIES; i++) {
