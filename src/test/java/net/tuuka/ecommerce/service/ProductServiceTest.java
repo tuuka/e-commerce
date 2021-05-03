@@ -23,11 +23,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.*;
 
 @SpringBootTest(classes = {ProductService.class})
 class ProductServiceTest {
@@ -110,17 +108,15 @@ class ProductServiceTest {
     void givenExistingProductId_whenGetProductById_shouldReturnProduct() {
 
         // given
-        setIds(products);
-        long id = products.get(0).getId();
-        given(productRepository.findById(eq(id)))
+        given(productRepository.findById(anyLong()))
                 .willReturn(Optional.of(products.get(0)));
 
         // when
-        Product fetchedProduct = productService.getProductById(id);
+        Product fetchedProduct = productService.getProductById(1L);
 
         // then
         assertEquals(products.get(0), fetchedProduct);
-        then(productRepository).should().findById(eq(id));
+        then(productRepository).should().findById(eq(1L));
 
     }
 
@@ -135,8 +131,44 @@ class ProductServiceTest {
         Product fetchedProduct = productService.getProductById(1L);
 
         // then
-        assertTrue(fetchedProduct == null);
+        assertNull(fetchedProduct);
         then(productRepository).should().findById(anyLong());
+
+    }
+
+    @Test
+    void givenExistingProductId_whenDeleteProductById_shouldReturnProduct() {
+
+        // given
+        given(productRepository.findById(anyLong()))
+                .willReturn(Optional.of(products.get(0)));
+        willDoNothing().given(productRepository).deleteById(anyLong());
+
+        // when
+        Product deletedProduct = productService.deleteProductById(1L);
+
+        // then
+        assertEquals(products.get(0), deletedProduct);
+        then(productRepository).should().findById(eq(1L));
+        then(productRepository).should().deleteById(eq(1L));
+
+    }
+
+    @Test
+    void givenNonExistingProductId_whenDeleteProductById_shouldThrowException() {
+
+        // given
+        given(productRepository.findById(anyLong()))
+                .willReturn(Optional.empty());
+        willDoNothing().given(productRepository).deleteById(anyLong());
+
+        // when
+
+        // then
+        assertThrows(ProductNotFoundException.class, () ->
+                productService.deleteProductById(1L));
+        then(productRepository).should().findById(eq(1L));
+        then(productRepository).shouldHaveNoInteractions();
 
     }
 
