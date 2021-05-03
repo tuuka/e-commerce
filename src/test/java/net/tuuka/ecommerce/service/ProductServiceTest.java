@@ -9,6 +9,7 @@ import net.tuuka.ecommerce.dao.ProductCategoryRepository;
 import net.tuuka.ecommerce.dao.ProductRepository;
 import net.tuuka.ecommerce.entity.Product;
 import net.tuuka.ecommerce.entity.ProductCategory;
+import net.tuuka.ecommerce.exception.ProductNotFoundException;
 import net.tuuka.ecommerce.util.FakeProductGenerator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -168,7 +169,7 @@ class ProductServiceTest {
         assertThrows(ProductNotFoundException.class, () ->
                 productService.deleteProductById(1L));
         then(productRepository).should().findById(eq(1L));
-        then(productRepository).shouldHaveNoInteractions();
+        then(productRepository).should(never()).deleteById(anyLong());
 
     }
 
