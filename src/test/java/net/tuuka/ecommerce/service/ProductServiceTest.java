@@ -46,7 +46,7 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        // using lists of product with categories with null ids
+        // using predefined list of product with categories with null ids
         // make a deep copy of generated values
         products = FakeProductGenerator.getFakeProductList()
                 .stream()
@@ -180,6 +180,214 @@ class ProductServiceTest {
 
     }
 
+    /*
+        'Update tests block' is coming...
+        In some tests making a deep copy to distinguish mocked and updatable products
+        Assume updateProduct(Product product) method should check for:
+            (1) product with id == null
+            (2) not existing product (find on id)
+        Check for category change. If changed:
+            (3) if category didn't change just save product
+            (4) if category id == null try to find by name and use its id, else throw exception (5)
+            (6) if category id != 0 and category doesn't exist (find by id) throw exception
+            (7) if category id != 0 and it exists (find by id) but name doesn't match - throw exception
+            (8) if category id != 0 and it exists (find by id) simply change and save
+    */
+    @Test // (1) null productId
+    void givenProductWithNullId_whenUpdateProduct_shouldThrowException() {
+
+        // given
+        willDoNothing().given(productRepository).findById(anyLong());
+
+        // when
+        // then
+        assertThrows(IllegalStateException.class, () ->
+                productService.updateProduct(products.get(0)));
+        then(productRepository).should(never()).findById(anyLong());
+
+    }
+
+    @Test // (2) not null non existing productID
+    void givenProductWithNonExistingId_whenUpdateProduct_shouldThrowException() {
+
+        // given
+        products.get(0).setId(1L);
+        given(productRepository.findById(anyLong())).willReturn(Optional.empty());
+
+        // when
+        // then
+        assertThrows(ProductNotFoundException.class, () ->
+                productService.updateProduct(products.get(0)));
+        then(productRepository).should().findById(eq(1L));
+
+    }
+
+    @Test // (3) changed product with same category
+    void givenChangedProductWithNotChangedCategory_whenUpdateProduct_shouldUpdateAndReturnUpdated() {
+        // given
+        this.setIds(products);
+        Product existingProduct = products.get(0);
+        Product tempProduct = new Product(
+                "new sku",
+                "new name",
+                "new descr",
+                0.0,
+                "new url",
+                false,
+                0);
+        tempProduct.setId(existingProduct.getId());
+        tempProduct.setCategory(existingProduct.getCategory());
+        given(productRepository.findById(anyLong())).willReturn(Optional.of(existingProduct));
+        willDoNothing().given(productCategoryRepository).findById(anyLong());
+        given(productRepository.save(isA(Product.class))).will(
+                (InvocationOnMock invocation) -> invocation.getArgument(0)
+        );
+
+        // when
+        Product updatedProduct = productService.updateProduct(tempProduct);
+
+        // then
+        assertEquals(tempProduct, updatedProduct);
+        then(productRepository).should().findById(eq(tempProduct.getId()));
+        then(productCategoryRepository).should(never()).findById(anyLong());
+        then(productRepository).should().save(eq(tempProduct));
+    }
+
+    @Test // (4) same product with new nullId category with existed name
+    void givenSameProductWithChangedNullIdExistingCategory_whenUpdateProduct_shouldUpdateAndReturnUpdated() {
+
+        // given
+        Product existingProduct = products.get(0);
+        existingProduct.setId(1L);
+        Product updatableProduct = getNewProductLike(existingProduct);
+        ProductCategory updatableCategory = new ProductCategory("some existed name");
+        updatableProduct.setCategory(updatableCategory);
+        ProductCategory existingCategory = new ProductCategory("some existed name");
+        existingCategory.setId(5L);
+
+        given(productRepository.findById(anyLong())).willReturn(Optional.of(existingProduct));
+        given(productCategoryRepository.findByName(anyString()))
+                .willReturn(Optional.of(existingCategory));
+        given(productRepository.save(isA(Product.class))).will(
+                (InvocationOnMock invocation) -> invocation.getArgument(0)
+        );
+
+        // when
+        Product updatedProduct = productService.updateProduct(updatableProduct);
+
+        // then
+        assertEquals(existingCategory.getId(), updatedProduct.getCategory().getId());
+        then(productRepository).should().findById(eq(updatableProduct.getId()));
+        then(productCategoryRepository).should().findByName(eq(updatableCategory.getName()));
+        then(productRepository).should().save(eq(updatableProduct));
+
+    }
+
+    @Test // (5) same product with new nullId category with not existed name
+    void givenSameProductWithChangedNullIdNotExistingCategory_whenUpdateProduct_shouldThrowException() {
+
+        // given
+        Product existingProduct = products.get(0);
+        existingProduct.setId(1L);
+        Product updatableProduct = getNewProductLike(existingProduct);
+        ProductCategory updatableCategory = new ProductCategory("some not existed name");
+        updatableProduct.setCategory(updatableCategory);
+
+        given(productRepository.findById(anyLong())).willReturn(Optional.of(existingProduct));
+        given(productCategoryRepository.findByName(anyString())).willReturn(Optional.empty());
+        willDoNothing().given(productRepository).save(any());
+
+        // when
+        // then
+        assertThrows(ProductCategoryNotFoundException.class,
+                ()->productService.updateProduct(updatableProduct));
+        then(productRepository).should().findById(eq(updatableProduct.getId()));
+        then(productCategoryRepository).should().findByName(eq(updatableCategory.getName()));
+        then(productRepository).should(never()).save(any());
+
+    }
+
+    @Test // (6) same product with new not nullId not existed category
+    void givenSameProductWithChangedNotExistingCategory_whenUpdateProduct_shouldThrowException() {
+
+        // given
+        Product existingProduct = products.get(0);
+        existingProduct.setId(1L);
+        Product updatableProduct = getNewProductLike(existingProduct);
+        ProductCategory updatableCategory = new ProductCategory("some not existed category");
+        updatableCategory.setId(5L);
+        updatableProduct.setCategory(updatableCategory);
+
+        given(productRepository.findById(anyLong())).willReturn(Optional.of(existingProduct));
+        given(productCategoryRepository.findById(anyLong())).willReturn(Optional.empty());
+        willDoNothing().given(productRepository).save(any());
+
+        // when
+        // then
+        assertThrows(ProductCategoryNotFoundException.class,
+                ()->productService.updateProduct(updatableProduct));
+        then(productRepository).should().findById(eq(updatableProduct.getId()));
+        then(productCategoryRepository).should().findById(eq(updatableCategory.getId()));
+        then(productRepository).should(never()).save(any());
+
+    }
+
+    @Test // (7) same product with new not nullId existed (but with different name) category
+    void givenSameProductWithChangedExistingBadNamedCategory_whenUpdateProduct_shouldThrowException() {
+
+        // given
+        Product existingProduct = products.get(0);
+        existingProduct.setId(1L);
+        Product updatableProduct = getNewProductLike(existingProduct);
+        ProductCategory updatableCategory = new ProductCategory("some category");
+        updatableCategory.setId(5L);
+        updatableProduct.setCategory(updatableCategory);
+        ProductCategory existingCategory = new ProductCategory("some existed name");
+        existingCategory.setId(5L);
+
+        given(productRepository.findById(anyLong())).willReturn(Optional.of(existingProduct));
+        given(productCategoryRepository.findById(anyLong())).willReturn(Optional.of(existingCategory));
+        willDoNothing().given(productRepository).save(any());
+
+        // when
+        // then
+        assertThrows(IllegalStateException.class,
+                ()->productService.updateProduct(updatableProduct));
+        then(productRepository).should().findById(eq(updatableProduct.getId()));
+        then(productCategoryRepository).should().findById(eq(updatableCategory.getId()));
+        then(productRepository).should(never()).save(any());
+
+    }
+
+    @Test // (8) same product with new existing category
+    void givenSameProductWithChangedExistingCategory_whenUpdateProduct_shouldUpdateAndReturnUpdated() {
+
+        // given
+        Product existingProduct = products.get(0);
+        existingProduct.setId(1L);
+        Product updatableProduct = getNewProductLike(existingProduct);
+        ProductCategory updatableCategory = new ProductCategory("some existed category");
+        updatableCategory.setId(5L);
+        updatableProduct.setCategory(updatableCategory);
+
+        given(productRepository.findById(anyLong())).willReturn(Optional.of(existingProduct));
+        given(productCategoryRepository.findById(anyLong())).willReturn(Optional.of(updatableCategory));
+        given(productRepository.save(isA(Product.class))).will(
+                (InvocationOnMock invocation) -> invocation.getArgument(0)
+        );
+
+        // when
+        Product updatedProduct = productService.updateProduct(updatableProduct);
+        // then
+        assertEquals(updatableProduct, updatedProduct);
+        // just in case of changing in Product equals() method
+        assertEquals(updatableProduct.getCategory(), updatedProduct.getCategory());
+        then(productRepository).should().findById(eq(updatableProduct.getId()));
+        then(productCategoryRepository).should().findById(eq(updatableCategory.getId()));
+        then(productRepository).should().save(eq(updatableProduct));
+
+    }
+
     // Repositories assign ids automatically. As we mocking repos in
     // this test class we may need to assign ids manually
     private void setIds(List<Product> productList) {
@@ -189,6 +397,22 @@ class ProductServiceTest {
             ProductCategory cat = productList.get(i).getCategory();
             cat.setId(Long.parseLong(cat.getName().split("_")[1]) + 1);
         });
+    }
+
+    private Product getNewProductLike(Product prototype){
+        Product tempProduct = new Product(
+                prototype.getSku(),
+                prototype.getName(),
+                prototype.getDescription(),
+                prototype.getUnitPrice(),
+                prototype.getImageUrl(),
+                prototype.getActive(),
+                prototype.getUnitsInStock());
+        tempProduct.setId(prototype.getId());
+        tempProduct.setCreated(prototype.getCreated());
+        tempProduct.setLastUpdated(prototype.getLastUpdated());
+        tempProduct.setCategory(prototype.getCategory());
+        return tempProduct;
     }
 
 }
