@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import net.tuuka.ecommerce.dao.ProductCategoryRepository;
 import net.tuuka.ecommerce.dao.ProductRepository;
 import net.tuuka.ecommerce.entity.Product;
+import net.tuuka.ecommerce.entity.ProductCategory;
+import net.tuuka.ecommerce.exception.ProductCategoryNotFoundException;
 import net.tuuka.ecommerce.exception.ProductNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 
 @Service
@@ -18,9 +20,12 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductCategoryRepository productCategoryRepository;
 
-    @Transactional
     public Product saveProduct(Product product) {
-        productCategoryRepository.save(product.getCategory());
+        Objects.requireNonNull(product);
+        if (product.getId() != null)
+            throw new IllegalStateException("New Product must have id equals null");
+        if (product.getCategory() != null)
+            this.validateCategory(product.getCategory());
         return productRepository.save(product);
     }
 
@@ -35,17 +40,50 @@ public class ProductService {
     }
 
     public Product deleteProductById(long id) {
-        Product product = getProductById(id);
+        Product product = this.getProductById(id);
         productRepository.deleteById(id);
         return product;
     }
 
-    public Product updateProduct(Product updatableProduct) {
-        if (updatableProduct == null || updatableProduct.getId() == null)
-            throw new IllegalStateException("Nor product neither product id can't be null");
-        // check for existence
-        getProductById(updatableProduct.getId());
+    public Product updateProduct(Product product) {
 
-        return null;
+        if (product == null || product.getId() == null)
+            throw new IllegalStateException("Nor product neither product id can be null");
+
+        Product existingProduct = this.getProductById(product.getId());
+
+        // check for product category difference and possible nulls
+        if (!Objects.equals(existingProduct.getCategory(), product.getCategory())
+                && product.getCategory() != null) {
+            this.validateCategory(product.getCategory());
+        }
+
+        return productRepository.save(product);
     }
+
+    // check if given ProductCategory persisted and has correct name
+    private void validateCategory(ProductCategory category) {
+        ProductCategory existedCategory;
+        if (category.getId() != null) {
+            long catId = category.getId();
+            existedCategory = productCategoryRepository
+                    .findById(catId).orElseThrow(() ->
+                            new ProductCategoryNotFoundException("Product category with id = "
+                                    + catId + " not found"));
+            if (!existedCategory.getName().equals(category.getName())) {
+                throw new IllegalStateException("Can't save Product with Category id = "
+                        + catId + " because of name inconsistency. Persisted Category name = '"
+                        + existedCategory.getName() + " when updating product Category name = "
+                        + category.getName());
+            }
+        } else {
+            String catName = category.getName();
+            existedCategory = productCategoryRepository.findByName(catName)
+                    .orElseThrow(() ->
+                            new ProductCategoryNotFoundException("Product category with name = "
+                                    + catName + " not found"));
+            category.setId(existedCategory.getId());
+        }
+    }
+
 }
