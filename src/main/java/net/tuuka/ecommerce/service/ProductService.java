@@ -19,7 +19,7 @@ public class ProductService {
     private final ProductCategoryRepository productCategoryRepository;
 
     @Transactional
-    public Product save(Product product) {
+    public Product saveProduct(Product product) {
         productCategoryRepository.save(product.getCategory());
         return productRepository.save(product);
     }
@@ -29,13 +29,13 @@ public class ProductService {
     }
 
     public Product getProductById(long id) {
-        return productRepository.findById(id).orElse(null);
+        return productRepository.findById(id).orElseThrow(() ->
+                new ProductNotFoundException("Product with id = "
+                        + id + " not found"));
     }
 
     public Product deleteProductById(long id) {
         Product product = getProductById(id);
-        if (product == null)
-            throw new ProductNotFoundException("Product with id = " + id + " not found");
         productRepository.deleteById(id);
         return product;
     }

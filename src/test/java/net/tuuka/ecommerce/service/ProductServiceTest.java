@@ -150,6 +150,7 @@ class ProductServiceTest {
     void givenExistingProductId_whenDeleteProductById_shouldReturnDeletedProduct() {
 
         // given
+        products.get(0).setId(1L);
         long id = products.get(0).getId();
         given(productRepository.findById(anyLong())).willReturn(Optional.of(products.get(0)));
         willDoNothing().given(productRepository).deleteById(anyLong());
