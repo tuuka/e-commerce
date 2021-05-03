@@ -22,6 +22,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -45,11 +46,23 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        // using lists of product and categories with null ids
-        products =
-                new ArrayList<>(FakeProductGenerator.getFakeProductList());
-        productCategories =
-                new ArrayList<>(FakeProductGenerator.getFakeProductCategoriesList());
+        // using lists of product with categories with null ids
+        // make a deep copy of generated values
+        products = FakeProductGenerator.getFakeProductList()
+                .stream()
+                .map(p -> {
+                    Product newProduct = new Product(
+                            p.getSku(),
+                            p.getName(),
+                            p.getDescription(),
+                            p.getUnitPrice(),
+                            p.getImageUrl(),
+                            p.getActive(),
+                            p.getUnitsInStock());
+                    newProduct.setCategory(new ProductCategory(p.getCategory().getName()));
+                    return newProduct;
+                })
+                .collect(Collectors.toList());
     }
 
     @AfterEach
@@ -59,7 +72,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void givenProductWithCat_whenSave_shouldSaveBoth() {
+    void givenProductWithCat_whenSaveProduct_shouldSaveBoth() {
 
         // given product with category
         Product product = products.get(0);
@@ -77,7 +90,7 @@ class ProductServiceTest {
                 });
 
         // when save
-        Product savedProduct = productService.save(product);
+        Product savedProduct = productService.saveProduct(product);
 
         // then should get saved product back with category
         assertEquals(product, savedProduct);
@@ -109,8 +122,7 @@ class ProductServiceTest {
     void givenExistingProductId_whenGetProductById_shouldReturnProduct() {
 
         // given
-        given(productRepository.findById(anyLong()))
-                .willReturn(Optional.of(products.get(0)));
+        given(productRepository.findById(anyLong())).willReturn(Optional.of(products.get(0)));
 
         // when
         Product fetchedProduct = productService.getProductById(1L);
@@ -122,36 +134,33 @@ class ProductServiceTest {
     }
 
     @Test
-    void givenNonExistingProductId_whenGetProductById_shouldReturnNull() {
+    void givenNonExistingProductId_whenGetProductById_shouldThrowException() {
 
         // given
-        given(productRepository.findById(anyLong()))
-                .willReturn(Optional.empty());
+        given(productRepository.findById(anyLong())).willReturn(Optional.empty());
 
         // when
-        Product fetchedProduct = productService.getProductById(1L);
-
         // then
-        assertNull(fetchedProduct);
-        then(productRepository).should().findById(anyLong());
+        assertThrows(ProductNotFoundException.class, () -> productService.getProductById(1L));
+        then(productRepository).should().findById(eq(1L));
 
     }
 
     @Test
-    void givenExistingProductId_whenDeleteProductById_shouldReturnProduct() {
+    void givenExistingProductId_whenDeleteProductById_shouldReturnDeletedProduct() {
 
         // given
-        given(productRepository.findById(anyLong()))
-                .willReturn(Optional.of(products.get(0)));
+        long id = products.get(0).getId();
+        given(productRepository.findById(anyLong())).willReturn(Optional.of(products.get(0)));
         willDoNothing().given(productRepository).deleteById(anyLong());
 
         // when
-        Product deletedProduct = productService.deleteProductById(1L);
+        Product deletedProduct = productService.deleteProductById(id);
 
         // then
         assertEquals(products.get(0), deletedProduct);
-        then(productRepository).should().findById(eq(1L));
-        then(productRepository).should().deleteById(eq(1L));
+        then(productRepository).should().findById(eq(id));
+        then(productRepository).should().deleteById(eq(id));
 
     }
 
@@ -159,29 +168,25 @@ class ProductServiceTest {
     void givenNonExistingProductId_whenDeleteProductById_shouldThrowException() {
 
         // given
-        given(productRepository.findById(anyLong()))
-                .willReturn(Optional.empty());
-        willDoNothing().given(productRepository).deleteById(anyLong());
+        given(productRepository.findById(anyLong())).willReturn(Optional.empty());
+        willDoNothing().given(productRepository).deleteById(any());
 
         // when
-
         // then
-        assertThrows(ProductNotFoundException.class, () ->
-                productService.deleteProductById(1L));
+        assertThrows(ProductNotFoundException.class, () -> productService.deleteProductById(1L));
         then(productRepository).should().findById(eq(1L));
-        then(productRepository).should(never()).deleteById(anyLong());
+        then(productRepository).should(never()).deleteById(any());
 
     }
 
-
     // Repositories assign ids automatically. As we mocking repos in
-    // this test class we assign ids manually
+    // this test class we may need to assign ids manually
     private void setIds(List<Product> productList) {
         IntStream.range(0, productList.size()).forEach(i ->
         {
             productList.get(i).setId((long) i + 1);
             ProductCategory cat = productList.get(i).getCategory();
-            cat.setId(Long.parseLong(cat.getName().split("_")[1]));
+            cat.setId(Long.parseLong(cat.getName().split("_")[1]) + 1);
         });
     }
 
