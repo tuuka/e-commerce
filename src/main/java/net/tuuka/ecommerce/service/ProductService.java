@@ -7,6 +7,8 @@ import net.tuuka.ecommerce.entity.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -19,5 +21,9 @@ public class ProductService {
     public Product save(Product product) {
         productCategoryRepository.save(product.getCategory());
         return productRepository.save(product);
+    }
+
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
     }
 }
