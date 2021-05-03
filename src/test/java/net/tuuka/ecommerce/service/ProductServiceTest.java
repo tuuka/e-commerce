@@ -9,6 +9,7 @@ import net.tuuka.ecommerce.dao.ProductCategoryRepository;
 import net.tuuka.ecommerce.dao.ProductRepository;
 import net.tuuka.ecommerce.entity.Product;
 import net.tuuka.ecommerce.entity.ProductCategory;
+import net.tuuka.ecommerce.exception.ProductCategoryNotFoundException;
 import net.tuuka.ecommerce.exception.ProductNotFoundException;
 import net.tuuka.ecommerce.util.FakeProductGenerator;
 import org.junit.jupiter.api.AfterEach;

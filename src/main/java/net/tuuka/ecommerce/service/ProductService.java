@@ -39,4 +39,13 @@ public class ProductService {
         productRepository.deleteById(id);
         return product;
     }
+
+    public Product updateProduct(Product updatableProduct) {
+        if (updatableProduct == null || updatableProduct.getId() == null)
+            throw new IllegalStateException("Nor product neither product id can't be null");
+        // check for existence
+        getProductById(updatableProduct.getId());
+
+        return null;
+    }
 }
