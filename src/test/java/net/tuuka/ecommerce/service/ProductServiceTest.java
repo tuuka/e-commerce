@@ -20,11 +20,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isA;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
@@ -101,6 +102,41 @@ class ProductServiceTest {
         // then
         assertEquals(products, fetchedProducts);
         then(productRepository).should().findAll();
+
+    }
+
+
+    @Test
+    void givenExistingProductId_whenGetProductById_shouldReturnProduct() {
+
+        // given
+        setIds(products);
+        long id = products.get(0).getId();
+        given(productRepository.findById(eq(id)))
+                .willReturn(Optional.of(products.get(0)));
+
+        // when
+        Product fetchedProduct = productService.getProductById(id);
+
+        // then
+        assertEquals(products.get(0), fetchedProduct);
+        then(productRepository).should().findById(eq(id));
+
+    }
+
+    @Test
+    void givenNonExistingProductId_whenGetProductById_shouldReturnNull() {
+
+        // given
+        given(productRepository.findById(anyLong()))
+                .willReturn(Optional.empty());
+
+        // when
+        Product fetchedProduct = productService.getProductById(1L);
+
+        // then
+        assertTrue(fetchedProduct == null);
+        then(productRepository).should().findById(anyLong());
 
     }
 
