@@ -7,20 +7,24 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = {ProductRestController.class})
+@ActiveProfiles("test")
 class ProductRestControllerTest {
 
     @Autowired
@@ -28,6 +32,9 @@ class ProductRestControllerTest {
 
     @MockBean
     ProductService productService;
+
+    @Value("${app.api.path}" + "${app.api.active_version}" + "/products")
+    private String apiUrl;
 
     List<Product> products;
 
@@ -44,15 +51,16 @@ class ProductRestControllerTest {
     @Test
     void shouldReturnProductList() throws Exception {
 
-        // given
         given(productService.getAllProducts()).willReturn(products);
 
-        // when
-        // then
-        mockMvc.perform(get("/api/products")
+        mockMvc.perform(get(apiUrl)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(content()
+                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.*", hasSize(products.size())))
                 .andDo(MockMvcResultHandlers.print());
+
         then(productService).should().getAllProducts();
 
     }

@@ -48,7 +48,7 @@ public class ProductService {
     public Product updateProduct(Product product) {
 
         if (product == null || product.getId() == null)
-            throw new IllegalStateException("Nor product neither product id can be null");
+            throw new IllegalStateException("Neither product nor product id can be null");
 
         Product existingProduct = this.getProductById(product.getId());
 

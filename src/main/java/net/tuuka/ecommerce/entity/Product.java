@@ -67,7 +67,7 @@ public class Product {
         this.imageUrl = imageUrl;
         this.active = active;
         this.unitsInStock = unitsInStock;
-        this.created = ZonedDateTime.now();
-        this.setLastUpdated(this.getCreated());
+//        this.created = ZonedDateTime.now();
+//        this.setLastUpdated(this.getCreated());
     }
 }

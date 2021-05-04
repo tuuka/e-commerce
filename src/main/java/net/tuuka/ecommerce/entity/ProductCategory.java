@@ -1,14 +1,18 @@
 package net.tuuka.ecommerce.entity;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
-@Data
-@Entity
+//@Data  // bug with circular reference in toString()
+@Setter
+@Getter
 @NoArgsConstructor
+@Entity
 @Table(name = "product_category",
         uniqueConstraints = {
                 @UniqueConstraint(name = "product_category_name", columnNames = "name")
@@ -30,5 +34,26 @@ public class ProductCategory {
 
     public ProductCategory(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "ProductCategory{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ProductCategory)) return false;
+        ProductCategory that = (ProductCategory) o;
+        return getName().equals(that.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName());
     }
 }
