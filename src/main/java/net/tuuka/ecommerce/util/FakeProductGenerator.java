@@ -35,7 +35,7 @@ public class FakeProductGenerator {
                         true,
                         random.nextInt(100));
                 product.setCategory(productCategories.get(i));
-                productCategories.get(i).getProducts().add(product);
+//                productCategories.get(i).getProducts().add(product);
                 products.add(product);
             }
         }
