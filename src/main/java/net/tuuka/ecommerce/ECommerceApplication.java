@@ -10,6 +10,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @SpringBootApplication
 public class ECommerceApplication {
@@ -18,11 +20,11 @@ public class ECommerceApplication {
         SpringApplication.run(ECommerceApplication.class, args);
     }
 
-//    @Bean
+    //    @Bean
     public CommandLineRunner initDB(ProductRepository productRepository, ProductCategoryRepository categoryRepository) {
         return (r) -> {
-            List<Product> products = FakeProductGenerator.getFakeProductList();
-            List<ProductCategory> categories = FakeProductGenerator.getFakeProductCategoriesList();
+            List<Product> products = FakeProductGenerator.getNewFakeProductList(5, 3);
+            Set<ProductCategory> categories = products.stream().map(Product::getCategory).collect(Collectors.toSet());
             categories.forEach(categoryRepository::save);
             products.forEach(productRepository::save);
         };

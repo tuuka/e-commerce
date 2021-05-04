@@ -44,33 +44,15 @@ class ProductServiceTest {
     ProductService productService;
 
     List<Product> products;
-    List<ProductCategory> productCategories;
 
     @BeforeEach
     void setUp() {
-        // using predefined list of product with categories with null ids
-        // make a deep copy of generated values
-        products = FakeProductGenerator.getFakeProductList()
-                .stream()
-                .map(p -> {
-                    Product newProduct = new Product(
-                            p.getSku(),
-                            p.getName(),
-                            p.getDescription(),
-                            p.getUnitPrice(),
-                            p.getImageUrl(),
-                            p.getActive(),
-                            p.getUnitsInStock());
-                    newProduct.setCategory(new ProductCategory(p.getCategory().getName()));
-                    return newProduct;
-                })
-                .collect(Collectors.toList());
+        products = FakeProductGenerator.getNewFakeProductList(3,3);
     }
 
     @AfterEach
     void tearDown() {
         products = null;
-        productCategories = null;
     }
 
     // validate Category later in 'update block'
