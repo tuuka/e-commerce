@@ -1,5 +1,7 @@
 package net.tuuka.ecommerce.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -51,6 +53,8 @@ public class Product {
     @ManyToOne()
     @JoinColumn(name = "category_id",
             foreignKey = @ForeignKey(name = "product_category_fk"))
+//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonBackReference
     private ProductCategory category;
 
     public Product(String sku,
@@ -67,7 +71,5 @@ public class Product {
         this.imageUrl = imageUrl;
         this.active = active;
         this.unitsInStock = unitsInStock;
-//        this.created = ZonedDateTime.now();
-//        this.setLastUpdated(this.getCreated());
     }
 }
