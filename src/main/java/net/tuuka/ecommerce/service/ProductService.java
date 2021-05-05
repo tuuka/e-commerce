@@ -46,13 +46,13 @@ public class ProductService {
     }
 
     public Product updateProduct(Product product) {
-
-        if (product == null || product.getId() == null)
+        Objects.requireNonNull(product);
+        if (product.getId() == null)
             throw new IllegalStateException("Neither product nor product id can be null");
 
         Product existingProduct = this.getProductById(product.getId());
 
-        // check for product category difference and possible nulls
+        // we can save products with null or existed category (but not a new one)
         if (!Objects.equals(existingProduct.getCategory(), product.getCategory())
                 && product.getCategory() != null) {
             this.validateCategory(product.getCategory());
@@ -61,29 +61,34 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    // check if given ProductCategory persisted and has correct name
     private void validateCategory(ProductCategory category) {
-        ProductCategory existedCategory;
         if (category.getId() != null) {
-            long catId = category.getId();
-            existedCategory = productCategoryRepository
-                    .findById(catId).orElseThrow(() ->
-                            new ProductCategoryNotFoundException("Product category with id = "
-                                    + catId + " not found"));
-            if (!existedCategory.getName().equals(category.getName())) {
-                throw new IllegalStateException("Can't save Product with Category id = "
-                        + catId + " because of name inconsistency. Persisted Category name = '"
-                        + existedCategory.getName() + " when updating product Category name = "
-                        + category.getName());
-            }
-        } else {
-            String catName = category.getName();
-            existedCategory = productCategoryRepository.findByName(catName)
-                    .orElseThrow(() ->
-                            new ProductCategoryNotFoundException("Product category with name = "
-                                    + catName + " not found"));
-            category.setId(existedCategory.getId());
+            categoryShouldExist(category);
+            return;
         }
+        category.setId(findCategoryByName(category).getId());
+    }
+
+    private void categoryShouldExist(ProductCategory givenCategory) {
+        long catId = givenCategory.getId();
+        ProductCategory existedCategory = productCategoryRepository
+                .findById(catId).orElseThrow(() ->
+                        new ProductCategoryNotFoundException("Product category with id = "
+                                + catId + " not found"));
+
+        if (!existedCategory.getName().equals(givenCategory.getName())) {
+            throw new IllegalStateException("Product has a category with id = "
+                    + catId + " that already exists but has different name. Existed category name = '"
+                    + existedCategory.getName() + " given product Category name = "
+                    + givenCategory.getName());
+        }
+    }
+
+    private ProductCategory findCategoryByName(ProductCategory givenCategory) {
+        return productCategoryRepository.findByName(givenCategory.getName())
+                .orElseThrow(() -> new ProductCategoryNotFoundException(String.format(
+                        "Category with id=%d and name='%s' not found",
+                        givenCategory.getId(), givenCategory.getName())));
     }
 
 }

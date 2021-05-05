@@ -6,8 +6,18 @@ import net.tuuka.ecommerce.entity.ProductCategory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 public class FakeProductGenerator {
+
+    public static void setIdsToGivenProducts(List<Product> productList) {
+        IntStream.range(0, productList.size()).forEach(i ->
+        {
+            productList.get(i).setId((long) i + 1);
+            ProductCategory cat = productList.get(i).getCategory();
+            cat.setId(Long.parseLong(cat.getName().split("_")[1]) + 1);
+        });
+    }
 
     public static List<Product> getNewFakeProductList(int numOfCats, int productsPerCat) {
         List<ProductCategory> productCategories = new ArrayList<>();

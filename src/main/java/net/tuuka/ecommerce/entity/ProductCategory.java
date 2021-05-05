@@ -1,18 +1,19 @@
 package net.tuuka.ecommerce.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Objects;
 
 //@Data  // bug with circular reference in toString()
 @Setter
 @Getter
 @NoArgsConstructor
+@EqualsAndHashCode
 @Entity
 @Table(name = "product_category",
         uniqueConstraints = {
@@ -46,16 +47,4 @@ public class ProductCategory {
                 '}';
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ProductCategory)) return false;
-        ProductCategory that = (ProductCategory) o;
-        return getName().equals(that.getName());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getName());
-    }
 }

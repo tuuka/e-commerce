@@ -1,8 +1,8 @@
 package net.tuuka.ecommerce.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -23,6 +23,7 @@ public class Product {
             sequenceName = "product_sequence",
             allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "productSequence")
+    @EqualsAndHashCode.Exclude
     private Long id;
 
     @Column(nullable = false)
@@ -50,7 +51,7 @@ public class Product {
     @UpdateTimestamp
     private ZonedDateTime lastUpdated;  // not null
 
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id",
             foreignKey = @ForeignKey(name = "product_category_fk"))
 //    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
