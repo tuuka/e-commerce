@@ -71,6 +71,7 @@ class ProductRestControllerTest {
     @Test
     void givenProductId_whenGetProductsIdMapping_shouldReturnProductList() throws Exception {
 
+        products.get(0).setId(1L);
         given(productService.getProductById(anyLong())).willReturn(products.get(0));
 
         mockMvc.perform(get(apiUrl + "/1")
@@ -78,7 +79,8 @@ class ProductRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content()
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-//                .andExpect(jsonPath("$.*", hasSize(products.size())))
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("name_00"))
                 .andDo(MockMvcResultHandlers.print());
 
         then(productService).should().getProductById(eq(1L));
@@ -89,14 +91,14 @@ class ProductRestControllerTest {
     void givenNonExistingProductId_whenAnyMethodAnyMapping_shouldReturnNotFoundErrorEntity() throws Exception {
 
         given(productService.getProductById(anyLong()))
-                .willThrow(new ProductNotFoundException(""));
+                .willThrow(new ProductNotFoundException("not found"));
 
-        mockMvc.perform(get(apiUrl + "1")
+        mockMvc.perform(get(apiUrl + "/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content()
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-//                .andExpect(jsonPath("$.*", hasSize(products.size())))
+                .andExpect(jsonPath("$.error").value("not found"))
                 .andDo(MockMvcResultHandlers.print());
 
         then(productService).should().getProductById(eq(1L));
