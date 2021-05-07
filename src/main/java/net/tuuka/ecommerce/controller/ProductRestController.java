@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import net.tuuka.ecommerce.entity.Product;
 import net.tuuka.ecommerce.service.ProductService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,4 +21,10 @@ public class ProductRestController {
     public List<Product> getAllProducts(){
         return productService.getAllProducts();
     }
+
+    @GetMapping("/{id}")
+    public Product getProductById(@PathVariable long id){
+        return productService.getProductById(id);
+    }
+
 }

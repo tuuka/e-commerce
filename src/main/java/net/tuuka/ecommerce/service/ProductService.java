@@ -48,7 +48,7 @@ public class ProductService {
     public Product updateProduct(Product product) {
         Objects.requireNonNull(product);
         if (product.getId() == null)
-            throw new IllegalStateException("Neither product nor product id can be null");
+            throw new IllegalStateException("Neither updatable product nor product id can be null");
 
         Product existingProduct = this.getProductById(product.getId());
 
