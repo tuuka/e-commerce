@@ -21,8 +21,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -110,7 +109,7 @@ class ProductRestControllerTest {
     @Test
     void givenProduct_whenSaveProductMapping_shouldReturnSavedProduct() throws Exception {
 
-        given(productService.getProductById(anyLong()))
+        given(productService.saveProduct(any()))
                 .will((InvocationOnMock invocation) -> {
                     Product tempProduct = invocation.getArgument(0);
                     tempProduct.setId(1L);
@@ -127,7 +126,7 @@ class ProductRestControllerTest {
                 .andExpect(jsonPath("$.id").value(1L))
                 .andDo(MockMvcResultHandlers.print());
 
-        then(productService).should().saveProduct(eq(products.get(0)));
+        then(productService).should().saveProduct(isA(Product.class));
 
     }
 
@@ -135,7 +134,8 @@ class ProductRestControllerTest {
     void givenProduct_whenUpdateProductMapping_shouldReturnUpdatedProduct() throws Exception {
 
         products.get(0).setId(1L);
-        given(productService.getProductById(anyLong())).willReturn(products.get(0));
+
+        given(productService.updateProduct(any())).willReturn(products.get(0));
         String jsonProduct = new ObjectMapper().writeValueAsString(products.get(0));
 
         mockMvc.perform(put(apiUrl + "/1")
@@ -147,7 +147,7 @@ class ProductRestControllerTest {
                 .andExpect(jsonPath("$.id").value(1L))
                 .andDo(MockMvcResultHandlers.print());
 
-        then(productService).should().updateProduct(eq(products.get(0)));
+        then(productService).should().updateProduct(isA(Product.class));
 
     }
 
@@ -155,7 +155,7 @@ class ProductRestControllerTest {
     void givenProduct_whenDeleteProductMapping_shouldReturnDeletedProduct() throws Exception {
 
         products.get(0).setId(1L);
-        given(productService.getProductById(anyLong())).willReturn(products.get(0));
+        given(productService.deleteProductById(anyLong())).willReturn(products.get(0));
 
         mockMvc.perform(delete(apiUrl + "/1")
                 .contentType(MediaType.APPLICATION_JSON))

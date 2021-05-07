@@ -3,10 +3,8 @@ package net.tuuka.ecommerce.controller;
 import lombok.RequiredArgsConstructor;
 import net.tuuka.ecommerce.entity.Product;
 import net.tuuka.ecommerce.service.ProductService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,13 +16,29 @@ public class ProductRestController {
     private final ProductService productService;
 
     @GetMapping
-    public List<Product> getAllProducts(){
+    public List<Product> getAllProducts() {
         return productService.getAllProducts();
     }
 
     @GetMapping("/{id}")
-    public Product getProductById(@PathVariable long id){
+    public Product getProductById(@PathVariable long id) {
         return productService.getProductById(id);
+    }
+
+    @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
+    public Product saveProduct(@RequestBody Product product) {
+        return productService.saveProduct(product);
+    }
+
+    @PutMapping("/{id}")
+    public Product updateProduct(@RequestBody Product product) {
+        return productService.updateProduct(product);
+    }
+
+    @DeleteMapping("/{id}")
+    public Product deleteProductById(@PathVariable long id) {
+        return productService.deleteProductById(id);
     }
 
 }
