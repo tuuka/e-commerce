@@ -6,32 +6,24 @@ package net.tuuka.ecommerce.service;
 */
 
 import net.tuuka.ecommerce.dao.ProductCategoryRepository;
-import net.tuuka.ecommerce.dao.ProductRepository;
 import net.tuuka.ecommerce.entity.Product;
 import net.tuuka.ecommerce.entity.ProductCategory;
-import net.tuuka.ecommerce.exception.ProductCategoryNotFoundException;
-import net.tuuka.ecommerce.exception.ProductNotFoundException;
 import net.tuuka.ecommerce.util.FakeProductGenerator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.invocation.InvocationOnMock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 
-@SpringBootTest(classes = {ProductService.class})
+@SpringBootTest(classes = {ProductCategoryService.class})
 class ProductCategoryServiceTest {
 
     @MockBean
