@@ -1,5 +1,6 @@
 package net.tuuka.ecommerce.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.tuuka.ecommerce.entity.Product;
 import net.tuuka.ecommerce.exception.ProductNotFoundException;
 import net.tuuka.ecommerce.service.ProductService;
@@ -7,6 +8,7 @@ import net.tuuka.ecommerce.util.FakeProductGenerator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.invocation.InvocationOnMock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -23,7 +25,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = {ProductRestController.class})
@@ -102,6 +104,68 @@ class ProductRestControllerTest {
                 .andDo(MockMvcResultHandlers.print());
 
         then(productService).should().getProductById(eq(1L));
+
+    }
+
+    @Test
+    void givenProduct_whenSaveProductMapping_shouldReturnSavedProduct() throws Exception {
+
+        given(productService.getProductById(anyLong()))
+                .will((InvocationOnMock invocation) -> {
+                    Product tempProduct = invocation.getArgument(0);
+                    tempProduct.setId(1L);
+                    return tempProduct;
+                });
+        String jsonProduct = new ObjectMapper().writeValueAsString(products.get(0));
+
+        mockMvc.perform(post(apiUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonProduct))
+                .andExpect(status().isCreated())
+                .andExpect(content()
+                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(1L))
+                .andDo(MockMvcResultHandlers.print());
+
+        then(productService).should().saveProduct(eq(products.get(0)));
+
+    }
+
+    @Test
+    void givenProduct_whenUpdateProductMapping_shouldReturnUpdatedProduct() throws Exception {
+
+        products.get(0).setId(1L);
+        given(productService.getProductById(anyLong())).willReturn(products.get(0));
+        String jsonProduct = new ObjectMapper().writeValueAsString(products.get(0));
+
+        mockMvc.perform(put(apiUrl + "/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonProduct))
+                .andExpect(status().isOk())
+                .andExpect(content()
+                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(1L))
+                .andDo(MockMvcResultHandlers.print());
+
+        then(productService).should().updateProduct(eq(products.get(0)));
+
+    }
+
+    @Test
+    void givenProduct_whenDeleteProductMapping_shouldReturnDeletedProduct() throws Exception {
+
+        products.get(0).setId(1L);
+        given(productService.getProductById(anyLong())).willReturn(products.get(0));
+
+        mockMvc.perform(delete(apiUrl + "/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content()
+                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(1L))
+                .andDo(MockMvcResultHandlers.print());
+
+        then(productService).should().deleteProductById(eq(1L));
 
     }
 
