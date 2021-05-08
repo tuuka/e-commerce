@@ -7,6 +7,9 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Map;
 
+/* Using with Spring Boot Configuration Processor to generate metadata for custom
+    properties in application.properties file */
+
 @Configuration
 @ConfigurationProperties(prefix = "app")
 @Setter

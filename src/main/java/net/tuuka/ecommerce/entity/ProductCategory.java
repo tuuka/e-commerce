@@ -1,10 +1,7 @@
 package net.tuuka.ecommerce.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,6 +10,7 @@ import java.util.List;
 @Setter
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode
 @Entity
 @Table(name = "product_category",
@@ -31,7 +29,7 @@ public class ProductCategory {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", orphanRemoval = true)
     @JsonManagedReference
     private List<Product> products;
 
