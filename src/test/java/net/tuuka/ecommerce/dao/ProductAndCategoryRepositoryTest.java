@@ -126,6 +126,7 @@ class ProductAndCategoryRepositoryTest {
         // given product1
 
         // when
+        productCategoryRepository.saveAndFlush(product1.getCategory());
         productRepository.saveAndFlush(product1);
 
         // then
@@ -140,6 +141,7 @@ class ProductAndCategoryRepositoryTest {
         // given product1, product2
 
         // when
+        productCategoryRepository.saveAndFlush(product1.getCategory());
         productRepository.saveAndFlush(product1);
         productRepository.saveAndFlush(product2);
 

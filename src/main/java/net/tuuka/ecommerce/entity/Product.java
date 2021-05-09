@@ -51,7 +51,7 @@ public class Product {
     @UpdateTimestamp
     private ZonedDateTime lastUpdated;  // not null
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "category_id",
             foreignKey = @ForeignKey(name = "product_category_fk"))
 //    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

@@ -32,13 +32,19 @@ public class ProductCategoryRestController {
     }
 
     @PutMapping("/{id}")
-    public ProductCategory updateCategory(@RequestBody ProductCategory category) {
+    public ProductCategory updateCategory(@PathVariable long id, @RequestBody ProductCategory category) {
+        category.setId(id);
         return categoryService.updateCategory(category);
     }
 
     @DeleteMapping("/{id}")
     public ProductCategory deleteCategoryById(@PathVariable long id) {
         return categoryService.deleteCategory(id);
+    }
+
+    @DeleteMapping("/force/{id}")
+    public ProductCategory deleteCategoryWithProducetsById(@PathVariable long id) {
+        return categoryService.forceDeleteCategory(id);
     }
 
 }
