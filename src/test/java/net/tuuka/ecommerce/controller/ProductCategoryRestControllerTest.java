@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.tuuka.ecommerce.entity.Product;
 import net.tuuka.ecommerce.entity.ProductCategory;
 import net.tuuka.ecommerce.exception.ProductCategoryNotFoundException;
-import net.tuuka.ecommerce.exception.ProductNotFoundException;
 import net.tuuka.ecommerce.service.ProductCategoryService;
-import net.tuuka.ecommerce.service.ProductService;
-import net.tuuka.ecommerce.util.FakeProductGenerator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -97,8 +94,9 @@ class ProductCategoryRestControllerTest {
     @Test
     void givenCategoryId_whenGetCategoryByIdMapping_shouldReturnCategory() throws Exception {
 
-        categories.get(0).setId(1L);
-        given(categoryService.getCategoryById(anyLong())).willReturn(categories.get(0));
+        ProductCategory category = categories.get(0);
+        category.setId(1L);
+        given(categoryService.getCategoryById(anyLong())).willReturn(category);
 
         mockMvc.perform(get(apiUrl + "/1")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -106,10 +104,12 @@ class ProductCategoryRestControllerTest {
                 .andExpect(content()
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").value(eq(categories.get(0).getName())))
+                .andExpect(jsonPath("$.name").value(category.getName()))
+                .andExpect(jsonPath("$.products[0].name")
+                        .value(category.getProducts().get(0).getName()))
                 .andDo(MockMvcResultHandlers.print());
 
-        then(categoryService).should().getCategoryById(eq(1L));
+        then(categoryService).should().getCategoryById(1L);
 
     }
 
@@ -191,6 +191,28 @@ class ProductCategoryRestControllerTest {
                 .andDo(MockMvcResultHandlers.print());
 
         then(categoryService).should().deleteCategory(eq(1L));
+
+    }
+
+    @Test
+    void givenNonExistingCategoryId_whenUpdateCategoryMapping_shouldThrowException() throws Exception {
+
+        categories.get(0).setId(1L);
+
+        given(categoryService.updateCategory(any()))
+                .willThrow(new ProductCategoryNotFoundException("not found"));
+        String jsonCategory = new ObjectMapper().writeValueAsString(categories.get(0));
+
+        mockMvc.perform(put(apiUrl + "/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonCategory))
+                .andExpect(status().isNotFound())
+                .andExpect(content()
+                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.error").value("not found"))
+                .andDo(MockMvcResultHandlers.print());
+
+        then(categoryService).should().updateCategory(isA(ProductCategory.class));
 
     }
 
