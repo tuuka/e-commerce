@@ -17,29 +17,29 @@ public class ProductCategoryRestController {
 
     @GetMapping
     public List<ProductCategory> getAllCategories() {
-        return categoryService.getAllCategories();
+        return categoryService.getAll();
     }
 
     @GetMapping("/{id}")
     public ProductCategory getCategoryById(@PathVariable long id) {
-        return categoryService.getCategoryById(id);
+        return categoryService.getById(id);
     }
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public ProductCategory saveCategory(@RequestBody ProductCategory category) {
-        return categoryService.saveCategory(category);
+        return categoryService.save(category);
     }
 
     @PutMapping("/{id}")
     public ProductCategory updateCategory(@PathVariable long id, @RequestBody ProductCategory category) {
         category.setId(id);
-        return categoryService.updateCategory(category);
+        return categoryService.update(category);
     }
 
     @DeleteMapping("/{id}")
     public ProductCategory deleteCategoryById(@PathVariable long id) {
-        return categoryService.deleteCategory(id);
+        return categoryService.deleteById(id);
     }
 
     @DeleteMapping("/force/{id}")

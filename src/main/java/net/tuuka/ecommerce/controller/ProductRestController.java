@@ -17,29 +17,29 @@ public class ProductRestController {
 
     @GetMapping
     public List<Product> getAllProducts() {
-        return productService.getAllProducts();
+        return productService.getAll();
     }
 
     @GetMapping("/{id}")
     public Product getProductById(@PathVariable long id) {
-        return productService.getProductById(id);
+        return productService.getById(id);
     }
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public Product saveProduct(@RequestBody Product product) {
-        return productService.saveProduct(product);
+        return productService.save(product);
     }
 
     @PutMapping("/{id}")
     public Product updateProduct(@PathVariable long id, @RequestBody Product product) {
         product.setId(id);
-        return productService.updateProduct(product);
+        return productService.update(product);
     }
 
     @DeleteMapping("/{id}")
     public Product deleteProductById(@PathVariable long id) {
-        return productService.deleteProductById(id);
+        return productService.deleteById(id);
     }
 
 }

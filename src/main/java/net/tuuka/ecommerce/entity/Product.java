@@ -1,30 +1,23 @@
 package net.tuuka.ecommerce.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
 
-@Data
+@Setter
+@Getter
+@ToString
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @Entity
 @Table(name = "product", uniqueConstraints = {
         @UniqueConstraint(name = "product_sku", columnNames = "sku")
 })
-public class Product {
-
-    @Id
-    @SequenceGenerator(name = "productSequence",
-            sequenceName = "product_sequence",
-            allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "productSequence")
-    @EqualsAndHashCode.Exclude
-    private Long id;
+public class Product extends BaseEntity{
 
     @Column(nullable = false)
     private String sku;                 // not null

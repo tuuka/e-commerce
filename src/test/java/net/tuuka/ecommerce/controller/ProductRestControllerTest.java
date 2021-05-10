@@ -2,7 +2,6 @@ package net.tuuka.ecommerce.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.tuuka.ecommerce.entity.Product;
-import net.tuuka.ecommerce.exception.ProductNotFoundException;
 import net.tuuka.ecommerce.service.ProductService;
 import net.tuuka.ecommerce.util.FakeProductGenerator;
 import org.junit.jupiter.api.AfterEach;
@@ -18,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -55,7 +55,7 @@ class ProductRestControllerTest {
     @Test
     void whenGetProductsMapping_shouldReturnProductList() throws Exception {
 
-        given(productService.getAllProducts()).willReturn(products);
+        given(productService.getAll()).willReturn(products);
 
         mockMvc.perform(get(apiUrl)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -65,7 +65,7 @@ class ProductRestControllerTest {
                 .andExpect(jsonPath("$.*", hasSize(products.size())))
                 .andDo(MockMvcResultHandlers.print());
 
-        then(productService).should().getAllProducts();
+        then(productService).should().getAll();
 
     }
 
@@ -73,7 +73,7 @@ class ProductRestControllerTest {
     void givenProductId_whenGetProductsIdMapping_shouldReturnProduct() throws Exception {
 
         products.get(0).setId(1L);
-        given(productService.getProductById(anyLong())).willReturn(products.get(0));
+        given(productService.getById(anyLong())).willReturn(products.get(0));
 
         mockMvc.perform(get(apiUrl + "/1")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -84,15 +84,15 @@ class ProductRestControllerTest {
                 .andExpect(jsonPath("$.name").value("name_00"))
                 .andDo(MockMvcResultHandlers.print());
 
-        then(productService).should().getProductById(eq(1L));
+        then(productService).should().getById(eq(1L));
 
     }
 
     @Test
     void givenNonExistingProductId_whenGetProductsIdMapping_shouldReturnNotFoundErrorEntity() throws Exception {
 
-        given(productService.getProductById(anyLong()))
-                .willThrow(new ProductNotFoundException("not found"));
+        given(productService.getById(anyLong()))
+                .willThrow(new EntityNotFoundException("not found"));
 
         mockMvc.perform(get(apiUrl + "/1")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -102,14 +102,14 @@ class ProductRestControllerTest {
                 .andExpect(jsonPath("$.error").value("not found"))
                 .andDo(MockMvcResultHandlers.print());
 
-        then(productService).should().getProductById(eq(1L));
+        then(productService).should().getById(eq(1L));
 
     }
 
     @Test
     void givenProduct_whenSaveProductMapping_shouldReturnSavedProduct() throws Exception {
 
-        given(productService.saveProduct(any()))
+        given(productService.save(any()))
                 .will((InvocationOnMock invocation) -> {
                     Product tempProduct = invocation.getArgument(0);
                     tempProduct.setId(1L);
@@ -126,7 +126,7 @@ class ProductRestControllerTest {
                 .andExpect(jsonPath("$.id").value(1L))
                 .andDo(MockMvcResultHandlers.print());
 
-        then(productService).should().saveProduct(isA(Product.class));
+        then(productService).should().save(isA(Product.class));
 
     }
 
@@ -135,7 +135,7 @@ class ProductRestControllerTest {
 
         products.get(0).setId(1L);
 
-        given(productService.updateProduct(any())).willReturn(products.get(0));
+        given(productService.update(any())).willReturn(products.get(0));
         String jsonProduct = new ObjectMapper().writeValueAsString(products.get(0));
 
         mockMvc.perform(put(apiUrl + "/1")
@@ -147,7 +147,7 @@ class ProductRestControllerTest {
                 .andExpect(jsonPath("$.id").value(1L))
                 .andDo(MockMvcResultHandlers.print());
 
-        then(productService).should().updateProduct(isA(Product.class));
+        then(productService).should().update(isA(Product.class));
 
     }
 
@@ -155,7 +155,7 @@ class ProductRestControllerTest {
     void givenProduct_whenDeleteProductMapping_shouldReturnDeletedProduct() throws Exception {
 
         products.get(0).setId(1L);
-        given(productService.deleteProductById(anyLong())).willReturn(products.get(0));
+        given(productService.deleteById(anyLong())).willReturn(products.get(0));
 
         mockMvc.perform(delete(apiUrl + "/1")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -165,7 +165,7 @@ class ProductRestControllerTest {
                 .andExpect(jsonPath("$.id").value(1L))
                 .andDo(MockMvcResultHandlers.print());
 
-        then(productService).should().deleteProductById(eq(1L));
+        then(productService).should().deleteById(eq(1L));
 
     }
 

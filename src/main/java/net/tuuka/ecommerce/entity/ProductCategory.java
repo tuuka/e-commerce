@@ -6,43 +6,29 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.List;
 
-//@Data  // bug with circular reference in toString()
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
+@ToString
 @Entity
 @Table(name = "product_category",
         uniqueConstraints = {
                 @UniqueConstraint(name = "product_category_name", columnNames = "name")
         })
-public class ProductCategory {
-
-    @Id
-    @SequenceGenerator(name = "productCategorySequence",
-            sequenceName = "product_category_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
-            generator = "productCategorySequence")
-    private Long id;
+public class ProductCategory extends BaseEntity{
 
     @Column(nullable = false)
     private String name;
 
     @OneToMany(mappedBy = "category", orphanRemoval = true)
     @JsonManagedReference
+    @ToString.Exclude
     private List<Product> products;
 
     public ProductCategory(String name) {
         this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "ProductCategory{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
     }
 
 }

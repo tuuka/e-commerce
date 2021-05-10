@@ -10,7 +10,6 @@ import net.tuuka.ecommerce.dao.ProductCategoryRepository;
 import net.tuuka.ecommerce.entity.Product;
 import net.tuuka.ecommerce.entity.ProductCategory;
 import net.tuuka.ecommerce.exception.ProductCategoryNotEmptyException;
-import net.tuuka.ecommerce.exception.ProductCategoryNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -70,7 +70,7 @@ class ProductCategoryServiceTest {
         given(productCategoryRepository.findAll()).willReturn(categories);
 
         // when
-        List<ProductCategory> fetchedCategories = categoryService.getAllCategories();
+        List<ProductCategory> fetchedCategories = categoryService.getAll();
 
         // then
         assertEquals(categories, fetchedCategories);
@@ -87,7 +87,7 @@ class ProductCategoryServiceTest {
         given(productCategoryRepository.findById(anyLong())).willReturn(Optional.of(givenCategory));
 
         // when
-        ProductCategory fetchedCategory = categoryService.getCategoryById(1L);
+        ProductCategory fetchedCategory = categoryService.getById(1L);
 
         // then
         assertEquals(givenCategory, fetchedCategory);
@@ -104,8 +104,8 @@ class ProductCategoryServiceTest {
 
         // when
         // then
-        assertThrows(ProductCategoryNotFoundException.class,
-                () -> categoryService.getCategoryById(1L));
+        assertThrows(EntityNotFoundException.class,
+                () -> categoryService.getById(1L));
         then(productCategoryRepository).should().findById(eq(1L));
 
     }
@@ -124,7 +124,7 @@ class ProductCategoryServiceTest {
         );
 
         // when
-        ProductCategory savedCategory = categoryService.saveCategory(givenCategory);
+        ProductCategory savedCategory = categoryService.save(givenCategory);
 
         // then
         assertEquals(givenCategory, savedCategory);
@@ -143,7 +143,7 @@ class ProductCategoryServiceTest {
 
         // when
         // then
-        assertThrows(IllegalStateException.class, () -> categoryService.saveCategory(givenCategory));
+        assertThrows(IllegalStateException.class, () -> categoryService.save(givenCategory));
         then(productCategoryRepository).should(never()).save(any());
 
     }
@@ -157,7 +157,7 @@ class ProductCategoryServiceTest {
         given(productCategoryRepository.save(any())).willReturn(givenCategory);
 
         // when
-        ProductCategory updatedCategory = categoryService.updateCategory(givenCategory);
+        ProductCategory updatedCategory = categoryService.update(givenCategory);
 
         // then
         assertEquals(givenCategory, updatedCategory);
@@ -176,7 +176,7 @@ class ProductCategoryServiceTest {
 
         // when
         // then
-        assertThrows(IllegalStateException.class, () -> categoryService.updateCategory(givenCategory));
+        assertThrows(IllegalStateException.class, () -> categoryService.update(givenCategory));
         then(productCategoryRepository).should(never()).findById(anyLong());
         then(productCategoryRepository).should(never()).save(any());
 
@@ -192,7 +192,7 @@ class ProductCategoryServiceTest {
         willDoNothing().given(productCategoryRepository).deleteById(anyLong());
 
         // when
-        ProductCategory deletedCategory = categoryService.deleteCategory(1L);
+        ProductCategory deletedCategory = categoryService.deleteById(1L);
 
         // then
         assertEquals(givenCategory, deletedCategory);
@@ -212,7 +212,7 @@ class ProductCategoryServiceTest {
         // when
         // then
         assertThrows(ProductCategoryNotEmptyException.class, () ->
-                categoryService.deleteCategory(1L));
+                categoryService.deleteById(1L));
         then(productCategoryRepository).should().findById(anyLong());
         then(productCategoryRepository).should(never()).deleteById(eq(1L));
 
@@ -238,8 +238,8 @@ class ProductCategoryServiceTest {
 
     @Test
     void givenNullArg_whenAnyMethodInvoked_shouldThrowException() {
-        assertThrows(NullPointerException.class, () -> categoryService.saveCategory(null));
-        assertThrows(NullPointerException.class, () -> categoryService.updateCategory(null));
+        assertThrows(NullPointerException.class, () -> categoryService.save(null));
+        assertThrows(NullPointerException.class, () -> categoryService.update(null));
     }
 
 }

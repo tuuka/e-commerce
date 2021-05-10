@@ -71,7 +71,7 @@ class ProductAndCategoryRepositoryTest {
                 true,
                 20);
         categories = new LinkedList<>(Arrays.asList(
-                new ProductCategory(null, "cat1", Arrays.asList(product1, product2)),
+                new ProductCategory( "cat1", Arrays.asList(product1, product2)),
                 new ProductCategory("cat2")
         ));
         product1.setCategory(categories.get(0));

@@ -10,8 +10,6 @@ import net.tuuka.ecommerce.dao.ProductCategoryRepository;
 import net.tuuka.ecommerce.dao.ProductRepository;
 import net.tuuka.ecommerce.entity.Product;
 import net.tuuka.ecommerce.entity.ProductCategory;
-import net.tuuka.ecommerce.exception.ProductCategoryNotFoundException;
-import net.tuuka.ecommerce.exception.ProductNotFoundException;
 import net.tuuka.ecommerce.util.FakeProductGenerator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 
-@SpringBootTest(classes = {ProductService.class})
+@SpringBootTest(classes = {ProductService.class, ProductCategoryService.class})
 class ProductServiceTest {
 
     @MockBean
@@ -64,7 +63,7 @@ class ProductServiceTest {
         mockProductFindSaveAndCatFind(product, false, false);
 
         // when save
-        Product savedProduct = productService.saveProduct(product);
+        Product savedProduct = productService.save(product);
 
         // then should get saved product back
         assertEquals(products.get(0), savedProduct);
@@ -81,7 +80,7 @@ class ProductServiceTest {
         given(productRepository.findAll()).willReturn(products);
 
         // when
-        List<Product> fetchedProducts = productService.getAllProducts();
+        List<Product> fetchedProducts = productService.getAll();
 
         // then
         assertEquals(products, fetchedProducts);
@@ -98,7 +97,7 @@ class ProductServiceTest {
         given(productRepository.findById(anyLong())).willReturn(Optional.of(products.get(0)));
 
         // when
-        Product fetchedProduct = productService.getProductById(1L);
+        Product fetchedProduct = productService.getById(1L);
 
         // then
         assertEquals(products.get(0), fetchedProduct);
@@ -114,7 +113,7 @@ class ProductServiceTest {
 
         // when
         // then
-        assertThrows(ProductNotFoundException.class, () -> productService.getProductById(1L));
+        assertThrows(EntityNotFoundException.class, () -> productService.getById(1L));
         then(productRepository).should().findById(eq(1L));
 
     }
@@ -128,7 +127,7 @@ class ProductServiceTest {
         willDoNothing().given(productRepository).deleteById(anyLong());
 
         // when
-        Product deletedProduct = productService.deleteProductById(1L);
+        Product deletedProduct = productService.deleteById(1L);
 
         // then
         assertEquals(products.get(0), deletedProduct);
@@ -146,7 +145,7 @@ class ProductServiceTest {
 
         // when
         // then
-        assertThrows(ProductNotFoundException.class, () -> productService.deleteProductById(1L));
+        assertThrows(EntityNotFoundException.class, () -> productService.deleteById(1L));
         then(productRepository).should().findById(eq(1L));
         then(productRepository).should(never()).deleteById(any());
 
@@ -175,8 +174,7 @@ class ProductServiceTest {
 
         // when
         // then
-        assertThrows(IllegalStateException.class, () ->
-                productService.updateProduct(products.get(0)));
+        assertThrows(IllegalStateException.class, () -> productService.update(products.get(0)));
         then(productRepository).should(never()).findById(anyLong());
 
     }
@@ -191,8 +189,7 @@ class ProductServiceTest {
 
         // when
         // then
-        assertThrows(ProductNotFoundException.class, () ->
-                productService.updateProduct(products.get(0)));
+        assertThrows(EntityNotFoundException.class, () -> productService.update(products.get(0)));
         then(productRepository).should().findById(eq(1L));
 
     }
@@ -207,7 +204,7 @@ class ProductServiceTest {
         mockProductFindSaveAndCatFind(updatableProduct, true, true);
 
         // when
-        Product updatedProduct = productService.updateProduct(updatableProduct);
+        Product updatedProduct = productService.update(updatableProduct);
 
         // then
         assertEquals(products.get(1), updatedProduct);
@@ -231,7 +228,7 @@ class ProductServiceTest {
                 .willReturn(Optional.of(existingProduct.getCategory()));
 
         // when
-        Product updatedProduct = productService.updateProduct(updatableProduct);
+        Product updatedProduct = productService.update(updatableProduct);
 
         // then
         assertEquals(existingProduct.getCategory().getId(), updatedProduct.getCategory().getId());
@@ -256,8 +253,8 @@ class ProductServiceTest {
 
         // when
         // then
-        assertThrows(ProductCategoryNotFoundException.class,
-                () -> productService.updateProduct(updatableProduct));
+        assertThrows(EntityNotFoundException.class,
+                () -> productService.update(updatableProduct));
         then(productRepository).should().findById(eq(updatableProduct.getId()));
         then(productCategoryRepository).should(never()).findById(any());
         then(productCategoryRepository).should().findByName(eq(updatableProduct.getCategory().getName()));
@@ -278,8 +275,8 @@ class ProductServiceTest {
 
         // when
         // then
-        assertThrows(ProductCategoryNotFoundException.class,
-                () -> productService.updateProduct(updatableProduct));
+        assertThrows(EntityNotFoundException.class,
+                () -> productService.update(updatableProduct));
         then(productRepository).should().findById(eq(updatableProduct.getId()));
         then(productCategoryRepository).should().findById(eq(updatableProduct.getCategory().getId()));
         then(productRepository).should(never()).save(any());
@@ -300,7 +297,7 @@ class ProductServiceTest {
         // when
         // then
         assertThrows(IllegalStateException.class,
-                () -> productService.updateProduct(updatableProduct));
+                () -> productService.update(updatableProduct));
         then(productRepository).should().findById(eq(updatableProduct.getId()));
         then(productCategoryRepository).should().findById(eq(updatableProduct.getCategory().getId()));
         then(productRepository).should(never()).save(any());
@@ -324,7 +321,7 @@ class ProductServiceTest {
         );
 
         // when
-        Product updatedProduct = productService.updateProduct(updatableProduct);
+        Product updatedProduct = productService.update(updatableProduct);
         // then
         assertEquals(updatableProduct, updatedProduct);
         // just in case of changing in Product equals() method

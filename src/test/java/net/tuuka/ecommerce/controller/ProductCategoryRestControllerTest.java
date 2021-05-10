@@ -3,7 +3,6 @@ package net.tuuka.ecommerce.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.tuuka.ecommerce.entity.Product;
 import net.tuuka.ecommerce.entity.ProductCategory;
-import net.tuuka.ecommerce.exception.ProductCategoryNotFoundException;
 import net.tuuka.ecommerce.service.ProductCategoryService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -64,7 +64,7 @@ class ProductCategoryRestControllerTest {
                 true,
                 20);
         categories = new LinkedList<>(Arrays.asList(
-                new ProductCategory(null, "cat1", Arrays.asList(product1, product2)),
+                new ProductCategory("cat1", Arrays.asList(product1, product2)),
                 new ProductCategory("cat2")));
     }
 
@@ -77,7 +77,7 @@ class ProductCategoryRestControllerTest {
     @Test
     void whenGetCategoriesMapping_shouldReturnCategoryList() throws Exception {
 
-        given(categoryService.getAllCategories()).willReturn(categories);
+        given(categoryService.getAll()).willReturn(categories);
 
         mockMvc.perform(get(apiUrl)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -87,7 +87,7 @@ class ProductCategoryRestControllerTest {
                 .andExpect(jsonPath("$.*", hasSize(categories.size())))
                 .andDo(MockMvcResultHandlers.print());
 
-        then(categoryService).should().getAllCategories();
+        then(categoryService).should().getAll();
 
     }
 
@@ -96,7 +96,7 @@ class ProductCategoryRestControllerTest {
 
         ProductCategory category = categories.get(0);
         category.setId(1L);
-        given(categoryService.getCategoryById(anyLong())).willReturn(category);
+        given(categoryService.getById(anyLong())).willReturn(category);
 
         mockMvc.perform(get(apiUrl + "/1")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -109,15 +109,15 @@ class ProductCategoryRestControllerTest {
                         .value(category.getProducts().get(0).getName()))
                 .andDo(MockMvcResultHandlers.print());
 
-        then(categoryService).should().getCategoryById(1L);
+        then(categoryService).should().getById(1L);
 
     }
 
     @Test
     void givenNonExistingCategoryId_whenGetCategoriesByIdMapping_shouldReturnNotFoundErrorEntity() throws Exception {
 
-        given(categoryService.getCategoryById(anyLong()))
-                .willThrow(new ProductCategoryNotFoundException("not found"));
+        given(categoryService.getById(anyLong()))
+                .willThrow(new EntityNotFoundException("not found"));
 
         mockMvc.perform(get(apiUrl + "/1")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -127,14 +127,14 @@ class ProductCategoryRestControllerTest {
                 .andExpect(jsonPath("$.error").value("not found"))
                 .andDo(MockMvcResultHandlers.print());
 
-        then(categoryService).should().getCategoryById(eq(1L));
+        then(categoryService).should().getById(eq(1L));
 
     }
 
     @Test
     void givenCategory_whenSaveCategoryMapping_shouldReturnSavedCategory() throws Exception {
 
-        given(categoryService.saveCategory(any()))
+        given(categoryService.save(any()))
                 .will((InvocationOnMock invocation) -> {
                     ProductCategory tempCategory = invocation.getArgument(0);
                     tempCategory.setId(1L);
@@ -151,7 +151,7 @@ class ProductCategoryRestControllerTest {
                 .andExpect(jsonPath("$.id").value(1L))
                 .andDo(MockMvcResultHandlers.print());
 
-        then(categoryService).should().saveCategory(isA(ProductCategory.class));
+        then(categoryService).should().save(isA(ProductCategory.class));
 
     }
 
@@ -160,7 +160,7 @@ class ProductCategoryRestControllerTest {
 
         categories.get(0).setId(1L);
 
-        given(categoryService.updateCategory(any())).willReturn(categories.get(0));
+        given(categoryService.update(any())).willReturn(categories.get(0));
         String jsonCategory = new ObjectMapper().writeValueAsString(categories.get(0));
 
         mockMvc.perform(put(apiUrl + "/1")
@@ -172,7 +172,7 @@ class ProductCategoryRestControllerTest {
                 .andExpect(jsonPath("$.id").value(1L))
                 .andDo(MockMvcResultHandlers.print());
 
-        then(categoryService).should().updateCategory(isA(ProductCategory.class));
+        then(categoryService).should().update(isA(ProductCategory.class));
 
     }
 
@@ -180,7 +180,7 @@ class ProductCategoryRestControllerTest {
     void givenCategory_whenDeleteCategoryMapping_shouldReturnDeletedCategory() throws Exception {
 
         categories.get(0).setId(1L);
-        given(categoryService.deleteCategory(anyLong())).willReturn(categories.get(0));
+        given(categoryService.deleteById(anyLong())).willReturn(categories.get(0));
 
         mockMvc.perform(delete(apiUrl + "/1")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -190,7 +190,7 @@ class ProductCategoryRestControllerTest {
                 .andExpect(jsonPath("$.id").value(1L))
                 .andDo(MockMvcResultHandlers.print());
 
-        then(categoryService).should().deleteCategory(eq(1L));
+        then(categoryService).should().deleteById(eq(1L));
 
     }
 
@@ -199,8 +199,8 @@ class ProductCategoryRestControllerTest {
 
         categories.get(0).setId(1L);
 
-        given(categoryService.updateCategory(any()))
-                .willThrow(new ProductCategoryNotFoundException("not found"));
+        given(categoryService.update(any()))
+                .willThrow(new EntityNotFoundException("not found"));
         String jsonCategory = new ObjectMapper().writeValueAsString(categories.get(0));
 
         mockMvc.perform(put(apiUrl + "/1")
@@ -212,7 +212,7 @@ class ProductCategoryRestControllerTest {
                 .andExpect(jsonPath("$.error").value("not found"))
                 .andDo(MockMvcResultHandlers.print());
 
-        then(categoryService).should().updateCategory(isA(ProductCategory.class));
+        then(categoryService).should().update(isA(ProductCategory.class));
 
     }
 

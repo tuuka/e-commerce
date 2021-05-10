@@ -9,8 +9,6 @@ package net.tuuka.ecommerce.service;
 import net.tuuka.ecommerce.dao.ProductCategoryRepository;
 import net.tuuka.ecommerce.dao.ProductRepository;
 import net.tuuka.ecommerce.entity.Product;
-import net.tuuka.ecommerce.exception.ProductCategoryNotFoundException;
-import net.tuuka.ecommerce.exception.ProductNotFoundException;
 import net.tuuka.ecommerce.util.FakeProductGenerator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.transaction.TestTransaction;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -62,8 +61,8 @@ class ProductServiceIntegrationTest {
         product1.setCategory(null);
 
         // when save
-        Product savedProduct = productService.saveProduct(product1);
-        Product fetchedProduct = productService.getProductById(savedProduct.getId());
+        Product savedProduct = productService.save(product1);
+        Product fetchedProduct = productService.getById(savedProduct.getId());
 
         // then should get saved product back
         assertEquals(savedProduct, fetchedProduct);
@@ -74,8 +73,8 @@ class ProductServiceIntegrationTest {
     @Test
     void givenProductWithCatWithNullId_whenSaveProduct_shouldSave() {
 
-        assertThrows(ProductCategoryNotFoundException.class, () ->
-                productService.saveProduct(product1));
+        assertThrows(EntityNotFoundException.class, () ->
+                productService.save(product1));
 
     }
 
@@ -87,7 +86,7 @@ class ProductServiceIntegrationTest {
         long id = 999L;
         // when
         // then
-        assertThrows(ProductNotFoundException.class, () -> productService.getProductById(id));
+        assertThrows(EntityNotFoundException.class, () -> productService.getById(id));
 
     }
 
