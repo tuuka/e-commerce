@@ -23,7 +23,7 @@ public class ProductCategory extends BaseEntity{
     private String name;
 
     @OneToMany(mappedBy = "category", orphanRemoval = true)
-    @JsonManagedReference
+//    @JsonManagedReference
     @ToString.Exclude
     private List<Product> products;
 

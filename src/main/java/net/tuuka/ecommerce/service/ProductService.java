@@ -6,6 +6,7 @@ import net.tuuka.ecommerce.entity.ProductCategory;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -64,4 +65,7 @@ public class ProductService extends BaseCrudAbstractService<Product, Long, Produ
         product.setCategory(existedCategory);
     }
 
+    public List<Product> findAllBySkuOrName(String sku, String name) {
+        return repository.findAllBySkuContainsAndNameContains(sku, name);
+    }
 }

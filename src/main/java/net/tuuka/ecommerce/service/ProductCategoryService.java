@@ -6,6 +6,7 @@ import net.tuuka.ecommerce.exception.ProductCategoryNotEmptyException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 
 @Service
 public class ProductCategoryService extends
@@ -27,7 +28,8 @@ public class ProductCategoryService extends
         return foundCategory;
     }
 
-    public ProductCategory forceDeleteCategory(long id) {
+    @Transactional
+    public ProductCategory forceDeleteCategory(Long id) {
         requireNonNull(id);
         ProductCategory foundCategory = getById(id);
         repository.deleteById(id);

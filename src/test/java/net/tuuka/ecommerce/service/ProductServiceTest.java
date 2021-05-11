@@ -23,8 +23,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 
@@ -148,6 +147,22 @@ class ProductServiceTest {
         assertThrows(EntityNotFoundException.class, () -> productService.deleteById(1L));
         then(productRepository).should().findById(eq(1L));
         then(productRepository).should(never()).deleteById(any());
+
+    }
+
+    @Test
+    void givenProductSkuOrName_whenFindAllBySkuOrName_shouldReturnListOfMatched() {
+
+        // given
+        given(productRepository.findAllBySkuContainsAndNameContains(anyString(), anyString()))
+                .willReturn(products);
+
+        // when
+        List<Product> fetchedProducts = productService.findAllBySkuOrName("sku", "name");
+
+        // then
+        assertNotNull(fetchedProducts);
+        then(productRepository).should().findAllBySkuContainsAndNameContains("sku", "name");
 
     }
 

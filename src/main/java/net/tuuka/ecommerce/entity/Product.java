@@ -1,6 +1,6 @@
 package net.tuuka.ecommerce.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -17,7 +17,7 @@ import java.time.ZonedDateTime;
 @Table(name = "product", uniqueConstraints = {
         @UniqueConstraint(name = "product_sku", columnNames = "sku")
 })
-public class Product extends BaseEntity{
+public class Product extends BaseEntity {
 
     @Column(nullable = false)
     private String sku;                 // not null
@@ -48,7 +48,9 @@ public class Product extends BaseEntity{
     @JoinColumn(name = "category_id",
             foreignKey = @ForeignKey(name = "product_category_fk"))
 //    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @JsonBackReference
+//    @JsonBackReference
+    @JsonIgnoreProperties({"products"})
+    @EqualsAndHashCode.Exclude
     private ProductCategory category;
 
     public Product(String sku,

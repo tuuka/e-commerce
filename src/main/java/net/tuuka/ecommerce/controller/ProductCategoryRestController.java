@@ -25,6 +25,12 @@ public class ProductCategoryRestController {
         return categoryService.getById(id);
     }
 
+    @GetMapping("/search")
+    public ProductCategory getCategoryByName(@RequestParam("name") String name) {
+        System.out.println();
+        return categoryService.findByName(name);
+    }
+
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public ProductCategory saveCategory(@RequestBody ProductCategory category) {
@@ -38,13 +44,11 @@ public class ProductCategoryRestController {
     }
 
     @DeleteMapping("/{id}")
-    public ProductCategory deleteCategoryById(@PathVariable long id) {
-        return categoryService.deleteById(id);
-    }
-
-    @DeleteMapping("/force/{id}")
-    public ProductCategory deleteCategoryWithProducetsById(@PathVariable long id) {
-        return categoryService.forceDeleteCategory(id);
+    public ProductCategory deleteCategoryById(@PathVariable long id,
+                                              @RequestParam(name = "force",
+                                                      defaultValue = "false")
+                                                      boolean force) {
+        return force ? categoryService.forceDeleteCategory(id) : categoryService.deleteById(id);
     }
 
 }

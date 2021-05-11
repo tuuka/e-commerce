@@ -106,7 +106,7 @@ class ProductAndCategoryRepositoryTest {
     }
 
     @Test
-    void givenProductWithoutCategory_whenSave_ShouldAssignIdAndSave() {
+    void givenProductWithNullCategory_whenSave_ShouldAssignIdAndSave() {
 
         // given product1 without category
         product1.setCategory(null);
@@ -149,6 +149,28 @@ class ProductAndCategoryRepositoryTest {
         assertNotNull(product1.getId());
         assertNotNull(product1.getCategory().getId());
         assertNotNull(product2.getCategory().getId());
+
+    }
+
+    @Test
+    void givenProductSkuOrName_whenFindAllBySkuLikeAndNameLike_ShouldReturnMatched() {
+
+        // given saved product1, product2, cat_1
+        productCategoryRepository.saveAndFlush(product1.getCategory());
+        productRepository.saveAndFlush(product1);
+        productRepository.saveAndFlush(product2);
+
+        // when
+        List<Product> ame1List = productRepository.findAllBySkuContainsAndNameContains("", "ame1");
+        List<Product> ku2List = productRepository.findAllBySkuContainsAndNameContains("ku2", "");
+
+        // then
+        assertNotNull(ame1List);
+        assertNotNull(ku2List);
+        assertEquals(1, ame1List.size());
+        assertEquals(1, ku2List.size());
+        assertEquals("sku1", ame1List.get(0).getSku());
+        assertEquals("name2", ku2List.get(0).getName());
 
     }
 

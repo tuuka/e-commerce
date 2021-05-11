@@ -16,9 +16,14 @@ import java.util.Map;
 @Getter
 public class AppProperties {
 
-    /**
-    * Api properties
-    * */
     private Map<String, String> api;
+
+    private final Test test = new Test();
+
+    @Setter
+    @Getter
+    public static class Test {
+        private Boolean rest_integration_test_enabled;
+    }
 
 }

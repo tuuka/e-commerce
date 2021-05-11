@@ -25,6 +25,12 @@ public class ProductRestController {
         return productService.getById(id);
     }
 
+    @GetMapping("/search")
+    public List<Product> getProductBySku(@RequestParam(name = "sku", defaultValue = "") String sku,
+                                         @RequestParam(value = "name", defaultValue = "") String name) {
+        return productService.findAllBySkuOrName(sku, name);
+    }
+
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public Product saveProduct(@RequestBody Product product) {
