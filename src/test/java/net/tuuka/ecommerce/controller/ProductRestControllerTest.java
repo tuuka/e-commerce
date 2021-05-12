@@ -1,6 +1,7 @@
 package net.tuuka.ecommerce.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.tuuka.ecommerce.controller.v1.ProductRestController;
 import net.tuuka.ecommerce.entity.Product;
 import net.tuuka.ecommerce.service.ProductService;
 import net.tuuka.ecommerce.util.FakeProductGenerator;

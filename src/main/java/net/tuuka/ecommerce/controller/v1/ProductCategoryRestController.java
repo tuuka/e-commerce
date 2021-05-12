@@ -1,4 +1,4 @@
-package net.tuuka.ecommerce.controller;
+package net.tuuka.ecommerce.controller.v1;
 
 import lombok.RequiredArgsConstructor;
 import net.tuuka.ecommerce.entity.ProductCategory;

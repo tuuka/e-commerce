@@ -1,4 +1,4 @@
-package net.tuuka.ecommerce.controller;
+package net.tuuka.ecommerce.controller.v2;
 
 import lombok.RequiredArgsConstructor;
 import net.tuuka.ecommerce.entity.Product;
@@ -11,7 +11,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("${app.api.path}" + "/v1/products")
-public class ProductRestController {
+public class ProductRestControllerV2 {
 
     private final ProductService productService;
 
