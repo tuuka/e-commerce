@@ -11,7 +11,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("${app.api.path}" + "/v1/product_categories")
-public class ProductCategoryRestController {
+public class ProductCategoryRestControllerV1 {
 
     private final ProductCategoryService categoryService;
 

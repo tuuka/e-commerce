@@ -1,7 +1,7 @@
 package net.tuuka.ecommerce.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.tuuka.ecommerce.controller.v1.ProductCategoryRestController;
+import net.tuuka.ecommerce.controller.v1.ProductCategoryRestControllerV1;
 import net.tuuka.ecommerce.entity.Product;
 import net.tuuka.ecommerce.entity.ProductCategory;
 import net.tuuka.ecommerce.service.ProductCategoryService;
@@ -30,7 +30,7 @@ import static org.mockito.BDDMockito.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = {ProductCategoryRestController.class})
+@WebMvcTest(controllers = {ProductCategoryRestControllerV1.class})
 @ActiveProfiles("test")
 class ProductCategoryRestControllerTest {
 

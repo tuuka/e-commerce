@@ -1,7 +1,7 @@
 package net.tuuka.ecommerce.exception.aspect;
 
-import net.tuuka.ecommerce.controller.v1.ProductCategoryRestController;
-import net.tuuka.ecommerce.controller.v1.ProductRestController;
+import net.tuuka.ecommerce.controller.v1.ProductCategoryRestControllerV1;
+import net.tuuka.ecommerce.controller.v2.ProductRestControllerV2;
 import net.tuuka.ecommerce.controller.model.ResponseRepresentationModel;
 import net.tuuka.ecommerce.exception.ProductCategoryNotEmptyException;
 import org.springframework.http.HttpStatus;
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice(assignableTypes = {
-        ProductRestController.class,
-        ProductCategoryRestController.class
+        ProductRestControllerV2.class,
+        ProductCategoryRestControllerV1.class
 })
 public class ProductControllerAdvice {
 

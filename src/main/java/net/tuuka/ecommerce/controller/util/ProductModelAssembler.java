@@ -1,6 +1,6 @@
 package net.tuuka.ecommerce.controller.util;
 
-import net.tuuka.ecommerce.controller.v1.ProductRestController;
+import net.tuuka.ecommerce.controller.v2.ProductRestControllerV2;
 import net.tuuka.ecommerce.entity.Product;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
@@ -15,9 +15,9 @@ public class ProductModelAssembler implements
     @Override
     public EntityModel<Product> toModel(Product product) {
         return EntityModel.of(product,
-                linkTo(methodOn(ProductRestController.class)
+                linkTo(methodOn(ProductRestControllerV2.class)
                         .getProductById(product.getId())).withSelfRel(),
-                linkTo(methodOn(ProductRestController.class)
+                linkTo(methodOn(ProductRestControllerV2.class)
                         .getAllProducts()).withRel("products"));
     }
 }
