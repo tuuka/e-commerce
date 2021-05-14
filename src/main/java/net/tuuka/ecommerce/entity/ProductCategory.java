@@ -1,5 +1,6 @@
 package net.tuuka.ecommerce.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
@@ -24,6 +25,7 @@ public class ProductCategory extends BaseEntity{
 
     @OneToMany(mappedBy = "category", orphanRemoval = true)
 //    @JsonManagedReference
+    @JsonIgnore
     @ToString.Exclude
     private List<Product> products;
 

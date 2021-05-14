@@ -1,6 +1,7 @@
 package net.tuuka.ecommerce.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -49,7 +50,8 @@ public class Product extends BaseEntity {
             foreignKey = @ForeignKey(name = "product_category_fk"))
 //    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 //    @JsonBackReference
-    @JsonIgnoreProperties({"products"})
+//    @JsonIgnoreProperties({"products"})
+    @JsonIgnore
     @EqualsAndHashCode.Exclude
     private ProductCategory category;
 
