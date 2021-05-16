@@ -1,17 +1,11 @@
 package net.tuuka.ecommerce.controller.util;
 
 import lombok.var;
-import net.tuuka.ecommerce.controller.hateoas.ProductPayloadMetadata;
-import net.tuuka.ecommerce.controller.model.ProductRepresentation;
-import net.tuuka.ecommerce.controller.v2.ProductRestControllerV2;
+import net.tuuka.ecommerce.controller.ProductRestController;
 import net.tuuka.ecommerce.entity.Product;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.mediatype.Affordances;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +19,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class ProductModelAssembler implements
         RepresentationModelAssembler<Product, EntityModel<Product>> {
 
-    private final Class<ProductRestControllerV2> controllerClass = ProductRestControllerV2.class;
+    private final Class<ProductRestController> controllerClass = ProductRestController.class;
 
     @Override
     @NonNull
@@ -47,72 +41,35 @@ public class ProductModelAssembler implements
 
     @Override
     @NonNull
-    public CollectionModel<EntityModel<Product>> toCollectionModel(Iterable<? extends Product> entities) {
+    public CollectionModel<EntityModel<Product>> toCollectionModel(@NonNull Iterable<? extends Product> entities) {
 
-        var collectionModel =
-                StreamSupport.stream(entities.spliterator(), false)
-                        .map(this::toModel)
-                        .collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));
+        var collectionModel = _toCollectionModel(entities);
 
-        var link = Affordances.of(linkTo(methodOn(controllerClass).getAllProducts())
-                .withSelfRel())
-                .afford(HttpMethod.POST)
-                .withInput(ProductRepresentation.class)
-                .withOutput(Product.class)
-                .withName("newProduct")
-                .toLink();
+        collectionModel.add(linkTo(methodOn(controllerClass).getAllProducts()).withSelfRel()
+                , linkTo(methodOn(controllerClass).search(null, null)).withRel("search")
+        );
 
-        collectionModel.add(link,
-                linkTo(methodOn(controllerClass).search(null, null)).withRel("search"));
-
-//        var link = Affordances.of(linkTo(methodInvocation).withSelfRel())
-////                .afford(HttpMethod.POST)
-////                .withInputAndOutput(Product.class)
-////                .withName("createProduct")
-//
-//                .afford(HttpMethod.GET)
-//                .withOutput(Product.class)
-//                .addParameters(
-//                        QueryParameter.optional("sku"),
-//                        QueryParameter.optional("name"))
-//                .withName("search")
-//                .toLink();
-//
-//        collectionModel.add(link);
 
         return collectionModel;
 
     }
 
-    private EntityModel<Product> _toModel(Product entity, boolean affordsIncluded) {
+    public CollectionModel<EntityModel<Product>> toSearchCollectionModel(Iterable<? extends Product> entities,
+                                                                         String sku, String name) {
 
-        var entityModel = EntityModel.of(entity);
+        var collectionModel = _toCollectionModel(entities);
 
-        if (affordsIncluded) {
-            Link link = Affordances.of(linkTo(methodOn(controllerClass)
-                    .getProductById(entity.getId())).withSelfRel())
-                    .afford(HttpMethod.PUT)
-//                .withInput(productPayloadMetadata)
-                    .withInput(ProductRepresentation.class)
-                    .withOutput(Product.class)
-                    .withName("updateProduct")
-                    .andAfford(HttpMethod.DELETE)
-                    .toLink();
-            entityModel.add(link);
+        collectionModel.add(linkTo(methodOn(controllerClass).search(sku, name)).withSelfRel(),
+                linkTo(methodOn(controllerClass).getAllProducts()).withRel("products"));
 
-            if (entity.getCategory() != null)
-                entityModel.add(linkTo(methodOn(controllerClass)
-                        .getProductCategory(entity.getId())).withRel("category"));
-            entityModel.add(linkTo(methodOn(controllerClass)
-                    .getAllProducts()).withRel("products"));
-        } else {
-            entityModel.add(linkTo(methodOn(controllerClass)
-                    .getProductById(entity.getId())).withSelfRel());
-        }
-
-        return entityModel;
+        return collectionModel;
 
     }
 
+    private CollectionModel<EntityModel<Product>> _toCollectionModel(Iterable<? extends Product> entities) {
+        return StreamSupport.stream(entities.spliterator(), false)
+                .map(this::toModel)
+                .collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));
+    }
 
 }

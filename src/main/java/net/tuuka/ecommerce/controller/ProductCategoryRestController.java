@@ -1,9 +1,8 @@
-package net.tuuka.ecommerce.controller.v2;
+package net.tuuka.ecommerce.controller;
 
 import lombok.RequiredArgsConstructor;
 import net.tuuka.ecommerce.controller.util.ProductCategoryModelAssembler;
 import net.tuuka.ecommerce.controller.util.ProductModelAssembler;
-import net.tuuka.ecommerce.entity.Product;
 import net.tuuka.ecommerce.entity.ProductCategory;
 import net.tuuka.ecommerce.service.ProductCategoryService;
 import org.springframework.hateoas.CollectionModel;
@@ -12,12 +11,10 @@ import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/api/product_categories", produces = {"application/hal+json"})
-public class ProductCategoryRestControllerV2 {
+public class ProductCategoryRestController {
 
     private final ProductCategoryService categoryService;
     private final ProductCategoryModelAssembler categoryAssembler;
@@ -39,7 +36,7 @@ public class ProductCategoryRestControllerV2 {
     }
 
     @GetMapping("/search")
-    public EntityModel<?> getCategoryByName(
+    public EntityModel<?> search(
             @RequestParam("name") String name) {
         return categoryAssembler.toModel(categoryService.findByName(name));
     }
@@ -62,9 +59,9 @@ public class ProductCategoryRestControllerV2 {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCategoryById(@PathVariable long id,
-                                                                           @RequestParam(name = "force",
-                                                                                   defaultValue = "false")
-                                                                                   boolean force) {
+                                                @RequestParam(name = "force",
+                                                        defaultValue = "false")
+                                                        boolean force) {
         EntityModel<ProductCategory> categoryModel = categoryAssembler.toModel(
                 force ? categoryService.forceDeleteCategory(id) : categoryService.deleteById(id)
         );

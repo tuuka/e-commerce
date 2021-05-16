@@ -1,10 +1,13 @@
 package net.tuuka.ecommerce.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
+import net.tuuka.ecommerce.util.DateUtil;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.hateoas.server.core.Relation;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
@@ -18,6 +21,7 @@ import java.time.ZonedDateTime;
 @Table(name = "product", uniqueConstraints = {
         @UniqueConstraint(name = "product_sku", columnNames = "sku")
 })
+@Relation(itemRelation = "product", collectionRelation = "products")
 public class Product extends BaseEntity {
 
     @Column(nullable = false)
@@ -39,10 +43,14 @@ public class Product extends BaseEntity {
 
     @Column(nullable = false)
     @CreationTimestamp
+    @JsonSerialize(converter = DateUtil.ZonedDateTimeToStringConverter.class)
+    @JsonDeserialize(converter = DateUtil.StringToZonedDateTimeConverter.class)
     private ZonedDateTime created;      // not null
 
     @Column(nullable = false)
     @UpdateTimestamp
+    @JsonSerialize(converter = DateUtil.ZonedDateTimeToStringConverter.class)
+    @JsonDeserialize(converter = DateUtil.StringToZonedDateTimeConverter.class)
     private ZonedDateTime lastUpdated;  // not null
 
     @ManyToOne
@@ -50,8 +58,8 @@ public class Product extends BaseEntity {
             foreignKey = @ForeignKey(name = "product_category_fk"))
 //    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 //    @JsonBackReference
-//    @JsonIgnoreProperties({"products"})
-    @JsonIgnore
+    @JsonIgnoreProperties({"products"})
+//    @JsonIgnore
     @EqualsAndHashCode.Exclude
     private ProductCategory category;
 

@@ -1,39 +1,44 @@
 package net.tuuka.ecommerce.exception.aspect;
 
-import net.tuuka.ecommerce.controller.v1.ProductCategoryRestControllerV1;
-import net.tuuka.ecommerce.controller.v2.ProductRestControllerV2;
-import net.tuuka.ecommerce.controller.model.ResponseRepresentationModel;
+import net.tuuka.ecommerce.controller.ProductCategoryRestController;
+import net.tuuka.ecommerce.controller.ProductRestController;
+import net.tuuka.ecommerce.controller.dto.ErrorRepresentation;
 import net.tuuka.ecommerce.exception.ProductCategoryNotEmptyException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @ControllerAdvice(assignableTypes = {
-        ProductRestControllerV2.class,
-        ProductCategoryRestControllerV1.class
+        ProductRestController.class,
+        ProductCategoryRestController.class
 })
 public class ProductControllerAdvice {
 
     @ExceptionHandler
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
-    ResponseRepresentationModel productNotFoundException(ProductCategoryNotEmptyException ex) {
-        return new ResponseRepresentationModel(ex.getMessage());
+    ErrorRepresentation productNotFoundException(ProductCategoryNotEmptyException ex) {
+        return new ErrorRepresentation(ex.getMessage());
     }
 
     @ExceptionHandler
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    ResponseRepresentationModel productNotFoundException(IllegalStateException ex) {
-        return new ResponseRepresentationModel(ex.getMessage());
+    ErrorRepresentation productNotFoundException(IllegalStateException ex) {
+        return new ErrorRepresentation(ex.getMessage());
     }
 
     @ExceptionHandler
-    @ResponseBody
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    ResponseRepresentationModel productNotFoundException(RuntimeException ex) {
-        return new ResponseRepresentationModel(ex.getMessage());
+//    @ResponseBody
+//    @ResponseStatus(HttpStatus.NOT_FOUND)
+    ResponseEntity<?> productNotFoundException(RuntimeException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .header("Content-Type", "application/hal+json;charset=UTF-8")
+                .location(ServletUriComponentsBuilder.fromCurrentRequest().build().toUri())
+                .body(new ErrorRepresentation(ex.getMessage()));
     }
 }

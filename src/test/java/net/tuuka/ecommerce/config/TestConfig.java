@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.test.context.ActiveProfiles;
@@ -22,7 +23,8 @@ import java.util.Objects;
 @TestConfiguration
 @EnableTransactionManagement
 @ActiveProfiles("test")
-public class TestDBConfig {
+//@EnableHypermediaSupport(type = {EnableHypermediaSupport.HypermediaType.HAL})
+public class TestConfig {
 
     @Bean
 //    @ConfigurationProperties("spring.datasource")

@@ -1,14 +1,16 @@
-package net.tuuka.ecommerce.controller.v2;
+package net.tuuka.ecommerce.controller;
 
 import lombok.RequiredArgsConstructor;
-import net.tuuka.ecommerce.controller.model.ProductRepresentation;
+import net.tuuka.ecommerce.controller.dto.ProductRepresentation;
 import net.tuuka.ecommerce.controller.util.ProductCategoryModelAssembler;
 import net.tuuka.ecommerce.controller.util.ProductModelAssembler;
 import net.tuuka.ecommerce.entity.Product;
+import net.tuuka.ecommerce.entity.ProductCategory;
 import net.tuuka.ecommerce.service.ProductService;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.server.ExposesResourceFor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,9 +18,8 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-//@RequestMapping(path = "/api/products", produces = {"application/prs.hal-forms+json", "application/hal+json" })
-@RequestMapping(path = "/api/products")
-public class ProductRestControllerV2 {
+@RequestMapping(path = "/api/products", produces = { "application/hal+json" })
+public class ProductRestController {
 
     private final ProductService productService;
     private final ProductModelAssembler productAssembler;
@@ -35,14 +36,17 @@ public class ProductRestControllerV2 {
     }
 
     @GetMapping("/{id}/category")
-    public EntityModel<?> getProductCategory(@PathVariable long id) {
-        return categoryAssembler.toModel(productService.getById(id).getCategory());
+    public ResponseEntity<?> getProductCategory(@PathVariable long id) {
+        ProductCategory category = productService.getById(id).getCategory();
+        if (category == null) return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body(categoryAssembler.toModel(productService.getById(id).getCategory()));
     }
 
     @GetMapping("/search")
     public CollectionModel<?> search(@RequestParam(name = "sku", defaultValue = "") String sku,
                                      @RequestParam(value = "name", defaultValue = "") String name) {
-        return productAssembler.toCollectionModel(productService.findAllBySkuOrName(sku, name));
+        return productAssembler.toSearchCollectionModel(productService.findAllBySkuOrName(sku, name),
+                sku, name);
     }
 
     @PostMapping()

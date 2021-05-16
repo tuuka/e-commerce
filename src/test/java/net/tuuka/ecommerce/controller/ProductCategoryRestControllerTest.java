@@ -1,7 +1,8 @@
 package net.tuuka.ecommerce.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.tuuka.ecommerce.controller.v1.ProductCategoryRestControllerV1;
+import net.tuuka.ecommerce.controller.util.ProductCategoryModelAssembler;
+import net.tuuka.ecommerce.controller.util.ProductModelAssembler;
 import net.tuuka.ecommerce.entity.Product;
 import net.tuuka.ecommerce.entity.ProductCategory;
 import net.tuuka.ecommerce.service.ProductCategoryService;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,15 +25,18 @@ import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = {ProductCategoryRestControllerV1.class})
+@WebMvcTest(controllers = {ProductCategoryRestController.class})
 @ActiveProfiles("test")
 class ProductCategoryRestControllerTest {
 
@@ -40,7 +46,13 @@ class ProductCategoryRestControllerTest {
     @MockBean
     ProductCategoryService categoryService;
 
-    @Value("${app.api.path}" + "${app.api.active_version}" + "/product_categories")
+    @MockBean
+    ProductCategoryModelAssembler categoryAssembler;
+
+    @MockBean
+    ProductModelAssembler productAssembler;
+
+    @Value("${app.api.path}/product_categories")
     private String apiUrl;
 
     List<ProductCategory> categories;
@@ -67,6 +79,36 @@ class ProductCategoryRestControllerTest {
         categories = new LinkedList<>(Arrays.asList(
                 new ProductCategory("cat1", Arrays.asList(product1, product2)),
                 new ProductCategory("cat2")));
+
+
+        given(categoryAssembler.toModel(any())).will(
+                (InvocationOnMock invocation) -> {
+                    ProductCategory category = invocation.getArgument(0);
+                    return EntityModel.of(category).add(linkTo(methodOn(ProductCategoryRestController.class)
+                            .getCategoryById(category.getId())).withSelfRel());
+                });
+        given(categoryAssembler.toCollectionModel(any())).will(
+                (InvocationOnMock invocation) -> {
+                    List<ProductCategory> categoryList = invocation.getArgument(0);
+                    return categoryList.stream().map(EntityModel::of)
+                            .collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));
+                }
+        );
+
+        given(productAssembler.toModel(any())).will(
+                (InvocationOnMock invocation) -> {
+                    Product product = invocation.getArgument(0);
+                    return EntityModel.of(product).add(linkTo(methodOn(ProductRestController.class)
+                            .getProductById(product.getId())).withSelfRel());
+                });
+        given(productAssembler.toCollectionModel(any())).will(
+                (InvocationOnMock invocation) -> {
+                    List<Product> productList = invocation.getArgument(0);
+                    return productList.stream().map(EntityModel::of)
+                            .collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));
+                }
+        );
+
     }
 
     @AfterEach
@@ -84,8 +126,8 @@ class ProductCategoryRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
-                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.*", hasSize(categories.size())))
+                        .contentTypeCompatibleWith(MediaType.valueOf("application/hal+json")))
+                .andExpect(jsonPath("$._embedded.categories.*", hasSize(categories.size())))
                 .andDo(MockMvcResultHandlers.print());
 
         then(categoryService).should().getAll();
@@ -103,11 +145,9 @@ class ProductCategoryRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
-                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                        .contentTypeCompatibleWith(MediaType.valueOf("application/hal+json")))
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value(category.getName()))
-                .andExpect(jsonPath("$.products[0].name")
-                        .value(category.getProducts().get(0).getName()))
                 .andDo(MockMvcResultHandlers.print());
 
         then(categoryService).should().getById(1L);
@@ -124,7 +164,7 @@ class ProductCategoryRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content()
-                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                        .contentTypeCompatibleWith(MediaType.valueOf("application/hal+json")))
                 .andExpect(jsonPath("$.error").value("not found"))
                 .andDo(MockMvcResultHandlers.print());
 
@@ -148,7 +188,7 @@ class ProductCategoryRestControllerTest {
                 .content(jsonCategory))
                 .andExpect(status().isCreated())
                 .andExpect(content()
-                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                        .contentTypeCompatibleWith(MediaType.valueOf("application/hal+json")))
                 .andExpect(jsonPath("$.id").value(1L))
                 .andDo(MockMvcResultHandlers.print());
 
@@ -169,7 +209,7 @@ class ProductCategoryRestControllerTest {
                 .content(jsonCategory))
                 .andExpect(status().isOk())
                 .andExpect(content()
-                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                        .contentTypeCompatibleWith(MediaType.valueOf("application/hal+json")))
                 .andExpect(jsonPath("$.id").value(1L))
                 .andDo(MockMvcResultHandlers.print());
 
@@ -187,7 +227,7 @@ class ProductCategoryRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
-                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                        .contentTypeCompatibleWith(MediaType.valueOf("application/hal+json")))
                 .andExpect(jsonPath("$.id").value(1L))
                 .andDo(MockMvcResultHandlers.print());
 
@@ -209,7 +249,7 @@ class ProductCategoryRestControllerTest {
                 .content(jsonCategory))
                 .andExpect(status().isNotFound())
                 .andExpect(content()
-                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                        .contentTypeCompatibleWith(MediaType.valueOf("application/hal+json")))
                 .andExpect(jsonPath("$.error").value("not found"))
                 .andDo(MockMvcResultHandlers.print());
 
