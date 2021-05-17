@@ -1,8 +1,8 @@
 package net.tuuka.ecommerce.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.tuuka.ecommerce.controller.util.ProductCategoryModelAssembler;
-import net.tuuka.ecommerce.controller.util.ProductModelAssembler;
+import net.tuuka.ecommerce.controller.assembler.ProductCategoryModelAssembler;
+import net.tuuka.ecommerce.controller.assembler.ProductModelAssembler;
 import net.tuuka.ecommerce.entity.Product;
 import net.tuuka.ecommerce.service.ProductService;
 import net.tuuka.ecommerce.util.FakeProductGenerator;
@@ -12,11 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.MediaType;

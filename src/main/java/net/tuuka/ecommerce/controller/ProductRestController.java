@@ -1,16 +1,15 @@
 package net.tuuka.ecommerce.controller;
 
 import lombok.RequiredArgsConstructor;
-import net.tuuka.ecommerce.controller.dto.ProductRepresentation;
-import net.tuuka.ecommerce.controller.util.ProductCategoryModelAssembler;
-import net.tuuka.ecommerce.controller.util.ProductModelAssembler;
+import net.tuuka.ecommerce.controller.dto.ProductRequestRepresentation;
+import net.tuuka.ecommerce.controller.assembler.ProductCategoryModelAssembler;
+import net.tuuka.ecommerce.controller.assembler.ProductModelAssembler;
 import net.tuuka.ecommerce.entity.Product;
 import net.tuuka.ecommerce.entity.ProductCategory;
 import net.tuuka.ecommerce.service.ProductService;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
-import org.springframework.hateoas.server.ExposesResourceFor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,12 +30,12 @@ public class ProductRestController {
     }
 
     @GetMapping("/{id}")
-    public EntityModel<?> getProductById(@PathVariable long id) {
+    public EntityModel<?> getProductById(@PathVariable Long id) {
         return productAssembler.toModel(productService.getById(id));
     }
 
     @GetMapping("/{id}/category")
-    public ResponseEntity<?> getProductCategory(@PathVariable long id) {
+    public ResponseEntity<?> getProductCategory(@PathVariable Long id) {
         ProductCategory category = productService.getById(id).getCategory();
         if (category == null) return ResponseEntity.noContent().build();
         return ResponseEntity.ok().body(categoryAssembler.toModel(productService.getById(id).getCategory()));
@@ -50,17 +49,17 @@ public class ProductRestController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> saveProduct(@RequestBody @Valid ProductRepresentation productRepresentation) {
+    public ResponseEntity<?> saveProduct(@RequestBody @Valid ProductRequestRepresentation productRequestRepresentation) {
         EntityModel<Product> productModel = productAssembler
-                .toModel(productService.save(productRepresentation.getProduct()));
+                .toModel(productService.save(productRequestRepresentation.getProduct()));
         return ResponseEntity.created(productModel.getRequiredLink(IanaLinkRelations.SELF)
                 .toUri()).body(productModel);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateProduct(@RequestBody @Valid ProductRepresentation productRepresentation,
+    public ResponseEntity<?> updateProduct(@RequestBody @Valid ProductRequestRepresentation productRequestRepresentation,
                                            @PathVariable Long id) {
-        Product product = productRepresentation.getProduct();
+        Product product = productRequestRepresentation.getProduct();
         product.setId(id);
         EntityModel<Product> productModel = productAssembler.toModel(productService.update(product));
         return ResponseEntity.ok().location(productModel.getRequiredLink(IanaLinkRelations.SELF)

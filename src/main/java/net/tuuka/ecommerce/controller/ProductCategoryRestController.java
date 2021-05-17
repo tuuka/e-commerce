@@ -1,8 +1,9 @@
 package net.tuuka.ecommerce.controller;
 
 import lombok.RequiredArgsConstructor;
-import net.tuuka.ecommerce.controller.util.ProductCategoryModelAssembler;
-import net.tuuka.ecommerce.controller.util.ProductModelAssembler;
+import net.tuuka.ecommerce.controller.assembler.ProductCategoryModelAssembler;
+import net.tuuka.ecommerce.controller.assembler.ProductModelAssembler;
+import net.tuuka.ecommerce.controller.dto.CategoryRequestRepresentation;
 import net.tuuka.ecommerce.entity.ProductCategory;
 import net.tuuka.ecommerce.service.ProductCategoryService;
 import org.springframework.hateoas.CollectionModel;
@@ -10,6 +11,8 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,22 +46,26 @@ public class ProductCategoryRestController {
 
     @PostMapping()
     public ResponseEntity<?> saveCategory(
-            @RequestBody ProductCategory category) {
-        EntityModel<ProductCategory> categoryModel = categoryAssembler.toModel(categoryService.save(category));
+            @RequestBody @Valid CategoryRequestRepresentation categoryRepresentation) {
+        EntityModel<ProductCategory> categoryModel = categoryAssembler
+                .toModel(categoryService.save(categoryRepresentation.getCategory()));
         return ResponseEntity.created(categoryModel.getRequiredLink(IanaLinkRelations.SELF)
                 .toUri()).body(categoryModel);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCategory(@PathVariable long id, @RequestBody ProductCategory category) {
-        category.setId(id);
-        EntityModel<ProductCategory> categoryModel = categoryAssembler.toModel(categoryService.update(category));
+    public ResponseEntity<?> updateCategory(@PathVariable Long id,
+                                            @RequestBody @Valid CategoryRequestRepresentation categoryRepresentation) {
+
+        categoryRepresentation.setId(id);
+        EntityModel<ProductCategory> categoryModel = categoryAssembler
+                .toModel(categoryService.update(categoryRepresentation.getCategory()));
         return ResponseEntity.ok().location(categoryModel.getRequiredLink(IanaLinkRelations.SELF)
                 .toUri()).body(categoryModel);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCategoryById(@PathVariable long id,
+    public ResponseEntity<?> deleteCategoryById(@PathVariable Long id,
                                                 @RequestParam(name = "force",
                                                         defaultValue = "false")
                                                         boolean force) {

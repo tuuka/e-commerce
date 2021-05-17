@@ -1,8 +1,8 @@
 package net.tuuka.ecommerce.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.tuuka.ecommerce.controller.util.ProductCategoryModelAssembler;
-import net.tuuka.ecommerce.controller.util.ProductModelAssembler;
+import net.tuuka.ecommerce.controller.assembler.ProductCategoryModelAssembler;
+import net.tuuka.ecommerce.controller.assembler.ProductModelAssembler;
 import net.tuuka.ecommerce.entity.Product;
 import net.tuuka.ecommerce.entity.ProductCategory;
 import net.tuuka.ecommerce.service.ProductCategoryService;

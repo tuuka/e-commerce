@@ -1,16 +1,15 @@
 package net.tuuka.ecommerce.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import net.tuuka.ecommerce.entity.Product;
+import net.tuuka.ecommerce.entity.ProductCategory;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
-public class ProductRepresentation extends RepresentationModel<ProductRepresentation> {
+public class ProductRequestRepresentation {
 
     @JsonIgnore
     private final Product product = new Product();
@@ -19,7 +18,11 @@ public class ProductRepresentation extends RepresentationModel<ProductRepresenta
         return product;
     }
 
-    @NotBlank(message = "Can't be blank")
+    public void setId(Long id){ product.setId(id); }
+
+    public Long getId(){ return product.getId(); }
+
+    @NotBlank(message = "Product SKU can't be blank")
     public String getSku() {
         return product.getSku();
     }
@@ -28,7 +31,7 @@ public class ProductRepresentation extends RepresentationModel<ProductRepresenta
         product.setSku(sku);
     }
 
-    @NotBlank(message = "Can't be blank")
+    @NotBlank(message = "Product name can't be blank")
     public String getName() {
         return product.getName();
     }
@@ -45,7 +48,7 @@ public class ProductRepresentation extends RepresentationModel<ProductRepresenta
         product.setDescription(description);
     }
 
-    @DecimalMin(value = "0.0", message = "Can't be less then 0.0")
+    @DecimalMin(value = "0.0", message = "Product price can't be less then 0.0")
     public Double getUnitPrice() {
         return product.getUnitPrice();
     }
@@ -70,7 +73,7 @@ public class ProductRepresentation extends RepresentationModel<ProductRepresenta
         product.setActive(active);
     }
 
-    @Min(value = 0, message = "Can't be less then 0")
+    @Min(value = 0, message = "Product quantity can't be less then 0")
     public Integer getUnitsInStock() {
         return product.getUnitsInStock();
     }
@@ -78,4 +81,11 @@ public class ProductRepresentation extends RepresentationModel<ProductRepresenta
     public void setUnitsInStock(Integer unitsInStock) {
         product.setUnitsInStock(unitsInStock);
     }
+
+    public void setCategory (CategoryRequestRepresentation categoryRepresentation){
+        product.setCategory(categoryRepresentation.getCategory());
+    }
+
+    public ProductCategory getCategory () { return product.getCategory(); }
+
 }

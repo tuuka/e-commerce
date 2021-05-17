@@ -30,11 +30,9 @@ public class BaseCrudAbstractService<T extends BaseEntity, ID, R extends JpaRepo
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public T save(T entity) {
         requireNotNullAndNullId(entity);
-        T savedEntity = repository.save(entity);
-        return repository.getOne((ID) savedEntity.getId());
+        return repository.save(entity);
     }
 
     @Override
@@ -42,8 +40,7 @@ public class BaseCrudAbstractService<T extends BaseEntity, ID, R extends JpaRepo
     public T update(T entity) {
         requireNotNullAndNotNullId(entity);
         getById((ID) entity.getId());
-        T savedEntity = repository.save(entity);
-        return repository.getOne((ID) savedEntity.getId());
+        return repository.save(entity);
     }
 
     @Override

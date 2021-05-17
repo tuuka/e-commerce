@@ -24,12 +24,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.EnabledIf;
 
 import java.net.URI;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.hateoas.client.Hop.rel;
-import static org.hibernate.cache.spi.support.AbstractReadWriteAccess.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -52,17 +53,16 @@ public class ProductIntegrationRestControllerTest {
             new ProductCategory("category_test_1"),
             new ProductCategory("category_test_2")
     ));
+
     private static final ParameterizedTypeReference<EntityModel<ProductCategory>> categoryEntityModelClass =
             ParameterizedTypeReference.forType(
                     new ParameterizedTypeReference<EntityModel<ProductCategory>>() {
-                    }
-                            .getType());
+                    }.getType());
 
     private static final ParameterizedTypeReference<EntityModel<Product>> productEntityModelClass =
             ParameterizedTypeReference.forType(
                     new ParameterizedTypeReference<EntityModel<Product>>() {
-                    }
-                            .getType());
+                    }.getType());
 
     private static final List<ProductCategory> savedCategories = new LinkedList<>();
     private static final List<Product> savedProducts = new LinkedList<>();
@@ -178,7 +178,7 @@ public class ProductIntegrationRestControllerTest {
         Product fetchedProduct = Objects.requireNonNull(productResponseEntity.getBody()).getContent();
         assertNotNull(fetchedProduct);
         assertEquals(savedProducts.get(0).getSku(), fetchedProduct.getSku());
-//        assertEquals(savedProducts.get(0).getCategory().getName(), fetchedProduct.getCategory().getName());
+        assertEquals(savedProducts.get(0).getCategory().getName(), fetchedProduct.getCategory().getName());
 
     }
 
@@ -195,7 +195,7 @@ public class ProductIntegrationRestControllerTest {
         ProductCategory fetchedCategory = Objects.requireNonNull(categoryResponseEntity.getBody()).getContent();
         assertNotNull(fetchedCategory);
         assertEquals(savedCategories.get(0).getName(), fetchedCategory.getName());
-//        assertEquals(savedCategories.get(0).getProducts(), fetchedCategory.getProducts());
+        assertEquals(savedCategories.get(0).getProducts().size(), fetchedCategory.getProducts().size());
 
     }
 
@@ -210,7 +210,7 @@ public class ProductIntegrationRestControllerTest {
         assertSame(HttpStatus.OK, categoryResponseEntity.getStatusCode());
         ProductCategory fetchedCategory = Objects.requireNonNull(categoryResponseEntity.getBody()).getContent();
         assertNotNull(fetchedCategory);
-//        assertEquals(2, fetchedCategory.getProducts().size());
+        assertEquals(2, fetchedCategory.getProducts().size());
 //        assertEquals(savedCategories.get(1).getProducts(), fetchedCategory.getProducts());
 
     }
@@ -313,10 +313,10 @@ public class ProductIntegrationRestControllerTest {
         savedCategories.get(0).getProducts().add(products.get(0));
         savedCategories.get(0).setName("another name");
         HttpEntity<ProductCategory> categoryEntity = new HttpEntity<>(savedCategories.get(0));
-        ResponseEntity<ProductCategory> categoryResponseEntity =
+        ResponseEntity<EntityModel<ProductCategory>> categoryResponseEntity =
                 restTemplate.exchange(categoriesUrl + "/{id}",
                         HttpMethod.PUT, categoryEntity,
-                        ProductCategory.class, savedCategories.get(0).getId());
+                        categoryEntityModelClass, savedCategories.get(0).getId());
         assertSame(HttpStatus.OK, categoryResponseEntity.getStatusCode());
 
         List<ProductCategory> fetchedCategoryList = fetchCategoriesList();

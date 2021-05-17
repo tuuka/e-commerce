@@ -17,6 +17,13 @@ public class ProductCategoryService extends
     }
 
     @Override
+    public ProductCategory update(ProductCategory category) {
+        requireNotNullAndNotNullId(category);
+        category.setProducts(getById(category.getId()).getProducts());
+        return repository.save(category);
+    }
+
+    @Override
     public ProductCategory deleteById(Long id) {
         requireNonNull(id);
         ProductCategory foundCategory = getById(id);
