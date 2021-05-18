@@ -28,7 +28,7 @@ public class ProductCategoryModelAssembler implements
         EntityModel<ProductCategory> entityModel = EntityModel.of(entity);
         entityModel.add(linkTo(methodOn(controllerClass)
                 .getCategoryById(entity.getId())).withSelfRel());
-        if (entity.getProducts() != null && entity.getProducts().size() > 0)
+        if (entity.getProducts() != null)
             entityModel.add(linkTo(methodOn(controllerClass)
                     .getCategoryProducts(entity.getId())).withRel("products"));
         entityModel.add(linkTo(methodOn(controllerClass)

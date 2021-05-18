@@ -43,7 +43,7 @@ public class ProductRestController {
 
     @GetMapping("/search")
     public CollectionModel<?> search(@RequestParam(name = "sku", defaultValue = "") String sku,
-                                     @RequestParam(value = "name", defaultValue = "") String name) {
+                                     @RequestParam(name = "name", defaultValue = "") String name) {
         return productAssembler.toSearchCollectionModel(productService.findAllBySkuOrName(sku, name),
                 sku, name);
     }

@@ -39,8 +39,7 @@ public class ProductCategoryRestController {
     }
 
     @GetMapping("/search")
-    public EntityModel<?> search(
-            @RequestParam("name") String name) {
+    public EntityModel<?> search(@RequestParam("name") String name) {
         return categoryAssembler.toModel(categoryService.findByName(name));
     }
 
