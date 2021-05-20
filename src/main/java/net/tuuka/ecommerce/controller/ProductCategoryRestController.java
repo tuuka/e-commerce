@@ -24,17 +24,17 @@ public class ProductCategoryRestController {
     private final ProductModelAssembler productAssembler;
 
     @GetMapping
-    public CollectionModel<?> getAllCategories() {
+    public CollectionModel<?> getCategories() {
         return categoryAssembler.toCollectionModel(categoryService.getAll());
     }
 
     @GetMapping("/{id}")
-    public EntityModel<?> getCategoryById(@PathVariable long id) {
+    public EntityModel<?> getCategory(@PathVariable Long id) {
         return categoryAssembler.toModel(categoryService.getById(id));
     }
 
     @GetMapping("/{id}/products")
-    public CollectionModel<?> getCategoryProducts(@PathVariable long id) {
+    public CollectionModel<?> getProducts(@PathVariable Long id) {
         return productAssembler.toCollectionModel(categoryService.getById(id).getProducts());
     }
 
@@ -64,8 +64,8 @@ public class ProductCategoryRestController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCategoryById(@PathVariable Long id,
-                                                @RequestParam(name = "force",
+    public ResponseEntity<?> deleteCategory(@PathVariable Long id,
+                                            @RequestParam(name = "force",
                                                         defaultValue = "false")
                                                         boolean force) {
         EntityModel<ProductCategory> categoryModel = categoryAssembler.toModel(

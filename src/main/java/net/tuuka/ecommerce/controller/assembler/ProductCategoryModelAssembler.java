@@ -27,12 +27,12 @@ public class ProductCategoryModelAssembler implements
 
         EntityModel<ProductCategory> entityModel = EntityModel.of(entity);
         entityModel.add(linkTo(methodOn(controllerClass)
-                .getCategoryById(entity.getId())).withSelfRel());
+                .getCategory(entity.getId())).withSelfRel());
         if (entity.getProducts() != null)
             entityModel.add(linkTo(methodOn(controllerClass)
-                    .getCategoryProducts(entity.getId())).withRel("products"));
+                    .getProducts(entity.getId())).withRel("products"));
         entityModel.add(linkTo(methodOn(controllerClass)
-                .getAllCategories()).withRel("categories"));
+                .getCategories()).withRel("categories"));
 
         return entityModel;
 
@@ -44,7 +44,7 @@ public class ProductCategoryModelAssembler implements
 
         var collectionModel = _toCollectionModel(entities);
 
-        collectionModel.add(linkTo(methodOn(controllerClass).getAllCategories()).withSelfRel()
+        collectionModel.add(linkTo(methodOn(controllerClass).getCategories()).withSelfRel()
                 , linkTo(methodOn(controllerClass).search(null)).withRel("search")
         );
 
@@ -58,7 +58,7 @@ public class ProductCategoryModelAssembler implements
         var collectionModel = _toCollectionModel(entities);
 
         collectionModel.add(linkTo(methodOn(controllerClass).search(name)).withSelfRel(),
-                linkTo(methodOn(controllerClass).getAllCategories()).withRel("categories"));
+                linkTo(methodOn(controllerClass).getCategories()).withRel("categories"));
 
         return collectionModel;
 

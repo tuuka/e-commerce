@@ -85,7 +85,7 @@ class ProductCategoryRestControllerTest {
                 (InvocationOnMock invocation) -> {
                     ProductCategory category = invocation.getArgument(0);
                     return EntityModel.of(category).add(linkTo(methodOn(ProductCategoryRestController.class)
-                            .getCategoryById(category.getId())).withSelfRel());
+                            .getCategory(category.getId())).withSelfRel());
                 });
         given(categoryAssembler.toCollectionModel(any())).will(
                 (InvocationOnMock invocation) -> {

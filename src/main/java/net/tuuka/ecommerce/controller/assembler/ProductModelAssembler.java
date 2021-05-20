@@ -31,13 +31,11 @@ public class ProductModelAssembler implements
 
         var entityModel = EntityModel.of(entity);
 
-        entityModel.add(linkTo(methodOn(controllerClass)
-                .getProductById(entity.getId())).withSelfRel());
+        entityModel.add(linkTo(methodOn(controllerClass).getProductById(entity.getId())).withSelfRel());
         if (entity.getCategory() != null)
             entityModel.add(linkTo(methodOn(controllerClass)
                     .getProductCategory(entity.getId())).withRel("category"));
-        entityModel.add(linkTo(methodOn(controllerClass)
-                .getAllProducts()).withRel("products"));
+        entityModel.add(linkTo(methodOn(controllerClass).getAllProducts()).withRel("products"));
 
         return entityModel;
 
