@@ -52,7 +52,7 @@ class ProductCategoryRestControllerTest {
     @MockBean
     ProductModelAssembler productAssembler;
 
-    @Value("${app.api.path}/product_categories")
+    @Value("${app.api.path}/categories")
     private String apiUrl;
 
     List<ProductCategory> categories;

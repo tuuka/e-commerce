@@ -16,7 +16,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/api/product_categories", produces = {"application/hal+json"})
+@RequestMapping(path = "/api/categories", produces = {"application/hal+json"})
 public class ProductCategoryRestController {
 
     private final ProductCategoryService categoryService;

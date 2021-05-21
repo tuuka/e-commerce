@@ -43,7 +43,7 @@ public class ProductIntegrationRestControllerTest {
     @Value("http://localhost:${local.server.port}${app.api.path}/products")
     private String productsUrl;
 
-    @Value("http://localhost:${local.server.port}${app.api.path}/product_categories")
+    @Value("http://localhost:${local.server.port}${app.api.path}/categories")
     private String categoriesUrl;
 
     @Autowired
