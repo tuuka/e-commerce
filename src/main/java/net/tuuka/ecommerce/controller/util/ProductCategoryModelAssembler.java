@@ -1,4 +1,4 @@
-package net.tuuka.ecommerce.controller.assembler;
+package net.tuuka.ecommerce.controller.util;
 
 import lombok.var;
 import net.tuuka.ecommerce.controller.ProductCategoryRestController;

@@ -1,13 +1,8 @@
 package net.tuuka.ecommerce.controller;
 
 import lombok.RequiredArgsConstructor;
-import lombok.var;
-import net.tuuka.ecommerce.entity.BaseEntity;
-import net.tuuka.ecommerce.entity.Product;
+import net.tuuka.ecommerce.controller.util.AlpsHelper;
 import net.tuuka.ecommerce.entity.ProductCategory;
-import org.springframework.core.annotation.AnnotationAttributes;
-import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.core.annotation.MergedAnnotations;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.mediatype.alps.Alps;
@@ -15,17 +10,12 @@ import org.springframework.hateoas.mediatype.alps.Descriptor;
 import org.springframework.hateoas.mediatype.alps.Format;
 import org.springframework.hateoas.mediatype.alps.Type;
 import org.springframework.hateoas.mediatype.hal.HalModelBuilder;
-import org.springframework.hateoas.server.LinkRelationProvider;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -41,7 +31,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequiredArgsConstructor
 public class RootApiController {
 
-    private final LinkRelationProvider linkRelationProvider;
+    //    private final LinkRelationProvider linkRelationProvider;
+    private final AlpsHelper alpsHelper;
 
 
     @GetMapping
@@ -65,10 +56,8 @@ public class RootApiController {
                 .build();
     }
 
-    @GetMapping(value = "/profile/categories", produces = ALPS_JSON_VALUE)
-    public Alps categoriesProfile() {
-
-        String categoryRepresentation = "category-representation";
+    @GetMapping(value = "/profile/category", produces = ALPS_JSON_VALUE)
+    public Alps categoryProfile() {
 
         return Alps.alps()
                 .doc(doc()
@@ -79,50 +68,34 @@ public class RootApiController {
                         .build())
                 .descriptor(Stream.concat(
                         Stream.of(
-                                descriptor().id(categoryRepresentation)
+                                descriptor().id(alpsHelper.getRepresentationString(ProductCategory.class))
                                         .href(ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString())
                                         .descriptor(
                                                 getExposedProperties(ProductCategory.class).stream()
-                                                        .map(property -> descriptor()
-                                                                .id(property.getName())
-                                                                .name(property.getName())
-                                                                .type(Type.SEMANTIC)
-                                                                .build())
+                                                        .map(property -> {
+                                                            Descriptor.DescriptorBuilder builder = descriptor()
+                                                                    .id(property.getName())
+                                                                    .name(property.getName())
+                                                                    .type(Type.SEMANTIC);
+                                                            if (property.getName().equals("products")) {
+                                                                builder.type(Type.SAFE).rt(
+                                                                        alpsHelper.getHrefToRestMethod(this.getClass(),
+                                                                                "productProfile"));
+                                                            }
+                                                            return builder.build();
+                                                        })
                                                         .collect(Collectors.toList()))
                                         .build()
-                        ),
-                        Arrays.stream(ProductCategoryRestController.class.getDeclaredMethods())
-                                .map(m -> this.getMethodDescriptor(m, ProductCategory.class))
+                        )
+                        , Arrays.stream(ProductCategoryRestController.class.getDeclaredMethods())
+                                .map(m -> alpsHelper.getMethodDescriptor(m, ProductCategory.class))
                 ).collect(Collectors.toList()))
                 .build();
     }
 
-    public Descriptor getMethodDescriptor(Method method, Class<? extends BaseEntity> entityClass) {
-
-        Class<?> methodClass = method.getDeclaringClass();
-
-        AnnotationAttributes attr = MergedAnnotations.from(method).get(RequestMapping.class).asAnnotationAttributes();
-        if (attr.size() == 0) return null;
-
-        String name = Iterable.class.isAssignableFrom(method.getReturnType()) ?
-                linkRelationProvider.getCollectionResourceRelFor(entityClass).value() :
-                linkRelationProvider.getItemResourceRelFor(entityClass).value();
-        if (ProductCategory.class.isAssignableFrom(entityClass) &&
-                method.getName().contains("Product")) name = "products";
-        if (Product.class.isAssignableFrom(entityClass) &&
-                method.getName().contains("Categor")) name = "category";
-
-        String[] path = attr.getStringArray("path");
-        String href = linkTo(methodClass).toUriComponentsBuilder()
-                .pathSegment(path.length > 0 ? path[0].substring(1) : "")
-                .build().toUriString();
-        RequestMethod requestMethod = ((RequestMethod[]) attr.get("method"))[0];
-        String id = method.getName().replaceAll("(?<![_-]|^)(?=[A-Z])", "-").toLowerCase();
-        Type type = Type.IDEMPOTENT;
-        if (requestMethod.equals(RequestMethod.POST)) type = Type.UNSAFE;
-        if (requestMethod.equals(RequestMethod.GET)) type = Type.SAFE;
-
-        return descriptor().id(id).name(name).href(href).type(type).build();
+    @GetMapping(value = "/profile/product", produces = ALPS_JSON_VALUE)
+    public Alps productProfile() {
+        return Alps.alps().build();
     }
 
 

@@ -1,8 +1,8 @@
 package net.tuuka.ecommerce.controller;
 
 import lombok.RequiredArgsConstructor;
-import net.tuuka.ecommerce.controller.assembler.ProductCategoryModelAssembler;
-import net.tuuka.ecommerce.controller.assembler.ProductModelAssembler;
+import net.tuuka.ecommerce.controller.util.ProductCategoryModelAssembler;
+import net.tuuka.ecommerce.controller.util.ProductModelAssembler;
 import net.tuuka.ecommerce.controller.dto.CategoryRequestRepresentation;
 import net.tuuka.ecommerce.entity.ProductCategory;
 import net.tuuka.ecommerce.service.ProductCategoryService;

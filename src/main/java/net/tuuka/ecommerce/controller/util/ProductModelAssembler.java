@@ -1,4 +1,4 @@
-package net.tuuka.ecommerce.controller.assembler;
+package net.tuuka.ecommerce.controller.util;
 
 import lombok.SneakyThrows;
 import lombok.var;
