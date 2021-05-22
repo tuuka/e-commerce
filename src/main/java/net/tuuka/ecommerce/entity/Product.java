@@ -1,6 +1,7 @@
 package net.tuuka.ecommerce.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
@@ -22,13 +23,14 @@ import java.time.ZonedDateTime;
         @UniqueConstraint(name = "product_sku", columnNames = "sku")
 })
 @Relation(itemRelation = "product", collectionRelation = "products")
+@JsonPropertyOrder({"id", "sku", "name", "description", "unitPrice"})
 public class Product extends BaseEntity {
 
     @Column(nullable = false)
-    private String sku;                 // not null
+    private String sku;
 
     @Column(nullable = false)
-    private String name;                // not null
+    private String name;
 
     private String description;
 
@@ -37,7 +39,7 @@ public class Product extends BaseEntity {
     private String imageUrl;
 
     @Column(nullable = false)
-    private Boolean active;             // not null
+    private Boolean active;
 
     private Integer unitsInStock;
 
@@ -45,13 +47,13 @@ public class Product extends BaseEntity {
     @CreationTimestamp
     @JsonSerialize(converter = DateUtil.ZonedDateTimeToStringConverter.class)
     @JsonDeserialize(converter = DateUtil.StringToZonedDateTimeConverter.class)
-    private ZonedDateTime created;      // not null
+    private ZonedDateTime created;
 
     @Column(nullable = false)
     @UpdateTimestamp
     @JsonSerialize(converter = DateUtil.ZonedDateTimeToStringConverter.class)
     @JsonDeserialize(converter = DateUtil.StringToZonedDateTimeConverter.class)
-    private ZonedDateTime lastUpdated;  // not null
+    private ZonedDateTime lastUpdated;
 
     @ManyToOne
     @JoinColumn(name = "category_id",

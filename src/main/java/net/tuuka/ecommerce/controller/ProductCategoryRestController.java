@@ -29,12 +29,12 @@ public class ProductCategoryRestController {
     }
 
     @GetMapping("/{id}")
-    public EntityModel<?> getCategory(@PathVariable Long id) {
+    public EntityModel<?> getCategory(@PathVariable("id") Long id) {
         return categoryAssembler.toModel(categoryService.getById(id));
     }
 
     @GetMapping("/{id}/products")
-    public CollectionModel<?> getProducts(@PathVariable Long id) {
+    public CollectionModel<?> getProducts(@PathVariable("id") Long id) {
         return productAssembler.toCollectionModel(categoryService.getById(id).getProducts());
     }
 
@@ -53,7 +53,7 @@ public class ProductCategoryRestController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCategory(@PathVariable Long id,
+    public ResponseEntity<?> updateCategory(@PathVariable("id") Long id,
                                             @RequestBody @Valid CategoryRequestRepresentation categoryRepresentation) {
 
         categoryRepresentation.setId(id);
@@ -64,7 +64,7 @@ public class ProductCategoryRestController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCategory(@PathVariable Long id,
+    public ResponseEntity<?> deleteCategory(@PathVariable("id") Long id,
                                             @RequestParam(name = "force",
                                                         defaultValue = "false")
                                                         boolean force) {

@@ -41,7 +41,6 @@ public class ProductModelAssembler implements
 
     }
 
-    @SneakyThrows
     @Override
     @NonNull
     public CollectionModel<EntityModel<Product>> toCollectionModel(@NonNull Iterable<? extends Product> entities) {
@@ -51,19 +50,22 @@ public class ProductModelAssembler implements
         collectionModel.add(linkTo(methodOn(controllerClass).getAllProducts()).withSelfRel());
 
         // add search templated link with (Spring Hateoas adds templated links only to EntityModel)
-        Method method = ProductRestController.class.getMethod("search", String.class, String.class);
+        try {
+            Method method = ProductRestController.class.getMethod("search", String.class, String.class);
 
-        String methodParams = "?" + Arrays.stream(method.getParameterAnnotations())
-                .flatMap(Arrays::stream).filter(a->a instanceof RequestParam).map(a->{
-                    String name = ((RequestParam)a).name();
-                    return String.format("%s={%s}",name, name);
-                })
-                .collect(Collectors.joining("&"));
+            String methodParams = "?" + Arrays.stream(method.getParameterAnnotations())
+                    .flatMap(Arrays::stream).filter(a -> a instanceof RequestParam).map(a -> {
+                        String name = ((RequestParam) a).name();
+                        return String.format("%s={%s}", name, name);
+                    })
+                    .collect(Collectors.joining("&"));
 
-        URI methodInvocationUri = linkTo(methodOn(controllerClass).search(null, null))
-                .withRel("search").toUri();
+            URI methodInvocationUri = linkTo(methodOn(controllerClass).search(null, null))
+                    .withRel("search").toUri();
 
-        collectionModel.add(Link.of(UriTemplate.of(methodInvocationUri + methodParams), "search"));
+            collectionModel.add(Link.of(UriTemplate.of(methodInvocationUri + methodParams), "search"));
+        } catch (NoSuchMethodException ignored) {
+        }
         return collectionModel;
 
     }

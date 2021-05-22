@@ -1,67 +1,81 @@
 package net.tuuka.ecommerce.controller.util;
 
-import lombok.RequiredArgsConstructor;
-import net.tuuka.ecommerce.controller.ProductRestController;
+import lombok.var;
+import net.tuuka.ecommerce.config.AppProperties;
 import net.tuuka.ecommerce.controller.RootApiController;
 import net.tuuka.ecommerce.entity.BaseEntity;
 import net.tuuka.ecommerce.entity.Product;
-import net.tuuka.ecommerce.entity.ProductCategory;
 import org.springframework.core.annotation.AnnotationAttributes;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.MergedAnnotations;
 import org.springframework.hateoas.mediatype.alps.Descriptor;
+import org.springframework.hateoas.mediatype.alps.Format;
 import org.springframework.hateoas.mediatype.alps.Type;
 import org.springframework.hateoas.server.LinkRelationProvider;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import static org.springframework.hateoas.mediatype.PropertyUtils.getExposedProperties;
 import static org.springframework.hateoas.mediatype.alps.Alps.descriptor;
+import static org.springframework.hateoas.mediatype.alps.Alps.doc;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @Component
-@RequiredArgsConstructor
 public class AlpsHelper {
 
-    private final List<String> AVAILABLE_CROSS_LINKS_IN_PATH = Arrays.asList("products", "category");
-
+    private final AppProperties appProperties;
     private final LinkRelationProvider linkRelationProvider;
+    private final Map<String, String> PROFILE_HREF_RELATIONS;
+
+    public AlpsHelper(AppProperties appProperties, LinkRelationProvider linkRelationProvider) {
+        this.appProperties = appProperties;
+        this.linkRelationProvider = linkRelationProvider;
+        this.PROFILE_HREF_RELATIONS = appProperties.getAlps().getProfileRelations();
+    }
 
     public Descriptor getMethodDescriptor(Method method, Class<? extends BaseEntity> entityClass) {
-        String name, href, rt;
 
-        AnnotationAttributes attr = getRequestMappingAttr(method);
+        String name = getMethodAlpsName(method, entityClass);
 
-        // TODO: check this and remove
-        if (attr.size() == 0) return null;
+        String rt = getMethodAlpsRt(name, entityClass);
 
-        name = extractNameFromPath(attr);
-        name = name != null ? name : getEntityName(entityClass,
-                Iterable.class.isAssignableFrom(method.getReturnType()));
+        String href = getHrefToRestMethod(method);
 
-        rt = "#" + getRepresentationString(entityClass);
-        // if method return instance(s) of referenced entity link to this entity profile is needed
-        if (name.equals("products"))
-            rt = getHrefToRestMethod(RootApiController.class, "productProfile")
-                    + "#" + getRepresentationString(Product.class);
-        if (name.equals("category") && method.getDeclaringClass().isAssignableFrom(ProductRestController.class))
-            rt = getHrefToRestMethod(RootApiController.class, "categoriesProfile")
-                    + "#" + getRepresentationString(ProductCategory.class);
-
-        href = getHrefToRestMethod(method, attr);
-
-        RequestMethod requestMethod = ((RequestMethod[]) attr.get("method"))[0];
+        RequestMethod requestMethod = ((RequestMethod[]) getRequestMappingAttr(method).get("method"))[0];
         Type type = Type.IDEMPOTENT;
         if (requestMethod.equals(RequestMethod.POST)) type = Type.UNSAFE;
         if (requestMethod.equals(RequestMethod.GET)) type = Type.SAFE;
 
-        method.getParameters();
-
         return descriptor().id(dashOnCapitals(method.getName()))
-                .name(name).href(href).type(type).rt(rt).build();
+                .name(name).href(href).type(type).rt(rt).descriptor(
+                        getRequestParametersDescriptors(method)
+                ).build();
+    }
+
+
+    private String getMethodAlpsRt(String name, Class<? extends BaseEntity> entityClass) {
+
+        // if returning entity is the same then return local link
+        if (name.equals(getEntityName(entityClass, false)) ||
+                name.equals(getEntityName(entityClass, true))
+        ) return composeRepresentationString(entityClass);
+
+        // if returning entity is not the same then return link to returning entity's profile
+        return PROFILE_HREF_RELATIONS.containsKey(name) ? getProfileRepresentationLink(name) : "";
+    }
+
+    private String getProfileRepresentationLink(String methodName) {
+        return getHrefToRestMethod(RootApiController.class, PROFILE_HREF_RELATIONS.get(methodName))
+                + composeRepresentationString(Product.class);
     }
 
     private String getEntityName(Class<? extends BaseEntity> entityClass, Boolean plural) {
@@ -70,8 +84,8 @@ public class AlpsHelper {
                 : linkRelationProvider.getItemResourceRelFor(entityClass).value();
     }
 
-    public String getRepresentationString(Class<? extends BaseEntity> entityClass) {
-        return getEntityName(entityClass, false) + "-representation";
+    public String composeRepresentationString(Class<? extends BaseEntity> entityClass) {
+        return "#" + getEntityName(entityClass, false) + "-representation";
     }
 
     private String dashOnCapitals(String s) {
@@ -83,9 +97,8 @@ public class AlpsHelper {
                 .get(RequestMapping.class).asAnnotationAttributes();
     }
 
-    private String getHrefToRestMethod(Method method, AnnotationAttributes attr) {
-        return linkTo(method.getDeclaringClass()).toUriComponentsBuilder()
-                .pathSegment(extractPathFromRequestMappingAttr(attr)).build().toUriString();
+    private String getHrefToRestMethod(Method method) {
+        return getHrefToRestMethod(method, getRequestMappingAttr(method));
     }
 
     public String getHrefToRestMethod(Class<?> clazz, String methodName) {
@@ -95,17 +108,66 @@ public class AlpsHelper {
         return method == null ? "" : getHrefToRestMethod(method, getRequestMappingAttr(method));
     }
 
+    private String getHrefToRestMethod(Method method, AnnotationAttributes attr) {
+        return linkTo(method.getDeclaringClass()).toUriComponentsBuilder()
+                .pathSegment(extractPathFromRequestMappingAttr(attr)).build().toUriString();
+    }
+
     private String extractPathFromRequestMappingAttr(AnnotationAttributes attr) {
         String[] paths = attr.getStringArray("path");
         return paths.length > 0 ? paths[0].substring(1) : "";
     }
 
-    private String extractNameFromPath(AnnotationAttributes attr) {
+    private String getMethodAlpsName(Method method, Class<? extends BaseEntity> entityClass) {
+
+        var attr = getRequestMappingAttr(method);
         String path = extractPathFromRequestMappingAttr(attr);
         String[] segments = path.split("/");
         // may be should check if full path ends with '/' to avoid empty string here
         path = segments[segments.length - 1].toLowerCase();
-        return AVAILABLE_CROSS_LINKS_IN_PATH.contains(path) ? path : null;
+
+        return PROFILE_HREF_RELATIONS.containsKey(path) ? path : getEntityName(entityClass,
+                Iterable.class.isAssignableFrom(method.getReturnType()));
+    }
+
+    public List<Descriptor> getClassFieldsDescriptors(Class<?> clazz) {
+
+        return getExposedProperties(clazz).stream()
+                .map(property -> {
+                    var builder = getSemanticDescriptorBuilder(property.getName());
+                    if (PROFILE_HREF_RELATIONS.containsKey(property.getName())) {
+                        builder.type(Type.SAFE).href(getProfileRepresentationLink(property.getName()));
+                    }
+                    return builder.build();
+                }).collect(Collectors.toList());
+    }
+
+    private List<Descriptor> getRequestParametersDescriptors(Method method) {
+        List<Descriptor> descriptorList = new LinkedList<>();
+        for (Parameter parameter : method.getParameters()) {
+            Annotation[] annotations = parameter.getAnnotations();
+            for (Annotation annotation : annotations) {
+                if (PathVariable.class.isAssignableFrom(annotation.annotationType()) ||
+                        RequestParam.class.isAssignableFrom(annotation.annotationType())) {
+                    descriptorList.add(getSemanticDescriptorBuilder(AnnotationUtils
+                            .getAnnotationAttributes(parameter, annotation)
+                            .getString("value")).build()
+                    );
+                }
+                if (RequestBody.class.isAssignableFrom(annotation.annotationType())) {
+                    descriptorList.add(descriptor().descriptor(
+                            getClassFieldsDescriptors(parameter.getType())).build());
+                }
+            }
+        }
+        return descriptorList;
+    }
+
+    private Descriptor.DescriptorBuilder getSemanticDescriptorBuilder(String name) {
+        var builder = descriptor().id(name).type(Type.SEMANTIC);
+        String text = appProperties.getAlps().getDoc().get(name);
+        if (text != null) builder.doc(doc().format(Format.TEXT).value(text).build());
+        return builder;
     }
 
 }

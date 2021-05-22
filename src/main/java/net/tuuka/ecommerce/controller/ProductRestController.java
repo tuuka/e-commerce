@@ -30,12 +30,12 @@ public class ProductRestController {
     }
 
     @GetMapping("/{id}")
-    public EntityModel<?> getProductById(@PathVariable Long id) {
+    public EntityModel<?> getProductById(@PathVariable("id") Long id) {
         return productAssembler.toModel(productService.getById(id));
     }
 
     @GetMapping("/{id}/category")
-    public ResponseEntity<?> getProductCategory(@PathVariable Long id) {
+    public ResponseEntity<?> getProductCategory(@PathVariable("id") Long id) {
         ProductCategory category = productService.getById(id).getCategory();
         if (category == null) return ResponseEntity.noContent().build();
         return ResponseEntity.ok().body(categoryAssembler.toModel(productService.getById(id).getCategory()));
@@ -58,7 +58,7 @@ public class ProductRestController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateProduct(@RequestBody @Valid ProductRequestRepresentation productRequestRepresentation,
-                                           @PathVariable Long id) {
+                                           @PathVariable("id") Long id) {
         Product product = productRequestRepresentation.getProduct();
         product.setId(id);
         EntityModel<Product> productModel = productAssembler.toModel(productService.update(product));
@@ -67,7 +67,7 @@ public class ProductRestController {
     }
 
     @DeleteMapping("/{id}")
-    public EntityModel<?> deleteProductById(@PathVariable Long id) {
+    public EntityModel<?> deleteProductById(@PathVariable("id") Long id) {
         return productAssembler.toModel(productService.deleteById(id));
     }
 
