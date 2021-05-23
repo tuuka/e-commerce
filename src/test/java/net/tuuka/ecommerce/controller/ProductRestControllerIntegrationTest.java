@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@EnabledIf(value = "${app.test.rest_integration_test_enabled}", loadContext = true)
+@EnabledIf(value = "${app.test.integration_test_enabled}", loadContext = true)
 public class ProductRestControllerIntegrationTest {
 
 //    @LocalServerPort private int port;

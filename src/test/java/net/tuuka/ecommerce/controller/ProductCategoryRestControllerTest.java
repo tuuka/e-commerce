@@ -5,6 +5,7 @@ import net.tuuka.ecommerce.controller.util.ProductCategoryModelAssembler;
 import net.tuuka.ecommerce.controller.util.ProductModelAssembler;
 import net.tuuka.ecommerce.entity.Product;
 import net.tuuka.ecommerce.entity.ProductCategory;
+import net.tuuka.ecommerce.exception.aspect.ProductControllerAdvice;
 import net.tuuka.ecommerce.service.ProductCategoryService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
@@ -25,7 +26,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -50,7 +51,7 @@ class ProductCategoryRestControllerTest {
     @InjectMocks
     ProductCategoryRestController controller;
 
-//    @Value("${app.api.path}/categories")
+    //    @Value("${app.api.path}/categories")
     private final String apiUrl = "/api/categories";
 
     List<ProductCategory> categories;
@@ -59,7 +60,8 @@ class ProductCategoryRestControllerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(controller)
+                .setControllerAdvice(new ProductControllerAdvice()).build();
         product1 = new Product(
                 "sku1",
                 "name1",
@@ -128,24 +130,6 @@ class ProductCategoryRestControllerTest {
     }
 
     @Test
-    void givenNonExistingCategoryId_whenGetCategoriesByIdMapping_shouldReturnNotFoundErrorEntity() throws Exception {
-
-        given(categoryService.findById(anyLong()))
-                .willThrow(new EntityNotFoundException("not found"));
-
-        mockMvc.perform(get(apiUrl + "/1")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound())
-                .andExpect(content()
-                        .contentTypeCompatibleWith(MediaType.valueOf("application/hal+json")))
-                .andExpect(jsonPath("$.error").value("not found"))
-                .andDo(MockMvcResultHandlers.print());
-
-        then(categoryService).should().findById(eq(1L));
-
-    }
-
-    @Test
     void givenCategory_whenSaveCategoryMapping_shouldReturnSavedCategory() throws Exception {
 
         given(categoryService.save(any()))
@@ -209,25 +193,22 @@ class ProductCategoryRestControllerTest {
     }
 
     @Test
-    void givenNonExistingCategoryId_whenUpdateCategoryMapping_shouldThrowException() throws Exception {
+    void givenNonExistingCategoryId_whenGetCategoriesByIdMapping_shouldReturnNotFoundErrorEntity() throws Exception {
 
-        categories.get(0).setId(1L);
-
-        given(categoryService.update(any()))
+        given(categoryService.findById(anyLong()))
                 .willThrow(new EntityNotFoundException("not found"));
-        String jsonCategory = new ObjectMapper().writeValueAsString(categories.get(0));
 
-        mockMvc.perform(put(apiUrl + "/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonCategory))
+        mockMvc.perform(get(apiUrl + "/1")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content()
                         .contentTypeCompatibleWith(MediaType.valueOf("application/hal+json")))
                 .andExpect(jsonPath("$.error").value("not found"))
                 .andDo(MockMvcResultHandlers.print());
 
-        then(categoryService).should().update(isA(ProductCategory.class));
+        then(categoryService).should().findById(eq(1L));
 
     }
+
 
 }

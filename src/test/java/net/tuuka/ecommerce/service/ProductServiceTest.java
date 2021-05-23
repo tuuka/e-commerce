@@ -10,9 +10,8 @@ import net.tuuka.ecommerce.entity.BaseEntity;
 import net.tuuka.ecommerce.entity.Product;
 import net.tuuka.ecommerce.entity.ProductCategory;
 import net.tuuka.ecommerce.util.FakeProductGenerator;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.function.Executable;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -62,173 +61,209 @@ class ProductServiceTest {
     }
 
     @Test
-    void givenNullProduct_whenSaveProduct_shouldThrowNPE() {
+    void givenNullArgs_whenDoOperations_shouldThrowNPE() {
 
-        // given
-        product = null;
-        // when save
-        // then
-        assertThrows(NullPointerException.class, () -> productService.save(product));
-
-    }
-
-    @Test
-    void givenProductWithNotNullId_whenSaveProduct_shouldThrowISE() {
-
-        // given
-        product.setId(1L);
-        // when save
-        // then
-        assertThrows(IllegalStateException.class, () -> productService.save(product));
+        assertAll(
+                ()->assertThrows(NullPointerException.class, () -> productService.save(null)),
+                ()->assertThrows(NullPointerException.class, () -> productService.findById(null)),
+                ()->assertThrows(NullPointerException.class, () -> productService.update(null)),
+                ()->assertThrows(NullPointerException.class, () -> productService.deleteById(null))
+        );
 
     }
 
-    @Test
-    void givenProductWithExistingSku_whenSaveProduct_shouldThrowISE() {
+    @Nested
+    @DisplayName("save()")
+    class save{
 
-        // given
-        given(productRepository.findBySku(anyString())).willReturn(Optional.of(new Product()));
-        given(productRepository.save(isA(Product.class))).willReturn(product);
+        @Test
+        void givenProductWithNotNullId_whenSaveProduct_shouldThrowISE() {
 
-        // when save
-        // then throw IllegalStateException
-        assertThrows(IllegalStateException.class, () -> productService.save(product));
-        then(productRepository).should().findBySku(eq(product.getSku()));
-        then(productRepository).should(never()).save(eq(product));
+            // given
+            product.setId(1L);
+
+            // when
+            Executable executable = () -> productService.save(product);
+
+            // then
+            assertThrows(IllegalStateException.class, executable);
+
+        }
+
+        @Test
+        void givenProductWithExistingSku_whenSaveProduct_shouldThrowISE() {
+
+            // given
+            given(productRepository.findBySku(anyString())).willReturn(Optional.of(new Product()));
+            given(productRepository.save(isA(Product.class))).willReturn(product);
+
+            // when
+            Executable executable = () -> productService.save(product);
+
+            // then
+            assertThrows(IllegalStateException.class, executable);
+            then(productRepository).should().findBySku(eq(product.getSku()));
+            then(productRepository).should(never()).save(eq(product));
+        }
+
+        @Test
+        void givenProductWithoutCat_whenSaveProduct_shouldAssignIdSaveAndReturn() {
+
+            // given
+            // product without category
+            given(productRepository.findBySku(anyString())).willReturn(Optional.empty());
+            given(productRepository.save(isA(Product.class))).will(ProductServiceTest.this::setIdEquals1AndReturn);
+
+            // when
+            Product savedProduct = productService.save(product);
+
+            // then
+            assertAll(
+                    ()->assertEquals(product.getSku(), savedProduct.getSku()),
+            ()->assertEquals(1, savedProduct.getId())
+            );
+            then(productRepository).should().findBySku(anyString());
+            then(productRepository).should().save(eq(product));
+
+        }
+
+        @Test
+        void givenProductWithExistingCat_whenSaveProduct_shouldCheckCategoryAndSave() {
+
+            // given
+            category.setId(1L);
+            product.setCategory(category);
+            given(productCategoryService.findById(anyLong())).willReturn(category);
+            given(productRepository.save(isA(Product.class))).will(ProductServiceTest.this::setIdEquals1AndReturn);
+
+            // when
+            Product savedProduct = productService.save(product);
+
+            // then
+            assertAll(
+                    ()->assertEquals(product.getSku(), savedProduct.getSku()),
+                    ()->assertEquals(1, savedProduct.getId()),
+                    ()->assertEquals(1, savedProduct.getCategory().getId())
+            );
+            then(productCategoryService).should().findById(anyLong());
+            then(productRepository).should().save(eq(product));
+
+        }
     }
 
-    @Test
-    void givenProductWithoutCat_whenSaveProduct_shouldAssignIdSaveAndReturn() {
+    @Nested
+    @DisplayName("findAll()")
+    class FindAll{
+        @Test
+        void whenGetAllProducts_shouldReturnAllProductList() {
 
-        // given product without category
+            // given
+            given(productRepository.findAll()).willReturn(products);
 
-        given(productRepository.findBySku(anyString())).willReturn(Optional.empty());
-        given(productRepository.save(isA(Product.class))).will(this::setIdEquals1AndReturn);
+            // when
+            List<Product> fetchedProducts = productService.findAll();
 
-        // when save
-        Product savedProduct = productService.save(product);
+            // then
+            assertEquals(products, fetchedProducts);
+            then(productRepository).should().findAll();
 
-        // then should get saved product back
-        assertEquals(product.getSku(), savedProduct.getSku());
-        assertEquals(1, savedProduct.getId());
-        then(productRepository).should().findBySku(anyString());
-        then(productRepository).should().save(eq(product));
-
+        }
     }
 
-    @Test
-    void givenProductWithExistingCat_whenSaveProduct_shouldCheckCategoryAndSave() {
+    @Nested
+    @DisplayName("findBuId()")
+    class FindById{
 
-        // given
-        category.setId(1L);
-        product.setCategory(category);
+        @Test
+        void givenExistingProduct_whenFindById_shouldReturnProduct() {
 
-        given(productCategoryService.findById(anyLong())).willReturn(category);
-        given(productRepository.save(isA(Product.class))).will(this::setIdEquals1AndReturn);
+            // given
+            product.setId(1L);
+            given(productRepository.findById(anyLong())).willReturn(Optional.of(product));
 
-        // when save
-        Product savedProduct = productService.save(product);
+            // when
+            Product fetchedProduct = productService.findById(1L);
 
-        // then should get saved product back
-        assertEquals(product.getSku(), savedProduct.getSku());
-        assertEquals(1, savedProduct.getId());
-        assertEquals(1, savedProduct.getCategory().getId());
-        then(productCategoryService).should().findById(anyLong());
-        then(productRepository).should().save(eq(product));
+            // then
+            assertEquals(product, fetchedProduct);
+            then(productRepository).should().findById(eq(1L));
 
+        }
+
+        @Test
+        void givenNonExistingProductId_whenFindById_shouldThrowException() {
+
+            // given
+            given(productRepository.findById(anyLong())).willReturn(Optional.empty());
+
+            // when
+            Executable executable = () -> productService.findById(1L);
+
+            // then
+            assertThrows(EntityNotFoundException.class, executable);
+            then(productRepository).should().findById(eq(1L));
+
+        }
     }
 
-    @Test
-    void whenGetAllProducts_shouldReturnAllProductList() {
+    @Nested
+    @DisplayName("deleteById()")
+    class Delete{
 
-        // given
-        given(productRepository.findAll()).willReturn(products);
+        @Test
+        void givenExistingProductId_whenDeleteProductById_shouldReturnDeletedProduct() {
 
-        // when
-        List<Product> fetchedProducts = productService.findAll();
+            // given
+            product.setId(1L);
+            given(productRepository.findById(anyLong())).willReturn(Optional.of(product));
+            willDoNothing().given(productRepository).deleteById(anyLong());
 
-        // then
-        assertEquals(products, fetchedProducts);
-        then(productRepository).should().findAll();
+            // when
+            Product deletedProduct = productService.deleteById(1L);
 
+            // then
+            assertEquals(products.get(0), deletedProduct);
+            then(productRepository).should().findById(eq(1L));
+            then(productRepository).should().deleteById(eq(1L));
+
+        }
+
+        @Test
+        void givenNonExistingProductId_whenDeleteProductById_shouldThrowException() {
+
+            // given
+            given(productRepository.findById(anyLong())).willReturn(Optional.empty());
+            willDoNothing().given(productRepository).deleteById(any());
+
+            // when
+            Executable executable = () -> productService.deleteById(1L);
+
+            // then
+            assertThrows(EntityNotFoundException.class, executable);
+            then(productRepository).should().findById(eq(1L));
+            then(productRepository).should(never()).deleteById(any());
+
+        }
     }
 
-    @Test
-    void givenExistingProduct_whenGetProductById_shouldReturnProduct() {
+    @Nested
+    @DisplayName("findAllBySkuOrName()")
+    class FindAllBySkuOrName{
+        @Test
+        void givenProductSkuOrName_whenFindAllBySkuOrName_shouldReturnListOfMatched() {
 
-        // given
-        product.setId(1L);
-        given(productRepository.findById(anyLong())).willReturn(Optional.of(product));
+            // given
+            given(productRepository.findAllBySkuContainsAndNameContains(anyString(), anyString()))
+                    .willReturn(products);
 
-        // when
-        Product fetchedProduct = productService.findById(1L);
+            // when
+            List<Product> fetchedProducts = productService.findAllBySkuOrName("sku", "name");
 
-        // then
-        assertEquals(product, fetchedProduct);
-        then(productRepository).should().findById(eq(1L));
+            // then
+            assertNotNull(fetchedProducts);
+            then(productRepository).should().findAllBySkuContainsAndNameContains("sku", "name");
 
-    }
-
-    @Test
-    void givenNonExistingProductId_whenGetProductById_shouldThrowException() {
-
-        // given
-        given(productRepository.findById(anyLong())).willReturn(Optional.empty());
-
-        // when
-        // then
-        assertThrows(EntityNotFoundException.class, () -> productService.findById(1L));
-        then(productRepository).should().findById(eq(1L));
-
-    }
-
-    @Test
-    void givenExistingProductId_whenDeleteProductById_shouldReturnDeletedProduct() {
-
-        // given
-        product.setId(1L);
-        given(productRepository.findById(anyLong())).willReturn(Optional.of(product));
-        willDoNothing().given(productRepository).deleteById(anyLong());
-
-        // when
-        Product deletedProduct = productService.deleteById(1L);
-
-        // then
-        assertEquals(products.get(0), deletedProduct);
-        then(productRepository).should().findById(eq(1L));
-        then(productRepository).should().deleteById(eq(1L));
-
-    }
-
-    @Test
-    void givenNonExistingProductId_whenDeleteProductById_shouldThrowException() {
-
-        // given
-        given(productRepository.findById(anyLong())).willReturn(Optional.empty());
-        willDoNothing().given(productRepository).deleteById(any());
-
-        // when
-        // then
-        assertThrows(EntityNotFoundException.class, () -> productService.deleteById(1L));
-        then(productRepository).should().findById(eq(1L));
-        then(productRepository).should(never()).deleteById(any());
-
-    }
-
-    @Test
-    void givenProductSkuOrName_whenFindAllBySkuOrName_shouldReturnListOfMatched() {
-
-        // given
-        given(productRepository.findAllBySkuContainsAndNameContains(anyString(), anyString()))
-                .willReturn(products);
-
-        // when
-        List<Product> fetchedProducts = productService.findAllBySkuOrName("sku", "name");
-
-        // then
-        assertNotNull(fetchedProducts);
-        then(productRepository).should().findAllBySkuContainsAndNameContains("sku", "name");
-
+        }
     }
 
     /*
@@ -246,182 +281,196 @@ class ProductServiceTest {
             (7) if category id != 0 and it exists (find by id) but name doesn't match - throw exception
             (8) if category id != 0 and it exists (find by id) simply change and save
     */
-    @Test
-    // (1) null productId
-    void givenNullIdProduct_whenUpdateProduct_shouldThrowException() {
+    @Nested
+    @DisplayName("update()")
+    class Update{
 
-        // given
-        given(productRepository.save(any())).willReturn(product);
+        @Test
+            // (1) null productId
+        void givenNullIdProduct_whenUpdateProduct_shouldThrowException() {
 
-        // when
-        // then
-        assertThrows(IllegalStateException.class, () -> productService.update(product));
-        then(productRepository).should(never()).save(any());
+            // given
+            given(productRepository.save(any())).willReturn(product);
 
-    }
+            // when
+            Executable executable = () -> productService.update(product);
+            // then
+            assertThrows(IllegalStateException.class, executable);
+            then(productRepository).should(never()).save(any());
 
-    @Test
-        // (2) not null non existing productID
-    void givenNonExistingIdProduct_whenUpdateProduct_shouldThrowException() {
+        }
 
-        // given
-        product.setId(1L);
-        given(productRepository.findById(anyLong())).willReturn(Optional.empty());
+        @Test
+            // (2) not null non existing productID
+        void givenNonExistingIdProduct_whenUpdateProduct_shouldThrowException() {
 
-        // when
-        // then
-        assertThrows(EntityNotFoundException.class, () -> productService.update(product));
-        then(productRepository).should().findById(eq(1L));
+            // given
+            product.setId(1L);
+            given(productRepository.findById(anyLong())).willReturn(Optional.empty());
 
-    }
+            // when
+            Executable executable = () -> productService.update(product);
 
-    @Test
-        // (3) changed product with same category
-    void givenExistingProductWithSameCategory_whenUpdateProduct_shouldUpdateAndReturnUpdated() {
+            // then
+            assertThrows(EntityNotFoundException.class, executable);
+            then(productRepository).should().findById(eq(1L));
 
-        // given
-        category.setId(1L);
-        product.setId(1L);
-        product.setCategory(category);
-        existingProduct.setCategory(category);
-        given(productRepository.findById(anyLong())).willReturn(Optional.of(existingProduct));
-        given(productRepository.save(isA(Product.class))).willReturn(product);
-        given(productCategoryService.findById(anyLong())).willReturn(null);
-        given(productCategoryService.findByName(anyString())).willReturn(null);
+        }
 
-        // when
-        Product updatedProduct = productService.update(product);
+        @Test
+            // (3) changed product with same category
+        void givenExistingProductWithSameCategory_whenUpdateProduct_shouldUpdateAndReturnUpdated() {
 
-        // then
-        assertEquals(product.getSku(), updatedProduct.getSku());
-        then(productRepository).should().findById(eq(1L));
-        then(productCategoryService).should(never()).findById(anyLong());
-        then(productCategoryService).should(never()).findByName(anyString());
-        then(productRepository).should().save(eq(product));
-    }
+            // given
+            category.setId(1L);
+            product.setId(1L);
+            product.setCategory(category);
+            existingProduct.setCategory(category);
+            given(productRepository.findById(anyLong())).willReturn(Optional.of(existingProduct));
+            given(productRepository.save(isA(Product.class))).willReturn(product);
+            given(productCategoryService.findById(anyLong())).willReturn(null);
+            given(productCategoryService.findByName(anyString())).willReturn(null);
 
-    @Test
-        // (4) same product with new nullId category with existed name
-    void givenExistingProductWithNullIdExistingCategory_whenUpdateProduct_shouldSetIdAndReturnProduct() {
+            // when
+            Product updatedProduct = productService.update(product);
 
-        // given
-        existingCategory.setName(category.getName());
-        existingProduct.setCategory(existingCategory);
-        product.setId(1L);
-        product.setCategory(category);
-        assertNull(product.getCategory().getId(), "Product category ID must be null here");
-        given(productRepository.findById(anyLong())).willReturn(Optional.of(existingProduct));
-        given(productRepository.save(isA(Product.class))).willReturn(product);
-        given(productCategoryService.findById(anyLong())).willReturn(null);
-        given(productCategoryService.findByName(anyString())).willReturn(existingCategory);
+            // then
+            assertEquals(product.getSku(), updatedProduct.getSku());
+            then(productRepository).should().findById(eq(1L));
+            then(productCategoryService).should(never()).findById(anyLong());
+            then(productCategoryService).should(never()).findByName(anyString());
+            then(productRepository).should().save(eq(product));
+        }
 
-        // when
-        Product updatedProduct = productService.update(product);
+        @Test
+            // (4) same product with new nullId category with existed name
+        void givenExistingProductWithNullIdExistingCategory_whenUpdateProduct_shouldSetIdAndReturnProduct() {
 
-        // then
-        assertEquals(existingCategory.getId(), updatedProduct.getCategory().getId());
-        then(productRepository).should().findById(eq(product.getId()));
-        then(productCategoryService).should().findByName(eq(product.getCategory().getName()));
-        then(productCategoryService).should(never()).findById(any());
-        then(productRepository).should().save(eq(product));
+            // given
+            existingCategory.setName(category.getName());
+            existingProduct.setCategory(existingCategory);
+            product.setId(1L);
+            product.setCategory(category);
+            assertNull(product.getCategory().getId(), "Product category ID must be null here");
+            given(productRepository.findById(anyLong())).willReturn(Optional.of(existingProduct));
+            given(productRepository.save(isA(Product.class))).willReturn(product);
+            given(productCategoryService.findById(anyLong())).willReturn(null);
+            given(productCategoryService.findByName(anyString())).willReturn(existingCategory);
 
-    }
+            // when
+            Product updatedProduct = productService.update(product);
 
-    @Test
-        // (5) same product with new nullId category with not existing name
-    void givenExistingProductWithNullIdNonExistingCategory_whenUpdateProduct_shouldThrowException() {
+            // then
+            assertEquals(existingCategory.getId(), updatedProduct.getCategory().getId());
+            then(productRepository).should().findById(eq(product.getId()));
+            then(productCategoryService).should().findByName(eq(product.getCategory().getName()));
+            then(productCategoryService).should(never()).findById(any());
+            then(productRepository).should().save(eq(product));
 
-        // given
-        assertNull(category.getId(), "Product category ID must be null here");
-        product.setId(1L);
-        product.setCategory(category);
+        }
 
-        given(productRepository.findById(anyLong())).willReturn(Optional.of(existingProduct));
-        given(productRepository.save(isA(Product.class))).willReturn(product);
-        given(productCategoryService.findById(anyLong())).willReturn(existingCategory);
-        given(productCategoryService.findByName(anyString())).willThrow(EntityNotFoundException.class);
+        @Test
+            // (5) same product with new nullId category with not existing name
+        void givenExistingProductWithNullIdNonExistingCategory_whenUpdateProduct_shouldThrowException() {
 
-        // when
-        // then
-        assertThrows(EntityNotFoundException.class, () -> productService.update(product));
-        then(productRepository).should().findById(eq(product.getId()));
-        then(productCategoryService).should(never()).findById(any());
-        then(productCategoryService).should().findByName(eq(product.getCategory().getName()));
-        then(productRepository).should(never()).save(any());
+            // given
+            assertNull(category.getId(), "Product category ID must be null here");
+            product.setId(1L);
+            product.setCategory(category);
 
-    }
+            given(productRepository.findById(anyLong())).willReturn(Optional.of(existingProduct));
+            given(productRepository.save(isA(Product.class))).willReturn(product);
+            given(productCategoryService.findById(anyLong())).willReturn(existingCategory);
+            given(productCategoryService.findByName(anyString())).willThrow(EntityNotFoundException.class);
 
-    @Test
-        // (6) same product with new not null Id not existed category
-    void givenExistedProductWithNonExistingCategory_whenUpdateProduct_shouldThrowException() {
+            // when
+            Executable executable = () -> productService.update(product);
 
-        // given
-        category.setId(1L);
-        product.setId(1L);
-        product.setCategory(category);
+            // then
+            assertThrows(EntityNotFoundException.class, executable);
+            then(productRepository).should().findById(eq(product.getId()));
+            then(productCategoryService).should(never()).findById(any());
+            then(productCategoryService).should().findByName(eq(product.getCategory().getName()));
+            then(productRepository).should(never()).save(any());
 
-        given(productRepository.findById(anyLong())).willReturn(Optional.of(existingProduct));
-        given(productRepository.save(isA(Product.class))).willReturn(product);
-        given(productCategoryService.findById(anyLong())).willThrow(EntityNotFoundException.class);
-        given(productCategoryService.findByName(anyString())).willReturn(existingCategory);
+        }
 
-        // when
-        // then
-        assertThrows(EntityNotFoundException.class, () -> productService.update(product));
-        then(productRepository).should().findById(eq(product.getId()));
-        then(productCategoryService).should().findById(eq(product.getCategory().getId()));
-        then(productCategoryService).should(never()).findByName(anyString());
-        then(productRepository).should(never()).save(any());
+        @Test
+            // (6) same product with new not null Id not existed category
+        void givenExistedProductWithNonExistingCategory_whenUpdateProduct_shouldThrowException() {
 
-    }
+            // given
+            category.setId(1L);
+            product.setId(1L);
+            product.setCategory(category);
 
-    @Test
-        // (7) same product with new not nullId existed (but with different name) category
-    void givenExistingProductWithExistingBadNamedCategory_whenUpdateProduct_shouldThrowException() {
+            given(productRepository.findById(anyLong())).willReturn(Optional.of(existingProduct));
+            given(productRepository.save(isA(Product.class))).willReturn(product);
+            given(productCategoryService.findById(anyLong())).willThrow(EntityNotFoundException.class);
+            given(productCategoryService.findByName(anyString())).willReturn(existingCategory);
 
-        category.setId(1L);
-        product.setId(1L);
-        product.setCategory(category);
+            // when
+            Executable executable = () -> productService.update(product);
 
-        given(productRepository.findById(anyLong())).willReturn(Optional.of(existingProduct));
-        given(productRepository.save(isA(Product.class))).willReturn(product);
-        given(productCategoryService.findById(anyLong())).willReturn(existingCategory);
-        given(productCategoryService.findByName(anyString())).willReturn(null);
+            // then
+            assertThrows(EntityNotFoundException.class, executable);
+            then(productRepository).should().findById(eq(product.getId()));
+            then(productCategoryService).should().findById(eq(product.getCategory().getId()));
+            then(productCategoryService).should(never()).findByName(anyString());
+            then(productRepository).should(never()).save(any());
 
-        // when
-        // then
-        assertThrows(IllegalStateException.class, () -> productService.update(product));
-        then(productRepository).should().findById(eq(product.getId()));
-        then(productCategoryService).should().findById(eq(product.getCategory().getId()));
-        then(productCategoryService).should(never()).findByName(anyString());
-        then(productRepository).should(never()).save(any());
+        }
 
-    }
+        @Test
+            // (7) same product with new not nullId existed (but with different name) category
+        void givenExistingProductWithExistingBadNamedCategory_whenUpdateProduct_shouldThrowException() {
 
-    @Test
-        // (8) same product with another existing category with assigned Id
-    void givenSameProductWithChangedExistingCategory_whenUpdateProduct_shouldUpdateAndReturnUpdated() {
+            category.setId(1L);
+            product.setId(1L);
+            product.setCategory(category);
 
-        // given
-        category.setId(1L);
-        product.setId(1L);
-        product.setCategory(category);
+            given(productRepository.findById(anyLong())).willReturn(Optional.of(existingProduct));
+            given(productRepository.save(isA(Product.class))).willReturn(product);
+            given(productCategoryService.findById(anyLong())).willReturn(existingCategory);
+            given(productCategoryService.findByName(anyString())).willReturn(null);
 
-        given(productRepository.findById(anyLong())).willReturn(Optional.of(existingProduct));
-        given(productRepository.save(isA(Product.class))).willReturn(product);
-        given(productCategoryService.findById(anyLong())).willReturn(category);
-        given(productCategoryService.findByName(anyString())).willReturn(null);
+            // when
+            Executable executable = () -> productService.update(product);
 
-        // when
-        Product updatedProduct = productService.update(product);
-        // then
-        assertEquals(product, updatedProduct);
-        // just in case of changing in Product equals() method
-        assertEquals(category, updatedProduct.getCategory());
-        then(productRepository).should().findById(eq(product.getId()));
-        then(productCategoryService).should().findById(product.getCategory().getId());
-        then(productRepository).should().save(eq(product));
+            // then
+            assertThrows(IllegalStateException.class, executable);
+            then(productRepository).should().findById(eq(product.getId()));
+            then(productCategoryService).should().findById(eq(product.getCategory().getId()));
+            then(productCategoryService).should(never()).findByName(anyString());
+            then(productRepository).should(never()).save(any());
 
+        }
+
+        @Test
+            // (8) same product with another existing category with assigned Id
+        void givenSameProductWithChangedExistingCategory_whenUpdateProduct_shouldUpdateAndReturnUpdated() {
+
+            // given
+            category.setId(1L);
+            product.setId(1L);
+            product.setCategory(category);
+
+            given(productRepository.findById(anyLong())).willReturn(Optional.of(existingProduct));
+            given(productRepository.save(isA(Product.class))).willReturn(product);
+            given(productCategoryService.findById(anyLong())).willReturn(category);
+            given(productCategoryService.findByName(anyString())).willReturn(null);
+
+            // when
+            Product updatedProduct = productService.update(product);
+
+            // then
+            assertEquals(product, updatedProduct);
+            assertEquals(category, updatedProduct.getCategory());
+            then(productRepository).should().findById(eq(product.getId()));
+            then(productCategoryService).should().findById(product.getCategory().getId());
+            then(productRepository).should().save(eq(product));
+
+        }
     }
 
     /* --- helper methods --- */

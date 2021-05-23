@@ -4,75 +4,64 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.tuuka.ecommerce.controller.util.ProductCategoryModelAssembler;
 import net.tuuka.ecommerce.controller.util.ProductModelAssembler;
 import net.tuuka.ecommerce.entity.Product;
+import net.tuuka.ecommerce.exception.aspect.ProductControllerAdvice;
 import net.tuuka.ecommerce.service.ProductService;
 import net.tuuka.ecommerce.util.FakeProductGenerator;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ActiveProfiles("test")
-@WebMvcTest(controllers = {ProductRestController.class})
+//@ActiveProfiles("test")
+//@WebMvcTest(controllers = {ProductRestController.class})
 class ProductRestControllerTest {
 
-    @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @Mock
     ProductService productService;
 
-    @MockBean
+    @Spy
     ProductModelAssembler productAssembler;
 
-    @MockBean
+    @Spy
     ProductCategoryModelAssembler categoryAssembler;
 
-    @Value("${app.api.path}/products")
-    private String apiUrl;
+    @InjectMocks
+    ProductRestController controller;
+
+    //    @Value("${app.api.path}/products")
+    private final String apiUrl = "/api/products";
 
     List<Product> products;
 
     @BeforeEach
     void setUp() {
 
+        MockitoAnnotations.openMocks(this);
+        mockMvc = MockMvcBuilders.standaloneSetup(controller)
+                .setControllerAdvice(new ProductControllerAdvice()).build();
         products = FakeProductGenerator.getNewFakeProductList(3, 3);
 
-        given(productAssembler.toModel(any())).will(
-                (InvocationOnMock invocation) -> {
-                    Product product = invocation.getArgument(0);
-                    return EntityModel.of(product).add(linkTo(methodOn(ProductRestController.class)
-                            .getProductById(product.getId())).withSelfRel());
-                });
-        given(productAssembler.toCollectionModel(any())).will(
-                (InvocationOnMock invocation) -> {
-                    List<Product> productList = invocation.getArgument(0);
-                    return productList.stream().map(EntityModel::of)
-                            .collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));
-                }
-        );
     }
 
     @AfterEach
@@ -90,7 +79,8 @@ class ProductRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content()
                         .contentTypeCompatibleWith(MediaType.valueOf("application/hal+json")))
-                .andExpect(jsonPath("$._embedded.products", hasSize(products.size())))
+                .andExpect(jsonPath("$.content.*", hasSize(products.size())))
+                .andExpect(jsonPath("$.links[0].href", Matchers.containsString("localhost")))
                 .andDo(MockMvcResultHandlers.print());
 
         then(productService).should().findAll();
@@ -111,6 +101,7 @@ class ProductRestControllerTest {
                         .contentTypeCompatibleWith(MediaType.valueOf("application/hal+json")))
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("name_00"))
+                .andExpect(jsonPath("$.links[0].href", Matchers.containsString("localhost")))
                 .andDo(MockMvcResultHandlers.print());
 
         then(productService).should().findById(eq(1L));

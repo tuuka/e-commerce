@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 // disable using embedded InMemory DB
 //@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@EnabledIf(value = "${app.test.rest_integration_test_enabled}", loadContext = true)
+@EnabledIf(value = "${app.test.integration_test_enabled}", loadContext = true)
 class ProductAndCategoryRepositoryTest {
 
     @Autowired

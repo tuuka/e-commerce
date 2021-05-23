@@ -9,16 +9,12 @@ import net.tuuka.ecommerce.dao.ProductCategoryRepository;
 import net.tuuka.ecommerce.entity.Product;
 import net.tuuka.ecommerce.entity.ProductCategory;
 import net.tuuka.ecommerce.exception.ProductCategoryNotEmptyException;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.function.Executable;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.*;
@@ -59,199 +55,231 @@ class ProductCategoryServiceTest {
     }
 
     @Test
-    void givenNull_whenDoOperations_shouldThrowNPE() {
-
-        assertThrows(NullPointerException.class, () -> categoryService.findById(null));
-        assertThrows(NullPointerException.class, () -> categoryService.deleteById(null));
-        assertThrows(NullPointerException.class, () -> categoryService.update(null));
-        assertThrows(NullPointerException.class, () -> categoryService.forceDeleteCategory(null));
-        assertThrows(NullPointerException.class, () -> categoryService.save(null));
-
-    }
-
-
-    @Test
-    void whenGetAllCategories_shouldReturnCategoryListWithProducts() {
-
-        // given
-        List<ProductCategory> categories = Arrays.asList(
-                new ProductCategory("1"),
-                new ProductCategory("2"),
-                new ProductCategory("3")
-        );
-        categories.get(0).setProducts(givenCategory.getProducts());
-        given(productCategoryRepository.findAll()).willReturn(categories);
-
-        // when
-        List<ProductCategory> fetchedCategories = categoryService.findAll();
-
-        // then
-        assertEquals(categories, fetchedCategories);
-        assertEquals(givenCategory.getProducts().get(0), fetchedCategories.get(0).getProducts().get(0));
-        then(productCategoryRepository).should().findAll();
-
-    }
-
-    @Test
-    void givenCategoryId_whenFindCategoryById_shouldReturnCategoryWithProducts() {
-
-        // given
-        givenCategory.setId(1L);
-        given(productCategoryRepository.findById(anyLong())).willReturn(Optional.of(givenCategory));
-
-        // when
-        ProductCategory fetchedCategory = categoryService.findById(1L);
-
-        // then
-        assertEquals(givenCategory, fetchedCategory);
-        assertEquals(givenCategory.getProducts().get(0), fetchedCategory.getProducts().get(0));
-        then(productCategoryRepository).should().findById(eq(1L));
-
-    }
-
-    @Test
-    void givenNonExistingCategoryId_whenGetCategoryById_shouldThrowException() {
-
-        // given
-        given(productCategoryRepository.findById(anyLong())).willReturn(Optional.empty());
-
-        // when
-        // then
-        assertThrows(EntityNotFoundException.class, () -> categoryService.findById(1L));
-        then(productCategoryRepository).should().findById(eq(1L));
-
-    }
-
-    @Test
-    void givenCategory_whenSaveCategory_shouldAssignIdsAndReturnSavedCategoryWithProducts() {
-
-        // given
-        given(productCategoryRepository.save(any())).will(
-                (InvocationOnMock invocation) -> {
-                    ProductCategory tempCategory = invocation.getArgument(0);
-                    tempCategory.setId(1L);
-                    tempCategory.getProducts().get(0).setId(1L);
-                    return tempCategory;
-                }
+    void givenNullArgs_whenDoOperations_shouldThrowNPE() {
+        assertAll(
+                () -> assertThrows(NullPointerException.class, () -> categoryService.findById(null)),
+                () -> assertThrows(NullPointerException.class, () -> categoryService.deleteById(null)),
+                () -> assertThrows(NullPointerException.class, () -> categoryService.update(null)),
+                () -> assertThrows(NullPointerException.class, () -> categoryService.forceDeleteCategory(null)),
+                () -> assertThrows(NullPointerException.class, () -> categoryService.save(null))
         );
 
-        // when
-        ProductCategory savedCategory = categoryService.save(givenCategory);
-
-        // then
-        assertEquals(givenCategory, savedCategory);
-        assertNotNull(savedCategory.getId());
-        assertNotNull(savedCategory.getProducts().get(0).getId());
-        then(productCategoryRepository).should().save(eq(givenCategory));
-
     }
 
-    @Test
-    void givenNotNullIdCategory_whenSaveCategory_shouldThrowException() {
+    @Nested
+    @DisplayName("findAll()")
+    class FindAll {
 
-        // given
-        givenCategory.setId(1L);
-        given(productCategoryRepository.save(any())).willReturn(givenCategory);
+        @Test
+        void whenFindAllCategories_shouldReturnCategoryListWithProducts() {
 
-        // when
-        // then
-        assertThrows(IllegalStateException.class, () -> categoryService.save(givenCategory));
-        then(productCategoryRepository).should(never()).save(any());
+            // given
+            List<ProductCategory> categories = Arrays.asList(
+                    new ProductCategory("1"),
+                    new ProductCategory("2"),
+                    new ProductCategory("3")
+            );
+            categories.get(0).setProducts(givenCategory.getProducts());
+            given(productCategoryRepository.findAll()).willReturn(categories);
 
+            // when
+            List<ProductCategory> fetchedCategories = categoryService.findAll();
+
+            // then
+            assertAll(
+                    () -> assertEquals(categories, fetchedCategories),
+                    () -> assertEquals(3, fetchedCategories.size()),
+                    () -> assertEquals(givenCategory.getProducts().get(0), fetchedCategories.get(0).getProducts().get(0))
+            );
+            then(productCategoryRepository).should().findAll();
+        }
     }
 
-    @Test
-    void givenCategory_whenUpdateCategory_shouldReturnUpdatedCategoryWithProducts() {
+    @Nested
+    @DisplayName("findById()")
+    class FindById {
+        @Test
+        void givenCategoryId_whenFindById_shouldReturnCategoryWithProducts() {
 
-        // given
-        givenCategory.setId(1L);
-        given(productCategoryRepository.findById(anyLong())).willReturn(Optional.of(givenCategory));
-        given(productCategoryRepository.save(any())).willReturn(givenCategory);
+            // given
+            givenCategory.setId(1L);
+            given(productCategoryRepository.findById(anyLong())).willReturn(Optional.of(givenCategory));
 
-        // when
-        ProductCategory updatedCategory = categoryService.update(givenCategory);
+            // when
+            ProductCategory fetchedCategory = categoryService.findById(1L);
 
-        // then
-        assertEquals(givenCategory, updatedCategory);
-        assertEquals(updatedCategory.getProducts().get(0), updatedCategory.getProducts().get(0));
-        then(productCategoryRepository).should().findById(eq(1L));
-        then(productCategoryRepository).should().save(eq(givenCategory));
+            // then
+            assertAll(
+                    () -> assertEquals(givenCategory, fetchedCategory),
+                    () -> assertEquals(givenCategory.getProducts().get(0), fetchedCategory.getProducts().get(0))
+            );
+            then(productCategoryRepository).should().findById(eq(1L));
 
+        }
+
+        @Test
+        void givenNonExistingCategoryId_whenFindById_shouldThrowException() {
+
+            // given
+            given(productCategoryRepository.findById(anyLong())).willReturn(Optional.empty());
+
+            // when
+            Executable executable = () -> categoryService.findById(1L);
+
+            // then
+            assertThrows(EntityNotFoundException.class, executable);
+            then(productCategoryRepository).should().findById(eq(1L));
+
+        }
     }
 
-    @Test
-    void givenNullIdCategory_whenUpdateCategory_shouldThrowException() {
+    @Nested
+    @DisplayName("save()")
+    class Save {
 
-        // given
-        given(productCategoryRepository.findById(anyLong())).willReturn(Optional.of(givenCategory));
-        given(productCategoryRepository.save(any())).willReturn(givenCategory);
+        @Test
+        void givenCategory_whenSaveCategory_shouldAssignIdsAndReturnSavedCategoryWithProducts() {
 
-        // when
-        // then
-        assertThrows(IllegalStateException.class, () -> categoryService.update(givenCategory));
-        then(productCategoryRepository).should(never()).findById(anyLong());
-        then(productCategoryRepository).should(never()).save(any());
+            // given
+            given(productCategoryRepository.save(any())).will(
+                    (InvocationOnMock invocation) -> {
+                        ProductCategory tempCategory = invocation.getArgument(0);
+                        tempCategory.setId(1L);
+                        tempCategory.getProducts().get(0).setId(1L);
+                        return tempCategory;
+                    }
+            );
 
+            // when
+            ProductCategory savedCategory = categoryService.save(givenCategory);
+
+            // then
+            assertAll(
+                    () -> assertEquals(givenCategory, savedCategory),
+                    () -> assertNotNull(savedCategory.getId()),
+                    () -> assertNotNull(savedCategory.getProducts().get(0).getId())
+            );
+            then(productCategoryRepository).should().save(eq(givenCategory));
+
+        }
+
+        @Test
+        void givenNotNullIdCategory_whenSaveCategory_shouldThrowException() {
+
+            // given
+            givenCategory.setId(1L);
+            given(productCategoryRepository.save(any())).willReturn(givenCategory);
+
+            // when
+            Executable executable = () -> categoryService.save(givenCategory);
+
+            // then
+            assertThrows(IllegalStateException.class, executable);
+            then(productCategoryRepository).should(never()).save(any());
+
+        }
     }
 
-    @Test
-    void givenIdOfCategoryWithEmptyProductList_whenDeleteCategory_shouldReturnDeletedCategory() {
+    @Nested
+    @DisplayName("update()")
+    class Update {
+        @Test
+        void givenCategory_whenUpdateCategory_shouldReturnUpdatedCategoryWithProducts() {
 
-        // given
-        givenCategory.getProducts().clear();
-        givenCategory.setId(1L);
-        given(productCategoryRepository.findById(anyLong())).willReturn(Optional.of(givenCategory));
-        willDoNothing().given(productCategoryRepository).deleteById(anyLong());
+            // given
+            givenCategory.setId(1L);
+            given(productCategoryRepository.findById(anyLong())).willReturn(Optional.of(givenCategory));
+            given(productCategoryRepository.save(any())).willReturn(givenCategory);
 
-        // when
-        ProductCategory deletedCategory = categoryService.deleteById(1L);
+            // when
+            ProductCategory updatedCategory = categoryService.update(givenCategory);
 
-        // then
-        assertEquals(givenCategory, deletedCategory);
-        then(productCategoryRepository).should().findById(1L);
-        then(productCategoryRepository).should().deleteById(eq(1L));
+            // then
+            assertAll(
+                    () -> assertEquals(givenCategory, updatedCategory),
+                    () -> assertEquals(updatedCategory.getProducts().get(0), updatedCategory.getProducts().get(0))
+            );
+            then(productCategoryRepository).should().findById(eq(1L));
+            then(productCategoryRepository).should().save(eq(givenCategory));
 
+        }
+
+        @Test
+        void givenNullIdCategory_whenUpdateCategory_shouldThrowException() {
+
+            // given
+            given(productCategoryRepository.findById(anyLong())).willReturn(Optional.of(givenCategory));
+            given(productCategoryRepository.save(any())).willReturn(givenCategory);
+
+            // when
+            Executable executable = () -> categoryService.update(givenCategory);
+
+            // then
+            assertThrows(IllegalStateException.class, executable);
+            then(productCategoryRepository).should(never()).findById(anyLong());
+            then(productCategoryRepository).should(never()).save(any());
+
+        }
     }
 
-    @Test
-    void givenIdOfCategoryWithProducts_whenDeleteCategory_shouldThrowException() {
+    @Nested
+    @DisplayName("delete()")
+    class Delete {
 
-        // given
-        givenCategory.setId(1L);
-        given(productCategoryRepository.findById(anyLong())).willReturn(Optional.of(givenCategory));
-        willDoNothing().given(productCategoryRepository).deleteById(anyLong());
+        @Test
+        void givenIdOfCategoryWithEmptyProductList_whenDeleteCategory_shouldReturnDeletedCategory() {
 
-        // when
-        // then
-        assertThrows(ProductCategoryNotEmptyException.class, () ->
-                categoryService.deleteById(1L));
-        then(productCategoryRepository).should().findById(anyLong());
-        then(productCategoryRepository).should(never()).deleteById(eq(1L));
+            // given
+            givenCategory.getProducts().clear();
+            givenCategory.setId(1L);
+            given(productCategoryRepository.findById(anyLong())).willReturn(Optional.of(givenCategory));
+            willDoNothing().given(productCategoryRepository).deleteById(anyLong());
 
-    }
+            // when
+            ProductCategory deletedCategory = categoryService.deleteById(1L);
 
-    @Test
-    void givenIdOfCategoryWithProducts_whenForceDeleteCategory_shouldReturnDeletedCategory() {
+            // then
+            assertEquals(givenCategory, deletedCategory);
+            then(productCategoryRepository).should().findById(1L);
+            then(productCategoryRepository).should().deleteById(eq(1L));
 
-        // given
-        givenCategory.setId(1L);
-        given(productCategoryRepository.findById(anyLong())).willReturn(Optional.of(givenCategory));
-        willDoNothing().given(productCategoryRepository).deleteById(anyLong());
+        }
 
-        // when
-        ProductCategory deletedCategory = categoryService.forceDeleteCategory(1L);
+        @Test
+        void givenIdOfCategoryWithProducts_whenDeleteCategory_shouldThrowException() {
 
-        // then
-        assertEquals(givenCategory, deletedCategory);
-        then(productCategoryRepository).should().findById(eq(1L));
-        then(productCategoryRepository).should().deleteById(eq(1L));
+            // given
+            givenCategory.setId(1L);
+            given(productCategoryRepository.findById(anyLong())).willReturn(Optional.of(givenCategory));
+            willDoNothing().given(productCategoryRepository).deleteById(anyLong());
 
-    }
+            // when
+            Executable executable = () -> categoryService.deleteById(1L);
 
-    @Test
-    void givenNullArg_whenAnyMethodInvoked_shouldThrowException() {
-        assertThrows(NullPointerException.class, () -> categoryService.save(null));
-        assertThrows(NullPointerException.class, () -> categoryService.update(null));
+            // then
+            assertThrows(ProductCategoryNotEmptyException.class, executable);
+            then(productCategoryRepository).should().findById(anyLong());
+            then(productCategoryRepository).should(never()).deleteById(eq(1L));
+
+        }
+
+        @Test
+        void givenIdOfCategoryWithProducts_whenForceDeleteCategory_shouldReturnDeletedCategory() {
+
+            // given
+            givenCategory.setId(1L);
+            given(productCategoryRepository.findById(anyLong())).willReturn(Optional.of(givenCategory));
+            willDoNothing().given(productCategoryRepository).deleteById(anyLong());
+
+            // when
+            ProductCategory deletedCategory = categoryService.forceDeleteCategory(1L);
+
+            // then
+            assertEquals(givenCategory, deletedCategory);
+            then(productCategoryRepository).should().findById(eq(1L));
+            then(productCategoryRepository).should().deleteById(eq(1L));
+
+        }
     }
 
 }

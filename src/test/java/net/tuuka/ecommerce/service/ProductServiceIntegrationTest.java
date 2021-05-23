@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@EnabledIf(value = "${app.test.rest_integration_test_enabled}", loadContext = true)
+@EnabledIf(value = "${app.test.integration_test_enabled}", loadContext = true)
 class ProductServiceIntegrationTest {
 
     @Autowired
