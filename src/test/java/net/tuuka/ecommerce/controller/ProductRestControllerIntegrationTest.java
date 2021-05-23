@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @EnabledIf(value = "${app.test.rest_integration_test_enabled}", loadContext = true)
-public class ProductIntegrationRestControllerTest {
+public class ProductRestControllerIntegrationTest {
 
 //    @LocalServerPort private int port;
 

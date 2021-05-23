@@ -1,11 +1,5 @@
 package net.tuuka.ecommerce.service;
 
-/*
-    ProductService should provide at least all CRUD operation on Product repository.
-    When saving and updating product must check Category correctness (it have to exist in DB already)
-    Mocking repositories here.
-*/
-
 import net.tuuka.ecommerce.dao.ProductCategoryRepository;
 import net.tuuka.ecommerce.dao.ProductRepository;
 import net.tuuka.ecommerce.entity.Product;
@@ -16,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.EnabledIf;
 import org.springframework.test.context.transaction.TestTransaction;
 
 import javax.persistence.EntityNotFoundException;
@@ -25,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@EnabledIf(value = "${app.test.rest_integration_test_enabled}", loadContext = true)
 class ProductServiceIntegrationTest {
 
     @Autowired
@@ -62,10 +58,11 @@ class ProductServiceIntegrationTest {
 
         // when save
         Product savedProduct = productService.save(product1);
-        Product fetchedProduct = productService.getById(savedProduct.getId());
+        Product fetchedProduct = productService.findById(savedProduct.getId());
 
         // then should get saved product back
         assertEquals(savedProduct, fetchedProduct);
+        assertNotNull(savedProduct.getId());
         assertNull(fetchedProduct.getCategory());
 
     }
@@ -78,7 +75,6 @@ class ProductServiceIntegrationTest {
 
     }
 
-
     @Test
     void givenNonExistingProductId_whenGetProductById_shouldThrowException() {
 
@@ -86,7 +82,7 @@ class ProductServiceIntegrationTest {
         long id = 999L;
         // when
         // then
-        assertThrows(EntityNotFoundException.class, () -> productService.getById(id));
+        assertThrows(EntityNotFoundException.class, () -> productService.findById(id));
 
     }
 

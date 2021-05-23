@@ -23,6 +23,12 @@ public class ProductService extends BaseCrudAbstractService<Product, Long, Produ
     @Transactional
     @Override
     public Product save(Product product) {
+        requireNotNullAndNullId(product);
+        if (repository.findBySku(product.getSku()).isPresent())
+            throw new IllegalStateException(String
+                    .format("Product must have unique SKU. " +
+                            "Product with SKU ='%s' already exists",
+                            product.getSku()));
         if (product.getCategory() != null) this.validateCategory(product);
         return repository.save(product);
     }
@@ -32,7 +38,7 @@ public class ProductService extends BaseCrudAbstractService<Product, Long, Produ
     public Product update(Product product) {
         requireNotNullAndNotNullId(product);
 
-        Product existingProduct = getById(product.getId());
+        Product existingProduct = findById(product.getId());
         product.setCreated(existingProduct.getCreated());
 
         // we can save products with null or persisted category (but not a new one)
@@ -51,7 +57,7 @@ public class ProductService extends BaseCrudAbstractService<Product, Long, Produ
         ProductCategory existedCategory;
 
         if (category.getId() != null) {
-            existedCategory = categoryService.getById(category.getId());
+            existedCategory = categoryService.findById(category.getId());
 
             if (category.getName() != null && !existedCategory.getName().equals(category.getName())) {
                 throw new IllegalStateException(String.format("ProductCategory with " +

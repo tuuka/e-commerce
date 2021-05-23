@@ -19,14 +19,14 @@ public class ProductCategoryService extends
     @Override
     public ProductCategory update(ProductCategory category) {
         requireNotNullAndNotNullId(category);
-        category.setProducts(getById(category.getId()).getProducts());
+        category.setProducts(findById(category.getId()).getProducts());
         return repository.save(category);
     }
 
     @Override
     public ProductCategory deleteById(Long id) {
         requireNonNull(id);
-        ProductCategory foundCategory = getById(id);
+        ProductCategory foundCategory = findById(id);
         if (foundCategory.getProducts().size() > 0)
             throw new ProductCategoryNotEmptyException(String.format(
                     "Category with id=%d and name='%s' is not empty",
@@ -38,7 +38,7 @@ public class ProductCategoryService extends
     @Transactional
     public ProductCategory forceDeleteCategory(Long id) {
         requireNonNull(id);
-        ProductCategory foundCategory = getById(id);
+        ProductCategory foundCategory = findById(id);
         repository.deleteById(id);
         return foundCategory;
     }

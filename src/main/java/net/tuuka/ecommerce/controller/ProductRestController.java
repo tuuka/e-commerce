@@ -26,19 +26,19 @@ public class ProductRestController {
 
     @GetMapping
     public CollectionModel<?> getAllProducts() {
-        return productAssembler.toCollectionModel(productService.getAll());
+        return productAssembler.toCollectionModel(productService.findAll());
     }
 
     @GetMapping("/{id}")
     public EntityModel<?> getProductById(@PathVariable("id") Long id) {
-        return productAssembler.toModel(productService.getById(id));
+        return productAssembler.toModel(productService.findById(id));
     }
 
     @GetMapping("/{id}/category")
     public ResponseEntity<?> getProductCategory(@PathVariable("id") Long id) {
-        ProductCategory category = productService.getById(id).getCategory();
+        ProductCategory category = productService.findById(id).getCategory();
         if (category == null) return ResponseEntity.noContent().build();
-        return ResponseEntity.ok().body(categoryAssembler.toModel(productService.getById(id).getCategory()));
+        return ResponseEntity.ok().body(categoryAssembler.toModel(productService.findById(id).getCategory()));
     }
 
     @GetMapping("/search")

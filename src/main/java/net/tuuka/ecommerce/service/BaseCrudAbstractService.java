@@ -17,12 +17,12 @@ public class BaseCrudAbstractService<T extends BaseEntity, ID, R extends JpaRepo
     }
 
     @Override
-    public List<T> getAll() {
+    public List<T> findAll() {
         return repository.findAll();
     }
 
     @Override
-    public T getById(ID id) {
+    public T findById(ID id) {
         Objects.requireNonNull(id, "ID can not be null");
         return repository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Entity with id = "
@@ -39,13 +39,13 @@ public class BaseCrudAbstractService<T extends BaseEntity, ID, R extends JpaRepo
     @SuppressWarnings("unchecked")
     public T update(T entity) {
         requireNotNullAndNotNullId(entity);
-        getById((ID) entity.getId());
+        findById((ID) entity.getId());
         return repository.save(entity);
     }
 
     @Override
     public T deleteById(ID id) {
-        T entity = getById(id);
+        T entity = findById(id);
         repository.deleteById(id);
         return entity;
     }

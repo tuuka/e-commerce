@@ -10,6 +10,7 @@ import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.EnabledIf;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -18,12 +19,12 @@ import java.util.Objects;
 
 
 // Used only if there is a strong irresistible desire to test some stuff
-// on an external database. Or for DB initialization.
+// on an external database.
 
 @TestConfiguration
 @EnableTransactionManagement
 @ActiveProfiles("test")
-//@EnableHypermediaSupport(type = {EnableHypermediaSupport.HypermediaType.HAL})
+@EnabledIf(value = "${app.test.rest_integration_test_enabled}", loadContext = true)
 public class TestConfig {
 
     @Bean

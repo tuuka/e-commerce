@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.EnabledIf;
 import org.springframework.test.context.transaction.TestTransaction;
 
 import java.lang.reflect.Field;
@@ -18,29 +19,11 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/*
-    Attempts to save Product with fields equal null that can't be null must throw exception
-
-    Assume Product class has following not null fields:
-        private String sku;                 // not null
-        private String name;                // not null
-        private Boolean active;             // not null
-
-    Hibernate assign these fields automatically because of @CreationTimestamp and @UpdateTimestamp
-        private ZonedDateTime created;      // not null
-        private ZonedDateTime lastUpdated;  // not null
-
-    And Category class has not null field:
-        private String name;                // not null
-*/
-
-// TODO: test time conversation between different time zones
-
 @DataJpaTest
 @ActiveProfiles("test")
 // disable using embedded InMemory DB
 //@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-//@DirtiesContext
+@EnabledIf(value = "${app.test.rest_integration_test_enabled}", loadContext = true)
 class ProductAndCategoryRepositoryTest {
 
     @Autowired

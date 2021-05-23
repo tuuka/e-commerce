@@ -10,4 +10,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> findAllBySkuContainsAndNameContains(String sku, String name);
 
+    Optional<Product> findBySku(String sku);
+
 }

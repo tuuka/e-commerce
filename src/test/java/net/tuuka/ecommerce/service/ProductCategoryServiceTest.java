@@ -3,7 +3,6 @@ package net.tuuka.ecommerce.service;
 /*
     ProductCategoryService should provide at least all CRUD operation on ProductCategory repository.
     There is a restriction when deleting non empty categories
-    Mocking repositories here.
 */
 
 import net.tuuka.ecommerce.dao.ProductCategoryRepository;
@@ -13,6 +12,9 @@ import net.tuuka.ecommerce.exception.ProductCategoryNotEmptyException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,21 +28,20 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.never;
 
-@SpringBootTest(classes = {ProductCategoryService.class})
 class ProductCategoryServiceTest {
 
-    @MockBean
+    @Mock
     ProductCategoryRepository productCategoryRepository;
 
-    @Autowired
+    @InjectMocks
     ProductCategoryService categoryService;
 
     ProductCategory givenCategory;
 
     @BeforeEach
     void setUp() {
+        MockitoAnnotations.openMocks(this);
         givenCategory = new ProductCategory("category");
-
         givenCategory.setProducts(new ArrayList<>(Collections.singletonList(new Product(
                 "sku",
                 "name",
@@ -58,6 +59,18 @@ class ProductCategoryServiceTest {
     }
 
     @Test
+    void givenNull_whenDoOperations_shouldThrowNPE() {
+
+        assertThrows(NullPointerException.class, () -> categoryService.findById(null));
+        assertThrows(NullPointerException.class, () -> categoryService.deleteById(null));
+        assertThrows(NullPointerException.class, () -> categoryService.update(null));
+        assertThrows(NullPointerException.class, () -> categoryService.forceDeleteCategory(null));
+        assertThrows(NullPointerException.class, () -> categoryService.save(null));
+
+    }
+
+
+    @Test
     void whenGetAllCategories_shouldReturnCategoryListWithProducts() {
 
         // given
@@ -70,7 +83,7 @@ class ProductCategoryServiceTest {
         given(productCategoryRepository.findAll()).willReturn(categories);
 
         // when
-        List<ProductCategory> fetchedCategories = categoryService.getAll();
+        List<ProductCategory> fetchedCategories = categoryService.findAll();
 
         // then
         assertEquals(categories, fetchedCategories);
@@ -80,14 +93,14 @@ class ProductCategoryServiceTest {
     }
 
     @Test
-    void givenCategoryId_whenGetCategoryById_shouldReturnCategoryWithProducts() {
+    void givenCategoryId_whenFindCategoryById_shouldReturnCategoryWithProducts() {
 
         // given
         givenCategory.setId(1L);
         given(productCategoryRepository.findById(anyLong())).willReturn(Optional.of(givenCategory));
 
         // when
-        ProductCategory fetchedCategory = categoryService.getById(1L);
+        ProductCategory fetchedCategory = categoryService.findById(1L);
 
         // then
         assertEquals(givenCategory, fetchedCategory);
@@ -104,8 +117,7 @@ class ProductCategoryServiceTest {
 
         // when
         // then
-        assertThrows(EntityNotFoundException.class,
-                () -> categoryService.getById(1L));
+        assertThrows(EntityNotFoundException.class, () -> categoryService.findById(1L));
         then(productCategoryRepository).should().findById(eq(1L));
 
     }
@@ -128,8 +140,8 @@ class ProductCategoryServiceTest {
 
         // then
         assertEquals(givenCategory, savedCategory);
-        assertNotEquals(null, savedCategory.getId());
-        assertNotEquals(null, savedCategory.getProducts().get(0).getId());
+        assertNotNull(savedCategory.getId());
+        assertNotNull(savedCategory.getProducts().get(0).getId());
         then(productCategoryRepository).should().save(eq(givenCategory));
 
     }

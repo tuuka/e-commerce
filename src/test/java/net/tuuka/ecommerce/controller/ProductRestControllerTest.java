@@ -83,7 +83,7 @@ class ProductRestControllerTest {
     @Test
     void whenGetProductsMapping_shouldReturnProductList() throws Exception {
 
-        given(productService.getAll()).willReturn(products);
+        given(productService.findAll()).willReturn(products);
 
         mockMvc.perform(get(apiUrl)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -93,7 +93,7 @@ class ProductRestControllerTest {
                 .andExpect(jsonPath("$._embedded.products", hasSize(products.size())))
                 .andDo(MockMvcResultHandlers.print());
 
-        then(productService).should().getAll();
+        then(productService).should().findAll();
         then(productAssembler).should().toCollectionModel(any());
 
     }
@@ -102,7 +102,7 @@ class ProductRestControllerTest {
     void givenProductId_whenGetProductsIdMapping_shouldReturnProduct() throws Exception {
 
         products.get(0).setId(1L);
-        given(productService.getById(anyLong())).willReturn(products.get(0));
+        given(productService.findById(anyLong())).willReturn(products.get(0));
 
         mockMvc.perform(get(apiUrl + "/1")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -113,7 +113,7 @@ class ProductRestControllerTest {
                 .andExpect(jsonPath("$.name").value("name_00"))
                 .andDo(MockMvcResultHandlers.print());
 
-        then(productService).should().getById(eq(1L));
+        then(productService).should().findById(eq(1L));
         then(productAssembler).should().toModel(any());
 
     }
@@ -121,7 +121,7 @@ class ProductRestControllerTest {
     @Test
     void givenNonExistingProductId_whenGetProductsIdMapping_shouldReturnNotFoundErrorEntity() throws Exception {
 
-        given(productService.getById(anyLong()))
+        given(productService.findById(anyLong()))
                 .willThrow(new EntityNotFoundException("not found"));
 
         mockMvc.perform(get(apiUrl + "/1")
@@ -132,7 +132,7 @@ class ProductRestControllerTest {
                 .andExpect(jsonPath("$.error").value("not found"))
                 .andDo(MockMvcResultHandlers.print());
 
-        then(productService).should().getById(eq(1L));
+        then(productService).should().findById(eq(1L));
 
     }
 

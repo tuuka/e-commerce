@@ -25,17 +25,17 @@ public class ProductCategoryRestController {
 
     @GetMapping
     public CollectionModel<?> getCategories() {
-        return categoryAssembler.toCollectionModel(categoryService.getAll());
+        return categoryAssembler.toCollectionModel(categoryService.findAll());
     }
 
     @GetMapping("/{id}")
     public EntityModel<?> getCategory(@PathVariable("id") Long id) {
-        return categoryAssembler.toModel(categoryService.getById(id));
+        return categoryAssembler.toModel(categoryService.findById(id));
     }
 
     @GetMapping("/{id}/products")
     public CollectionModel<?> getProducts(@PathVariable("id") Long id) {
-        return productAssembler.toCollectionModel(categoryService.getById(id).getProducts());
+        return productAssembler.toCollectionModel(categoryService.findById(id).getProducts());
     }
 
     @GetMapping("/search")

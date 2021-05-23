@@ -4,9 +4,9 @@ import java.util.List;
 
 interface BaseCrudService <T, ID> {
 
-    List<T> getAll();
+    List<T> findAll();
 
-    T getById(ID id);
+    T findById(ID id);
 
     T save(T entity);
 

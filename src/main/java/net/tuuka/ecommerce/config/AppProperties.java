@@ -26,7 +26,7 @@ public class AppProperties {
     @Setter
     @Getter
     public static class Test {
-        private Boolean rest_integration_test_enabled;
+        private Boolean integration_test_enabled;
     }
 
     @Setter
