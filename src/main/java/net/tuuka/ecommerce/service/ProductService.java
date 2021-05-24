@@ -3,6 +3,8 @@ package net.tuuka.ecommerce.service;
 import net.tuuka.ecommerce.dao.ProductRepository;
 import net.tuuka.ecommerce.entity.Product;
 import net.tuuka.ecommerce.entity.ProductCategory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -18,6 +20,10 @@ public class ProductService extends BaseCrudAbstractService<Product, Long, Produ
     public ProductService(ProductRepository repository, ProductCategoryService categoryService) {
         super(repository);
         this.categoryService = categoryService;
+    }
+
+    public Page<Product> findAll(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 
     @Transactional
@@ -71,7 +77,7 @@ public class ProductService extends BaseCrudAbstractService<Product, Long, Produ
         product.setCategory(existedCategory);
     }
 
-    public List<Product> findAllBySkuOrName(String sku, String name) {
-        return repository.findAllBySkuContainsAndNameContains(sku, name);
+    public Page<Product> findAllBySkuOrName(String sku, String name, Pageable pageable) {
+        return repository.findAllBySkuContainsAndNameContains(sku, name, pageable);
     }
 }

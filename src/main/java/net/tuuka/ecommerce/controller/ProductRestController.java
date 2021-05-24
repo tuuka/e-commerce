@@ -1,15 +1,18 @@
 package net.tuuka.ecommerce.controller;
 
 import lombok.RequiredArgsConstructor;
+import net.tuuka.ecommerce.controller.dto.ProductRequestRepresentation;
 import net.tuuka.ecommerce.controller.util.ProductCategoryModelAssembler;
 import net.tuuka.ecommerce.controller.util.ProductModelAssembler;
-import net.tuuka.ecommerce.controller.dto.ProductRequestRepresentation;
 import net.tuuka.ecommerce.entity.Product;
 import net.tuuka.ecommerce.entity.ProductCategory;
 import net.tuuka.ecommerce.service.ProductService;
-import org.springframework.hateoas.CollectionModel;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,10 +26,12 @@ public class ProductRestController {
     private final ProductService productService;
     private final ProductModelAssembler productAssembler;
     private final ProductCategoryModelAssembler categoryAssembler;
+    private final PagedResourcesAssembler<Product> pagedResourcesAssembler;
 
     @GetMapping
-    public CollectionModel<?> getAllProducts() {
-        return productAssembler.toCollectionModel(productService.findAll());
+    public ResponseEntity<PagedModel<EntityModel<Product>>> getAllProducts(@PageableDefault(size = 20) Pageable pageable) {
+        return ResponseEntity.ok().body(pagedResourcesAssembler
+                .toModel(productService.findAll(pageable),productAssembler));
     }
 
     @GetMapping("/{id}")
@@ -42,10 +47,11 @@ public class ProductRestController {
     }
 
     @GetMapping("/search")
-    public CollectionModel<?> search(@RequestParam(name = "sku", defaultValue = "") String sku,
-                                     @RequestParam(name = "name", defaultValue = "") String name) {
-        return productAssembler.toSearchCollectionModel(productService.findAllBySkuOrName(sku, name),
-                sku, name);
+    public ResponseEntity<?> search(@RequestParam(name = "sku", defaultValue = "") String sku,
+                                     @RequestParam(name = "name", defaultValue = "") String name,
+                                     @PageableDefault(size = 20) Pageable pageable) {
+        return ResponseEntity.ok().body(pagedResourcesAssembler
+                .toModel(productService.findAllBySkuOrName(sku, name, pageable),productAssembler));
     }
 
     @PostMapping()

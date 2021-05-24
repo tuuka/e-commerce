@@ -10,6 +10,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.EnabledIf;
 import org.springframework.test.context.transaction.TestTransaction;
@@ -54,7 +56,7 @@ class ProductAndCategoryRepositoryTest {
                 true,
                 20);
         categories = new LinkedList<>(Arrays.asList(
-                new ProductCategory( "cat1", Arrays.asList(product1, product2)),
+                new ProductCategory("cat1", Arrays.asList(product1, product2)),
                 new ProductCategory("cat2")
         ));
         product1.setCategory(categories.get(0));
@@ -144,16 +146,19 @@ class ProductAndCategoryRepositoryTest {
         productRepository.saveAndFlush(product2);
 
         // when
-        List<Product> ame1List = productRepository.findAllBySkuContainsAndNameContains("", "ame1");
-        List<Product> ku2List = productRepository.findAllBySkuContainsAndNameContains("ku2", "");
+        Page<Product> ame1List = productRepository.findAllBySkuContainsAndNameContains("", "ame1", PageRequest.of(0, 2));
+        Page<Product> ku2List = productRepository.findAllBySkuContainsAndNameContains("ku2", "", PageRequest.of(0, 2));
 
         // then
-        assertNotNull(ame1List);
-        assertNotNull(ku2List);
-        assertEquals(1, ame1List.size());
-        assertEquals(1, ku2List.size());
-        assertEquals("sku1", ame1List.get(0).getSku());
-        assertEquals("name2", ku2List.get(0).getName());
+        assertAll(
+                () -> assertNotNull(ame1List),
+                () -> assertNotNull(ku2List),
+                () -> assertEquals(1, ame1List.getTotalElements()),
+                () -> assertEquals(1, ku2List.getTotalElements()),
+                () -> assertEquals("sku1", ame1List.getContent().get(0).getSku()),
+                () -> assertEquals("name2", ku2List.getContent().get(0).getName())
+        );
+
 
     }
 
@@ -229,7 +234,7 @@ class ProductAndCategoryRepositoryTest {
 
         // then
         assertEquals(1, category.getProducts().size());
-        assertEquals(product2.getName(),category.getProducts().get(0).getName());
+        assertEquals(product2.getName(), category.getProducts().get(0).getName());
         productRepository.deleteAll();
         productCategoryRepository.deleteAll();
         commitAndBeginNewTransaction();
@@ -258,8 +263,8 @@ class ProductAndCategoryRepositoryTest {
         // then
         assertEquals(1, category.getProducts().size());
         assertEquals(1, category2.getProducts().size());
-        assertEquals(product2.getName(),category.getProducts().get(0).getName());
-        assertEquals(product1.getName(),category2.getProducts().get(0).getName());
+        assertEquals(product2.getName(), category.getProducts().get(0).getName());
+        assertEquals(product1.getName(), category2.getProducts().get(0).getName());
 
         productRepository.deleteAll();
         productCategoryRepository.deleteAll();

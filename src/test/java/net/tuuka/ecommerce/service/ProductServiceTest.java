@@ -16,9 +16,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityNotFoundException;
-import javax.xml.parsers.ParserConfigurationException;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,17 +66,17 @@ class ProductServiceTest {
     void givenNullArgs_whenDoOperations_shouldThrowNPE() {
 
         assertAll(
-                ()->assertThrows(NullPointerException.class, () -> productService.save(null)),
-                ()->assertThrows(NullPointerException.class, () -> productService.findById(null)),
-                ()->assertThrows(NullPointerException.class, () -> productService.update(null)),
-                ()->assertThrows(NullPointerException.class, () -> productService.deleteById(null))
+                () -> assertThrows(NullPointerException.class, () -> productService.save(null)),
+                () -> assertThrows(NullPointerException.class, () -> productService.findById(null)),
+                () -> assertThrows(NullPointerException.class, () -> productService.update(null)),
+                () -> assertThrows(NullPointerException.class, () -> productService.deleteById(null))
         );
 
     }
 
     @Nested
     @DisplayName("save()")
-    class save{
+    class save {
 
         @Test
         void givenProductWithNotNullId_whenSaveProduct_shouldThrowISE() {
@@ -119,8 +121,8 @@ class ProductServiceTest {
 
             // then
             assertAll(
-                    ()->assertEquals(product.getSku(), savedProduct.getSku()),
-            ()->assertEquals(1, savedProduct.getId())
+                    () -> assertEquals(product.getSku(), savedProduct.getSku()),
+                    () -> assertEquals(1, savedProduct.getId())
             );
             then(productRepository).should().findBySku(anyString());
             then(productRepository).should().save(eq(product));
@@ -141,9 +143,9 @@ class ProductServiceTest {
 
             // then
             assertAll(
-                    ()->assertEquals(product.getSku(), savedProduct.getSku()),
-                    ()->assertEquals(1, savedProduct.getId()),
-                    ()->assertEquals(1, savedProduct.getCategory().getId())
+                    () -> assertEquals(product.getSku(), savedProduct.getSku()),
+                    () -> assertEquals(1, savedProduct.getId()),
+                    () -> assertEquals(1, savedProduct.getCategory().getId())
             );
             then(productCategoryService).should().findById(anyLong());
             then(productRepository).should().save(eq(product));
@@ -153,7 +155,7 @@ class ProductServiceTest {
 
     @Nested
     @DisplayName("findAll()")
-    class FindAll{
+    class FindAll {
         @Test
         void whenGetAllProducts_shouldReturnAllProductList() {
 
@@ -172,7 +174,7 @@ class ProductServiceTest {
 
     @Nested
     @DisplayName("findBuId()")
-    class FindById{
+    class FindById {
 
         @Test
         void givenExistingProduct_whenFindById_shouldReturnProduct() {
@@ -208,7 +210,7 @@ class ProductServiceTest {
 
     @Nested
     @DisplayName("deleteById()")
-    class Delete{
+    class Delete {
 
         @Test
         void givenExistingProductId_whenDeleteProductById_shouldReturnDeletedProduct() {
@@ -248,20 +250,20 @@ class ProductServiceTest {
 
     @Nested
     @DisplayName("findAllBySkuOrName()")
-    class FindAllBySkuOrName{
+    class FindAllBySkuOrName {
         @Test
         void givenProductSkuOrName_whenFindAllBySkuOrName_shouldReturnListOfMatched() {
 
             // given
-            given(productRepository.findAllBySkuContainsAndNameContains(anyString(), anyString()))
-                    .willReturn(products);
+            given(productRepository.findAllBySkuContainsAndNameContains(anyString(), anyString(), any()))
+                    .willReturn(new PageImpl<>(products));
 
             // when
-            List<Product> fetchedProducts = productService.findAllBySkuOrName("sku", "name");
+            Page<Product> fetchedProducts = productService.findAllBySkuOrName("sku", "name", Pageable.unpaged());
 
             // then
             assertNotNull(fetchedProducts);
-            then(productRepository).should().findAllBySkuContainsAndNameContains("sku", "name");
+            then(productRepository).should().findAllBySkuContainsAndNameContains("sku", "name", Pageable.unpaged());
 
         }
     }
@@ -283,7 +285,7 @@ class ProductServiceTest {
     */
     @Nested
     @DisplayName("update()")
-    class Update{
+    class Update {
 
         @Test
             // (1) null productId

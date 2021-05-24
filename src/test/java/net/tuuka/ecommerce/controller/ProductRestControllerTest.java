@@ -16,6 +16,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.web.HateoasPageableHandlerMethodArgumentResolver;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -46,6 +50,12 @@ class ProductRestControllerTest {
     @Spy
     ProductCategoryModelAssembler categoryAssembler;
 
+    @Spy
+    PagedResourcesAssembler<Product> productPagedAssembler =
+            new PagedResourcesAssembler<>(
+                    new HateoasPageableHandlerMethodArgumentResolver(),
+                    null);
+
     @InjectMocks
     ProductRestController controller;
 
@@ -59,7 +69,9 @@ class ProductRestControllerTest {
 
         MockitoAnnotations.openMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
-                .setControllerAdvice(new ProductControllerAdvice()).build();
+                .setControllerAdvice(new ProductControllerAdvice())
+                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+                .build();
         products = FakeProductGenerator.getNewFakeProductList(3, 3);
 
     }
@@ -72,10 +84,10 @@ class ProductRestControllerTest {
     @Test
     void whenGetProductsMapping_shouldReturnProductList() throws Exception {
 
-        given(productService.findAll()).willReturn(products);
+        given(productService.findAll(any())).willReturn(new PageImpl<>(products));
 
         mockMvc.perform(get(apiUrl)
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.valueOf("application/hal+json")))
                 .andExpect(status().isOk())
                 .andExpect(content()
                         .contentTypeCompatibleWith(MediaType.valueOf("application/hal+json")))
@@ -83,8 +95,7 @@ class ProductRestControllerTest {
                 .andExpect(jsonPath("$.links[0].href", Matchers.containsString("localhost")))
                 .andDo(MockMvcResultHandlers.print());
 
-        then(productService).should().findAll();
-        then(productAssembler).should().toCollectionModel(any());
+        then(productService).should().findAll(any());
 
     }
 
