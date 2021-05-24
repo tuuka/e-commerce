@@ -1,0 +1,21 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "Simple E-Commerce application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Pavel I. Platonov",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/tuuka/e-commerce/issues"
+  },
+  "homepage": "https://github.com/tuuka/e-commerce",
+  "dependencies": {
+
+  },
+  "devDependencies": {
+    "@angular/cli": "^12.0.1"
+  }
+}

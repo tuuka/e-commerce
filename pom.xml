@@ -91,7 +91,7 @@
                 <configuration>
                     <nodeVersion>${node.version}</nodeVersion>
                     <workingDirectory>${frontend-src-dir}</workingDirectory>
-                    <installDirectory>${project.build.directory}</installDirectory>
+                    <installDirectory>${project.basedir}</installDirectory>
                 </configuration>
                 <executions>
                     <execution>
@@ -110,13 +110,16 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>webpack build</id>
+                        <id>npm build</id>
                         <goals>
-                            <goal>webpack</goal>
+                            <goal>npm</goal>
                         </goals>
-                        <phase>prepare-package</phase>
+                        <phase>generate-resources</phase>
                         <configuration>
-                            <arguments>-p</arguments>
+                            <environmentVariables>
+                                <CI>true</CI>
+                            </environmentVariables>
+                            <arguments>run build</arguments>
                         </configuration>
                     </execution>
                 </executions>
