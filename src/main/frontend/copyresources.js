@@ -19,5 +19,5 @@ function copyresources(source, target) {
     shell.cp('-R', source + "/*.js", target + "/static/");
     shell.cp('-R', source + "/*.css", target + "/static/");
     shell.cp('-R', source + "/*.html", target + "/templates/");
-    shell.cp('-R', source + "/assets/images/", target + "/static/images");
+    shell.cp('-R', source + "/assets", target + "/static/");
 }

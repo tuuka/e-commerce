@@ -9,6 +9,7 @@
         <th>img</th>
         <th>active</th>
         <th>quantity</th>
+        <th>image</th>
     </tr>
     </thead>
     <tbody>
@@ -21,6 +22,7 @@
         <td>{{ tempProduct.imageUrl }}</td>
         <td>{{ tempProduct.active }}</td>
         <td>{{ tempProduct.unitsInStock }}</td>
+        <td><img style="height: 50px; width: auto" src="{{tempProduct.imageUrl}}" alt="product img"/></td>
     </tr>
     </tbody>
 </table>
