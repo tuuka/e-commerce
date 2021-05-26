@@ -128,49 +128,49 @@
                 </executions>
             </plugin>
 
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copyfilesync index.html</id>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <phase>prepare-package</phase>
-                        <configuration>
-                            <outputDirectory>${project.build.outputDirectory}/template</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${frontend-src-dir}/build</directory>
-                                    <includes>
-                                        <include>index.html</include>
-                                    </includes>
-                                    <filtering>false</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>copyfilesync static files</id>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <phase>prepare-package</phase>
-                        <configuration>
-                            <outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${frontend-src-dir}/build</directory>
-                                    <excludes>
-                                        <exclude>index.html</exclude>
-                                    </excludes>
-                                    <filtering>false</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <artifactId>maven-resources-plugin</artifactId>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>copyresources index.html</id>-->
+<!--                        <goals>-->
+<!--                            <goal>copy-resources</goal>-->
+<!--                        </goals>-->
+<!--                        <phase>prepare-package</phase>-->
+<!--                        <configuration>-->
+<!--                            <outputDirectory>${project.build.outputDirectory}/template</outputDirectory>-->
+<!--                            <resources>-->
+<!--                                <resource>-->
+<!--                                    <directory>${frontend-src-dir}/build</directory>-->
+<!--                                    <includes>-->
+<!--                                        <include>index.html</include>-->
+<!--                                    </includes>-->
+<!--                                    <filtering>false</filtering>-->
+<!--                                </resource>-->
+<!--                            </resources>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                    <execution>-->
+<!--                        <id>copyresources static files</id>-->
+<!--                        <goals>-->
+<!--                            <goal>copy-resources</goal>-->
+<!--                        </goals>-->
+<!--                        <phase>prepare-package</phase>-->
+<!--                        <configuration>-->
+<!--                            <outputDirectory>${project.build.outputDirectory}/static</outputDirectory>-->
+<!--                            <resources>-->
+<!--                                <resource>-->
+<!--                                    <directory>${frontend-src-dir}/build</directory>-->
+<!--                                    <excludes>-->
+<!--                                        <exclude>index.html</exclude>-->
+<!--                                    </excludes>-->
+<!--                                    <filtering>false</filtering>-->
+<!--                                </resource>-->
+<!--                            </resources>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 
