@@ -1,0 +1,26 @@
+<table>
+    <thead>
+    <tr>
+        <th>id</th>
+        <th>sku</th>
+        <th>name</th>
+        <th>description</th>
+        <th>price</th>
+        <th>img</th>
+        <th>active</th>
+        <th>quantity</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let tempProduct of productList">
+        <td>{{ tempProduct.id }}</td>
+        <td>{{ tempProduct.sku }}</td>
+        <td>{{ tempProduct.name }}</td>
+        <td>{{ tempProduct.description }}</td>
+        <td>{{ tempProduct.unitPrice }}</td>
+        <td>{{ tempProduct.imageUrl }}</td>
+        <td>{{ tempProduct.active }}</td>
+        <td>{{ tempProduct.unitsInStock }}</td>
+    </tr>
+    </tbody>
+</table>
