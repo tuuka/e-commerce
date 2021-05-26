@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "copy": "node copyresources.js build ../resources",
-    "build": "ng build --prod --output-hashing none --common-chunk false && node copyresources.js build ../resources",
+    "build": "ng build --prod --output-hashing none --common-chunk false && nmp run copy",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

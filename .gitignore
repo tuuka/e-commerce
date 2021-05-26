@@ -27,7 +27,14 @@ target/
 /.nb-gradle/
 
 ### frontend ###
+
 **/build/
+**/package-lock.json
+
+# Dependency directories
+**/node/
+**/node_modules/
+**/jspm_packages/
 #!**/src/main/**/build/
 #!**/src/test/**/build/
 
@@ -73,10 +80,6 @@ bower_components
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
 
-# Dependency directories
-**/node/
-**/node_modules/
-**/jspm_packages/
 
 # TypeScript v1 declaration files
 typings/

@@ -15,7 +15,9 @@ function copyresources(source, target) {
     // }
 
 // shell.rm('-rf', 'out/Release');
+    shell.cp('-R', source + "/*.ico", target + "/templates/");
     shell.cp('-R', source + "/*.js", target + "/static/");
     shell.cp('-R', source + "/*.css", target + "/static/");
     shell.cp('-R', source + "/*.html", target + "/templates/");
+    shell.cp('-R', source + "/assets/images/", target + "/static/images");
 }
