@@ -19,6 +19,7 @@ import java.util.Map;
 public class AppProperties {
 
     private Map<String, String> api;
+    private String[] api_cross_origins;
 
     private final Test test = new Test();
     private final AlpsProps alps = new AlpsProps();

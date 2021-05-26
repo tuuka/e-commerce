@@ -9,6 +9,7 @@ import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.mediatype.alps.Alps;
 import org.springframework.hateoas.mediatype.alps.Format;
 import org.springframework.hateoas.mediatype.hal.HalModelBuilder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +25,7 @@ import static org.springframework.hateoas.mediatype.alps.Alps.doc;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+@CrossOrigin
 @RestController
 @RequestMapping(path = "/api", produces = {"application/hal+json"})
 @RequiredArgsConstructor
