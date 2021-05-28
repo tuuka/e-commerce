@@ -11,7 +11,11 @@ export class Product {
     public unitsInStock: number,
     public created: Date,
     public lastUpdated: Date,
-    public category:object
+    public _links: {
+      self: { href: string },
+      category: { href: string },
+      products: { href: string }
+    }
   ) {}
 
 }

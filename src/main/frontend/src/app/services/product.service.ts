@@ -1,8 +1,7 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {Product} from '../model/Product';
-import {map} from "rxjs/operators";
+import {ProductsResponse} from "../model/ProductsResponse";
 
 @Injectable({
     providedIn: 'root'
@@ -14,15 +13,11 @@ export class ProductService {
     constructor(private httpClient: HttpClient) {
     }
 
-    getProductList(): Observable<Product[]> {
-        return this.httpClient.get<GetResponse>(this.baseUrl).pipe(
-            map(response => response._embedded.products)
-        );
+    getProductList(params:HttpParams): Observable<ProductsResponse> {
+        let url = (params.has("sku") || params.has("name"))? `${this.baseUrl}/search` : this.baseUrl;
+        return this.httpClient.get<ProductsResponse>(url, {responseType: "json", params: params});
     }
+
+
 }
 
-interface GetResponse {
-    _embedded: {
-        products: Product[];
-    }
-}

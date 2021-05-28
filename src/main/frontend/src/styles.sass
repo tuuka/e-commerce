@@ -1,1 +1,109 @@
-/* You can add global styles to this file, and also import other style files */
+=font($font_name, $file_name, $weight, $style)
+  @font-face
+    font-family: $font_name
+    font-display: swap
+    src: url("assets/fonts/#{$file_name}.woff") format("woff"), url("assets/fonts/#{$file_name}.woff2") format("woff2")
+    font-weight: #{$weight}
+    font-style: #{$style}
+
+@include font("AEmpirial", "AEmpirial", "400", "normal")
+@include font("ArialMT", "ArialMT-Bold", "700", "normal")
+@include font("ArialMT", "ArialMT-Italic", "400", "italic")
+@include font("ArialMT", "ArialMT", "400", "normal")
+@include font("BelloScript", "BelloScript", "400", "normal")
+@include font("Helvetica", "Helvetica-Regular", "400", "normal")
+@include font("HelveticaNeueLTStdBdCn", "HelveticaNeueLTStdBdCn", "400", "normal")
+@include font("HelveticaNeueLTStdBlkCn", "HelveticaNeueLTStdBlkCn", "400", "normal")
+@include font("HelveticaNeueLTStdCn", "HelveticaNeueLTStdCn", "400", "normal")
+@include font("HelveticaNeueLTStdHvCn", "HelveticaNeueLTStdHvCn", "400", "normal")
+@include font("HelveticaNeueLTStdLt", "HelveticaNeueLTStdLt", "400", "normal")
+@include font("HelveticaNeueLTStdLtCn", "HelveticaNeueLTStdLtCn", "400", "normal")
+@include font("HelveticaNeueLTStdLtIt", "HelveticaNeueLTStdLtIt", "400", "normal")
+@include font("HelveticaNeueLTStdTh", "HelveticaNeueLTStdTh", "400", "normal")
+@include font("HelveticaNeueLTStdThCn", "HelveticaNeueLTStdThCn", "400", "normal")
+@include font("HelveticaNeueLTStdUltLtCn", "HelveticaNeueLTStdUltLtCn", "400", "normal")
+@include font("icomoon", "icomoon", "400", "normal")
+@include font("Impact", "Impact", "400", "normal")
+@include font("LuxuryRoyaleJF", "LuxuryRoyaleJF", "400", "normal")
+
+@import "base"
+
+a
+  text-decoration: none
+
+button
+  border: none
+  cursor: pointer
+
+*
+  box-sizing: border-box
+  margin: 0
+  padding: 0
+  border: 0
+  scroll-behavior: smooth
+
+ul, ol, li
+  list-style: none
+
+h1, h2, h3, h4, h5, h6
+  margin: 0
+  padding: 0
+  margin-block-end: 0
+  margin-block-start: 0
+
+button,
+input
+  font-size: inherit
+  outline: none
+
+select,
+option
+  appearance: none
+  border: none
+  outline: none
+
+.wrapper
+  width: 100%
+  min-height: 100%
+  overflow: hidden
+  display: flex
+  flex-direction: column
+
+._container
+  max-width: $maxWidthContainer+px
+  margin: 0 auto
+  @media ( max-width: $md1+px )
+    max-width: none
+  @media ( max-width: $md2+px )
+    max-width: none
+  @media ( max-width: $md3+px )
+    max-width: none
+  @media ( max-width: $md4+px )
+    max-width: none
+
+.img-wrapper
+  position: absolute
+  width: 100%
+  height: 100%
+  z-index: -1
+.block
+  position: relative
+  display: flex
+  flex: 0 0 auto
+  align-items: center
+  justify-content: flex-end
+  overflow: hidden
+  transition: all 0.5s
+  &:hover
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)
+    transition: all 0.5s
+.hidden
+  overflow: hidden
+  height: 0
+
+.mini-text
+  font-size: 12px
+  line-height: 1.2
+  font-weight: 400
+  letter-spacing: -0.005em
+  color: #6b6b6b

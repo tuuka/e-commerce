@@ -1,28 +1,167 @@
-<table>
-    <thead>
-    <tr>
-        <th>id</th>
-        <th>sku</th>
-        <th>name</th>
-        <th>description</th>
-        <th>price</th>
-        <th>img</th>
-        <th>active</th>
-        <th>quantity</th>
-        <th>image</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let tempProduct of products">
-        <td>{{ tempProduct.id }}</td>
-        <td>{{ tempProduct.sku }}</td>
-        <td>{{ tempProduct.name }}</td>
-        <td>{{ tempProduct.description }}</td>
-        <td>{{ tempProduct.unitPrice }}</td>
-        <td>{{ tempProduct.imageUrl }}</td>
-        <td>{{ tempProduct.active }}</td>
-        <td>{{ tempProduct.unitsInStock }}</td>
-        <td><img style="height: 50px; width: auto" src="{{tempProduct.imageUrl}}" alt="product img"/></td>
-    </tr>
-    </tbody>
-</table>
+<div class="products__contain _container">
+
+    <div class="products__main-block main-block">
+        <div class="main-block__control">
+            <form action="#" class="main-block__form">
+                <label for="pcs" class="main-block__label">Sort by</label>
+                <select  id="pcs" class="main-block__select">
+                    <option value="1" selected="selected">Date</option>
+                    <option value="2">Top</option>
+                    <option value="2">Sale</option>
+                </select>
+            </form>
+<!--            <div class="main-block__nav">-->
+<!--                <p class="main-block__nav-label">Showing {{page.number * page.size + 1}} - {{(1+page.number) * page.size + 1}} of {{page.totalElements}} results</p>-->
+<!--                <ul class="main-block__nav-items">-->
+<!--                    <li class="main-block__nav-item" [class._arrow-left]="page.number>2" [class._active] ="page.number===0" (click)="onPrev(links)">{{page.number<2?page.number:''}}</li>-->
+<!--                    <li class="main-block__nav-item" [class._active] ="" (click)="onClick()">{{page.number}}</li>-->
+<!--                    <li class="main-block__nav-item" [class._active] ="" (click)="onClick()">{{page.number+1}}</li>-->
+<!--                    <li class="main-block__nav-item _arrow-right" (click)="onNext(page)"></li>-->
+<!--                </ul>-->
+<!--            </div>-->
+        </div>
+        <div class="main-block__cards_wrapper">
+            <div *ngFor="let product of products">
+                <app-product-card [product]="product"></app-product-card>
+            </div>
+        </div>
+    </div>
+<!--    <aside class="products__aside_block">-->
+<!--        <div class="categories">-->
+<!--            <ul class="categories__block prod-title">-->
+<!--                <span>categories</span>-->
+<!--                <li>-->
+<!--                    <button class="categories__block_title">new</button>-->
+<!--                    <ul class="categories__block_links">-->
+<!--                        <li><a href="" class="categories__block_links-link">women</a></li>-->
+<!--                        <li><a href="" class="categories__block_links-link">men</a></li>-->
+<!--                    </ul>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                    <button class="categories__block_title">designers</button>-->
+<!--                    <ul class="categories__block_links">-->
+<!--                        <li><a href="" class="categories__block_links-link">women</a></li>-->
+<!--                        <li><a href="" class="categories__block_links-link">men</a></li>-->
+<!--                    </ul>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                    <button class="categories__block_title">women</button>-->
+<!--                    <ul class="categories__block_links">-->
+<!--                        <li><a href="" class="categories__block_links-link">Clothes</a></li>-->
+<!--                        <li><a href="" class="categories__block_links-link">Shoes</a></li>-->
+<!--                    </ul>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                    <button class="categories__block_title">men</button>-->
+<!--                    <ul class="categories__block_links">-->
+<!--                        <li><a href="" class="categories__block_links-link">Clothes</a></li>-->
+<!--                        <li><a href="" class="categories__block_links-link">Shoes</a></li>-->
+<!--                    </ul>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                    <button class="categories__block_title">clearance</button>-->
+<!--                    <ul class="categories__block_links">-->
+<!--                        <li><a href="" class="categories__block_links-link">accessories</a></li>-->
+<!--                        <li><a href="" class="categories__block_links-link">Shoes</a></li>-->
+<!--                        <li><a href="" class="categories__block_links-link">Clothes</a></li>-->
+<!--                    </ul>-->
+<!--                </li>-->
+<!--            </ul>-->
+<!--        </div>-->
+<!--        <div class="filter">-->
+<!--            <div class="filter__line"></div>-->
+<!--            <div class="filter__contant">-->
+<!--                <p class="filter__contant_text">Price</p>-->
+<!--                <span class="filter__contant_text" id="skip-value-lower">0</span>-->
+<!--                <span>-</span>-->
+<!--                <span class="filter__contant_text" id="skip-value-upper">200</span>-->
+<!--                <button class="btn-filter">filter</button>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="select">-->
+<!--            <div class="select__title prod-title">Select your size</div>-->
+<!--            <div class="select__wrapper">-->
+<!--                <label class="select__item">-->
+<!--                    <input type="checkbox" value="xs" id="xs"></input>-->
+<!--                    <span class="_active">xs</span>-->
+<!--                </label>-->
+<!--                <label class="select__item">-->
+<!--                    <input type="checkbox" value="s" id="s"></input>-->
+<!--                    <span>s</span>-->
+<!--                </label>-->
+<!--                <label class="select__item">-->
+<!--                    <input type="checkbox" value="m" id="m"></input>-->
+<!--                    <span>m</span>-->
+<!--                </label>-->
+<!--                <label class="select__item">-->
+<!--                    <input type="checkbox" value="l" id="l"></input>-->
+<!--                    <span>l</span>-->
+<!--                </label>-->
+<!--                <label class="select__item">-->
+<!--                    <input type="checkbox" value="xl" id="xl"></input>-->
+<!--                    <span>xl</span>-->
+<!--                </label>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <ul class="sale prod-title">-->
+<!--            <span>on sale</span>-->
+<!--            <li class="card-mini">-->
+<!--                <a href="#" class="card__img">-->
+<!--                    <img src="./img/good14.jpg" class="goods-img" alt="" />-->
+<!--                </a>-->
+<!--                <div class="card__info">-->
+<!--                    <a class="goods-name">PINTUCK TANK</a>-->
+<!--                    <p class="goods-price">$96.55</p>-->
+<!--                </div>-->
+<!--            </li>-->
+<!--            <li class="card-mini">-->
+<!--                <a href="#" class="card__img">-->
+<!--                    <img src="./img/good15.jpg" class="goods-img" alt="" />-->
+<!--                </a>-->
+<!--                <div class="card__info">-->
+<!--                    <a class="goods-name">PINTUCK TANK</a>-->
+<!--                    <p class="goods-price">$96.55</p>-->
+<!--                </div>-->
+<!--            </li>-->
+<!--            <li class="card-mini">-->
+<!--                <a href="#" class="card__img">-->
+<!--                    <img src="./img/good16.jpg" class="goods-img" alt="" />-->
+<!--                </a>-->
+<!--                <div class="card__info">-->
+<!--                    <a class="goods-name">PINTUCK TANK</a>-->
+<!--                    <p class="goods-price">$96.55</p>-->
+<!--                </div>-->
+<!--            </li>-->
+<!--        </ul>-->
+<!--        <ul class="featured prod-title">-->
+<!--            <span>featured products</span>-->
+<!--            <li class="card-mini">-->
+<!--                <a href="#" class="card__img">-->
+<!--                    <img src="./img/good17.jpg" class="goods-img" alt="" />-->
+<!--                </a>-->
+<!--                <div class="card__info">-->
+<!--                    <a class="goods-name">PINTUCK TANK</a>-->
+<!--                    <p class="goods-price">$96.55</p>-->
+<!--                </div>-->
+<!--            </li>-->
+<!--            <li class="card-mini">-->
+<!--                <a href="#" class="card__img">-->
+<!--                    <img src="./img/good18.jpg" class="goods-img" alt="" />-->
+<!--                </a>-->
+<!--                <div class="card__info">-->
+<!--                    <a class="goods-name">PINTUCK TANK</a>-->
+<!--                    <p class="goods-price">$96.55</p>-->
+<!--                </div>-->
+<!--            </li>-->
+<!--            <li class="card-mini">-->
+<!--                <a href="#" class="card__img">-->
+<!--                    <img src="./img/good19.jpg" class="goods-img" alt="" />-->
+<!--                </a>-->
+<!--                <div class="card__info">-->
+<!--                    <a class="goods-name">PINTUCK TANK</a>-->
+<!--                    <p class="goods-price">$96.55</p>-->
+<!--                </div>-->
+<!--            </li>-->
+<!--        </ul>-->
+<!--    </aside>-->
+</div>

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@CrossOrigin(origins = "${app.api_cross_origins}")
+@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/api/products", produces = {"application/hal+json"})

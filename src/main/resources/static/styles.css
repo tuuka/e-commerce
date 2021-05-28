@@ -1,0 +1,230 @@
+@font-face {
+  font-family: "AEmpirial";
+  font-display: swap;
+  src: url('resources/AEmpirial.woff') format("woff"), url('resources/AEmpirial.woff2') format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "ArialMT";
+  font-display: swap;
+  src: url('resources/ArialMT-Bold.woff') format("woff"), url('resources/ArialMT-Bold.woff2') format("woff2");
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face {
+  font-family: "ArialMT";
+  font-display: swap;
+  src: url('resources/ArialMT-Italic.woff') format("woff"), url('resources/ArialMT-Italic.woff2') format("woff2");
+  font-weight: 400;
+  font-style: italic;
+}
+@font-face {
+  font-family: "ArialMT";
+  font-display: swap;
+  src: url('resources/ArialMT.woff') format("woff"), url('resources/ArialMT.woff2') format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "BelloScript";
+  font-display: swap;
+  src: url('resources/BelloScript.woff') format("woff"), url('resources/BelloScript.woff2') format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Helvetica";
+  font-display: swap;
+  src: url('resources/Helvetica-Regular.woff') format("woff"), url('resources/Helvetica-Regular.woff2') format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "HelveticaNeueLTStdBdCn";
+  font-display: swap;
+  src: url('resources/HelveticaNeueLTStdBdCn.woff') format("woff"), url('resources/HelveticaNeueLTStdBdCn.woff2') format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "HelveticaNeueLTStdBlkCn";
+  font-display: swap;
+  src: url('resources/HelveticaNeueLTStdBlkCn.woff') format("woff"), url('resources/HelveticaNeueLTStdBlkCn.woff2') format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "HelveticaNeueLTStdCn";
+  font-display: swap;
+  src: url('resources/HelveticaNeueLTStdCn.woff') format("woff"), url('resources/HelveticaNeueLTStdCn.woff2') format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "HelveticaNeueLTStdHvCn";
+  font-display: swap;
+  src: url('resources/HelveticaNeueLTStdHvCn.woff') format("woff"), url('resources/HelveticaNeueLTStdHvCn.woff2') format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "HelveticaNeueLTStdLt";
+  font-display: swap;
+  src: url('resources/HelveticaNeueLTStdLt.woff') format("woff"), url('resources/HelveticaNeueLTStdLt.woff2') format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "HelveticaNeueLTStdLtCn";
+  font-display: swap;
+  src: url('resources/HelveticaNeueLTStdLtCn.woff') format("woff"), url('resources/HelveticaNeueLTStdLtCn.woff2') format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "HelveticaNeueLTStdLtIt";
+  font-display: swap;
+  src: url('resources/HelveticaNeueLTStdLtIt.woff') format("woff"), url('resources/HelveticaNeueLTStdLtIt.woff2') format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "HelveticaNeueLTStdTh";
+  font-display: swap;
+  src: url('resources/HelveticaNeueLTStdTh.woff') format("woff"), url('resources/HelveticaNeueLTStdTh.woff2') format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "HelveticaNeueLTStdThCn";
+  font-display: swap;
+  src: url('resources/HelveticaNeueLTStdThCn.woff') format("woff"), url('resources/HelveticaNeueLTStdThCn.woff2') format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "HelveticaNeueLTStdUltLtCn";
+  font-display: swap;
+  src: url('resources/HelveticaNeueLTStdUltLtCn.woff') format("woff"), url('resources/HelveticaNeueLTStdUltLtCn.woff2') format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "icomoon";
+  font-display: swap;
+  src: url('resources/icomoon.woff') format("woff"), url('resources/icomoon.woff2') format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Impact";
+  font-display: swap;
+  src: url('resources/Impact.woff') format("woff"), url('resources/Impact.woff2') format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "LuxuryRoyaleJF";
+  font-display: swap;
+  src: url('resources/LuxuryRoyaleJF.woff') format("woff"), url('resources/LuxuryRoyaleJF.woff2') format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+a {
+  text-decoration: none;
+}
+button {
+  border: none;
+  cursor: pointer;
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  scroll-behavior: smooth;
+}
+ul, ol, li {
+  list-style: none;
+}
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  padding: 0;
+  margin-block-end: 0;
+  margin-block-start: 0;
+}
+button,
+input {
+  font-size: inherit;
+  outline: none;
+}
+select,
+option {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  border: none;
+  outline: none;
+}
+.wrapper {
+  width: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+._container {
+  max-width: 970px;
+  margin: 0 auto;
+}
+@media (max-width: 980px) {
+  ._container {
+    max-width: none;
+  }
+}
+@media (max-width: 767.98px) {
+  ._container {
+    max-width: none;
+  }
+}
+@media (max-width: 641.98px) {
+  ._container {
+    max-width: none;
+  }
+}
+@media (max-width: 479.98px) {
+  ._container {
+    max-width: none;
+  }
+}
+.img-wrapper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+.block {
+  position: relative;
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  overflow: hidden;
+  transition: all 0.5s;
+}
+.block:hover {
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  transition: all 0.5s;
+}
+.hidden {
+  overflow: hidden;
+  height: 0;
+}
+.mini-text {
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  color: #6b6b6b;
+}

@@ -6,11 +6,17 @@ import {AppComponent} from './app.component';
 import {ProductListComponent} from './components/product-list/product-list.component';
 import {HttpClientModule} from '@angular/common/http'
 import {ProductService} from "./services/product.service";
+import { HeaderComponent } from './components/header/header.component';
+import { MainComponent } from './components/main/main.component';
+import { ProductCardComponent } from './components/product-card/product-card.component';
 
 @NgModule({
     declarations: [
         AppComponent,
-        ProductListComponent
+        ProductListComponent,
+        HeaderComponent,
+        MainComponent,
+        ProductCardComponent
     ],
     imports: [
         BrowserModule,
