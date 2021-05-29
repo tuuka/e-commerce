@@ -9,6 +9,7 @@ import {ProductService} from "./services/product.service";
 import { HeaderComponent } from './components/header/header.component';
 import { MainComponent } from './components/main/main.component';
 import { ProductCardComponent } from './components/product-card/product-card.component';
+import {NgxPaginationModule} from "ngx-pagination";
 
 @NgModule({
     declarations: [
@@ -16,12 +17,13 @@ import { ProductCardComponent } from './components/product-card/product-card.com
         ProductListComponent,
         HeaderComponent,
         MainComponent,
-        ProductCardComponent
+        ProductCardComponent,
     ],
     imports: [
         BrowserModule,
         AppRoutingModule,
-        HttpClientModule
+        HttpClientModule,
+        NgxPaginationModule,
     ],
     providers: [ProductService],
     bootstrap: [AppComponent]

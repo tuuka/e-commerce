@@ -21,8 +21,8 @@ const Menu = [
         title: 'news',
         subItems: [
             {link:'#',title: 'first'},
-            {link:'#',title: 'second'},
-            {link:'#',title: 'third'}
+            // {link:'#',title: 'second'},
+            // {link:'#',title: 'third'}
         ]
     },
     {
@@ -36,17 +36,17 @@ const Menu = [
         title: 'women',
         subItems: [
             {link:'#',title: 'first'},
-            {link:'#',title: 'second'},
-            {link:'#',title: 'third'},
-            {link:'#',title: 'third'}
+            // {link:'#',title: 'second'},
+            // {link:'#',title: 'third'},
+            // {link:'#',title: 'third'}
         ]
     },
     {
         title: 'men',
         subItems: [
             {link:'#',title: 'first'},
-            {link:'#',title: 'second'},
-            {link:'#',title: 'third'},
+            // {link:'#',title: 'second'},
+            // {link:'#',title: 'third'},
         ]
     },
     {

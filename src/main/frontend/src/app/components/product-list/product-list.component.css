@@ -1,0 +1,141 @@
+
+.products {
+    display: flex;
+}
+
+.products__main-block {
+    max-width: 740px;
+}
+
+.products__control {
+    display: flex;
+    font-family: ArialMT, serif;
+    font-size: 14px;
+    letter-spacing: -.005em;
+    color: #4d4d4d;
+    padding: 0 30px 0 10px;
+    margin-bottom: 15px;
+}
+
+.sort-form {
+}
+
+.sort-form__label {
+    margin-right: 10px;
+}
+
+.sort-form__select {
+    width: 100px;
+    height: 31px;
+    font-family: ArialMT, serif;
+    /*font-size: 11px;*/
+    letter-spacing: -.005em;
+    color: #4d4d4d;
+    padding-left: 10px;
+    background: #f4f4f4 url(~src/assets/images/icons/select.jpg) no-repeat right;
+    cursor: pointer;
+}
+
+.pagination-control__wrapper {
+    display: flex;
+    align-items: center;
+    /*font-size: 15px;*/
+    letter-spacing: -.01em;
+    color: #4d4d4d;
+    margin-left: auto;
+}
+
+.pagination-control__label {
+    margin-right: 11px;
+}
+
+:host ::ng-deep .ngx-pagination {
+    display: flex;
+    margin-left: 0;
+    margin-bottom: 0;
+}
+
+/*:host ::ng-deep .ngx-pagination::before, :host ::ng-deep .ngx-pagination::after {*/
+/*    content: ' ';*/
+/*    display: inline-block;*/
+/*}*/
+
+.ngx-pagination::after {
+    clear: both;
+}
+
+:host ::ng-deep .ngx-pagination li {
+    width: 30px;
+    height: 31px;
+    background-color: #f4f4f4;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+    margin-left: 4px;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    margin-right: 0;
+    padding: 2px;
+}
+
+.ngx-pagination a:hover,
+.ngx-pagination button:hover {
+    background: #e6e6e6;
+}
+
+:host ::ng-deep .ngx-pagination .current {
+    background: #e5e5e5;
+    padding: 2px;
+    color: #000000;
+}
+
+:host ::ng-deep .ngx-pagination .disabled {
+    padding: 0;
+    color: #cacaca;
+    cursor: default;
+}
+
+.ngx-pagination .disabled:hover {
+    background: transparent;
+}
+
+:host ::ng-deep .ngx-pagination a, :host ::ng-deep .ngx-pagination button {
+    cursor: pointer;
+    color: #0a0a0a;
+    display: block;
+    padding: 0;
+    border-radius: 0;
+}
+
+:host ::ng-deep .ngx-pagination .pagination-previous,
+:host ::ng-deep .ngx-pagination .pagination-next {
+    padding: 0;
+}
+
+:host ::ng-deep .ngx-pagination .pagination-previous a::before,
+:host ::ng-deep .ngx-pagination .pagination-previous.disabled::before {
+    content: '«';
+    display: block;
+    margin-right: 0;
+    font-size: 2em;
+}
+
+:host ::ng-deep .ngx-pagination .pagination-next a::after,
+:host ::ng-deep .ngx-pagination .pagination-next.disabled::after {
+    content: '»';
+    display: block;
+    font-size: 2em;
+    margin-left: 0;
+}
+
+
+.products__cards_wrapper {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    border-top: 1px solid #d6d6d6;
+    margin-right: 20px;
+}

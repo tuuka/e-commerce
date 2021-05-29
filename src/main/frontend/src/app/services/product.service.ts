@@ -13,11 +13,10 @@ export class ProductService {
     constructor(private httpClient: HttpClient) {
     }
 
-    getProductList(params:HttpParams): Observable<ProductsResponse> {
-        let url = (params.has("sku") || params.has("name"))? `${this.baseUrl}/search` : this.baseUrl;
-        return this.httpClient.get<ProductsResponse>(url, {responseType: "json", params: params});
+    getProductList(parameters:HttpParams): Observable<ProductsResponse> {
+        let url = (parameters.get("sku") || parameters.get("name"))? `${this.baseUrl}/search` : this.baseUrl;
+        return this.httpClient.get<ProductsResponse>(url, {responseType: "json", params: parameters});
     }
-
 
 }
 

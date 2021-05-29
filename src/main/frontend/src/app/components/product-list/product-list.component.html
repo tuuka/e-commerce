@@ -1,15 +1,30 @@
-<div class="products__contain _container">
-
-    <div class="products__main-block main-block">
-        <div class="main-block__control">
-            <form action="#" class="main-block__form">
-                <label for="pcs" class="main-block__label">Sort by</label>
-                <select  id="pcs" class="main-block__select">
+<div class="products _container">
+    <div class="products__main-block">
+        <div class="products__control">
+            <form action="#" class="sort-form">
+                <label for="pcs" class="sort-form__label">Sort by</label>
+                <select  id="pcs" class="sort-form__select">
                     <option value="1" selected="selected">Date</option>
                     <option value="2">Top</option>
                     <option value="2">Sale</option>
                 </select>
             </form>
+
+            <div class="pagination-control__wrapper">
+                <p class="pagination-control__label">Showing {{page.number * page.size + 1}} - {{(1+page.number) * page.size}} of {{page.totalElements}} results</p>
+                <pagination-controls
+                        id="upper_pagination"
+                        (pageChange)="pageChanged($event)"
+                        [maxSize]="4"
+                        [directionLinks]="true"
+                        [autoHide]="true"
+                        [responsive]="true"
+                        previousLabel=""
+                        nextLabel=""
+                ></pagination-controls>
+            </div>
+
+
 <!--            <div class="main-block__nav">-->
 <!--                <p class="main-block__nav-label">Showing {{page.number * page.size + 1}} - {{(1+page.number) * page.size + 1}} of {{page.totalElements}} results</p>-->
 <!--                <ul class="main-block__nav-items">-->
@@ -20,8 +35,8 @@
 <!--                </ul>-->
 <!--            </div>-->
         </div>
-        <div class="main-block__cards_wrapper">
-            <div *ngFor="let product of products">
+        <div class="products__cards_wrapper">
+            <div *ngFor="let product of products! | paginate: { id:'upper_pagination', itemsPerPage: page.size, currentPage: page.number+1, totalItems: page.totalElements }">
                 <app-product-card [product]="product"></app-product-card>
             </div>
         </div>

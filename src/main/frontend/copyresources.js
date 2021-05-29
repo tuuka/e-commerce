@@ -25,4 +25,5 @@ function copyresources(source, target) {
     shell.cp('-R', source + "/*.html", target + "/templates/");
     shell.mkdir(target + "/static/resources");
     shell.cp('-R', source + "/resources/*", target + "/static/resources/");
+    shell.cp('-R', source + "/assets/*", target + "/static/");
 }
