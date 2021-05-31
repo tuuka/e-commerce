@@ -23,7 +23,7 @@ function copyresources(source, target) {
     shell.cp('-R', source + "/*.js", target + "/static/");
     shell.cp('-R', source + "/*.css", target + "/static/");
     shell.cp('-R', source + "/*.html", target + "/templates/");
-    shell.mkdir(target + "/static/resources");
-    shell.cp('-R', source + "/resources/*", target + "/static/resources/");
-    shell.cp('-R', source + "/assets/*", target + "/static/");
+    shell.mkdir(target + "/static/assets");
+    // shell.cp('-R', source + "/resources/*", target + "/static/resources/");
+    shell.cp('-R', source + "/assets/*", target + "/static/assets/");
 }

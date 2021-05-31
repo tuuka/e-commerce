@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.Objects;
 
 
@@ -33,7 +32,7 @@ public class ProductService extends BaseCrudAbstractService<Product, Long, Produ
         if (repository.findBySku(product.getSku()).isPresent())
             throw new IllegalStateException(String
                     .format("Product must have unique SKU. " +
-                            "Product with SKU ='%s' already exists",
+                                    "Product with SKU ='%s' already exists",
                             product.getSku()));
         if (product.getCategory() != null) this.validateCategory(product);
         return repository.save(product);
@@ -79,5 +78,9 @@ public class ProductService extends BaseCrudAbstractService<Product, Long, Produ
 
     public Page<Product> findAllBySkuOrName(String sku, String name, Pageable pageable) {
         return repository.findAllBySkuContainsAndNameContains(sku, name, pageable);
+    }
+
+    public Page<Product> findAllByCategory(Long id, Pageable pageable) {
+        return repository.findByCategoryId(id, pageable);
     }
 }

@@ -1,14 +1,20 @@
 package net.tuuka.ecommerce.controller;
 
 import lombok.RequiredArgsConstructor;
+import net.tuuka.ecommerce.controller.dto.CategoryRequestRepresentation;
 import net.tuuka.ecommerce.controller.util.ProductCategoryModelAssembler;
 import net.tuuka.ecommerce.controller.util.ProductModelAssembler;
-import net.tuuka.ecommerce.controller.dto.CategoryRequestRepresentation;
+import net.tuuka.ecommerce.entity.Product;
 import net.tuuka.ecommerce.entity.ProductCategory;
 import net.tuuka.ecommerce.service.ProductCategoryService;
+import net.tuuka.ecommerce.service.ProductService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,12 +27,15 @@ import javax.validation.Valid;
 public class ProductCategoryRestController {
 
     private final ProductCategoryService categoryService;
+    private final ProductService productService;
     private final ProductCategoryModelAssembler categoryAssembler;
     private final ProductModelAssembler productAssembler;
+    private final PagedResourcesAssembler<Product> pagedResourcesAssembler;
 
     @GetMapping
     public CollectionModel<?> getCategories() {
-        return categoryAssembler.toCollectionModel(categoryService.findAll());
+        return categoryAssembler
+                .toCollectionModel(categoryService.findAll());
     }
 
     @GetMapping("/{id}")
@@ -35,8 +44,12 @@ public class ProductCategoryRestController {
     }
 
     @GetMapping("/{id}/products")
-    public CollectionModel<?> getProducts(@PathVariable("id") Long id) {
-        return productAssembler.toCollectionModel(categoryService.findById(id).getProducts());
+    public ResponseEntity<PagedModel<EntityModel<Product>>> getProducts(
+            @PathVariable("id") Long id,
+            @PageableDefault(size = 20) Pageable pageable) {
+        return ResponseEntity.ok().body(pagedResourcesAssembler
+                .toModel(productService.findAllByCategory(id, pageable),
+                        productAssembler));
     }
 
     @GetMapping("/search")
@@ -67,8 +80,8 @@ public class ProductCategoryRestController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCategory(@PathVariable("id") Long id,
                                             @RequestParam(name = "force",
-                                                        defaultValue = "false")
-                                                        boolean force) {
+                                                    defaultValue = "false")
+                                                    boolean force) {
         EntityModel<ProductCategory> categoryModel = categoryAssembler.toModel(
                 force ? categoryService.forceDeleteCategory(id) : categoryService.deleteById(id)
         );

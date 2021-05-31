@@ -1,16 +1,10 @@
 <div *ngIf="product" class="card">
-    <a href="#" class="card__img">
-        <img src="assets/images/products/{{product.sku}}.jpg" class="goods-img" alt="{{product.sku}}">
+    <a href="#" class="card__img-link">
+        <img src="assets/images/products/{{product.sku}}.jpg" class="card__img" alt="{{product.sku}}">
     </a>
     <div class="card__info">
-        <a href="{{product._links.self.href}}" class="goods-name">{{product.name}}</a>
-        <div class="goods-price">{{product.unitPrice | currency}}</div>
-        <a class="card-button btn">
-            add to card
-            <span class="btn-icon">
-            <span></span>
-            <span></span>
-        </span>
-        </a>
+        <a href="{{product._links.self.href}}" class="card__name">{{product.name}}</a>
+        <div class="card__price">{{product.unitPrice | currency}}</div>
+        <button class="card__button">add to card</button>
     </div>
 </div>

@@ -5,106 +5,83 @@
   width: 220px
   height: 395px
   background-color: #f7f7f7
-  margin-top: 100px
+  margin-top: 50px
   margin-right: 10px
   margin-left: 10px
   transition: all 0.8s
   z-index: 100
-  @media (min-width: 992px)
-    &:hover
-      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22)
-      transition: 0.8s all
-  @media (max-width: $md1+px)
-    &:last-child
-      display: none
-  @media (max-width: $md2+px)
-    margin-left: 5px
-    margin-right: 5px
-  @media (max-width: $md3+px)
-    height: 415px
-    width: 275px
-    &:nth-child(3)
-      display: none
-  @media (max-width: $md4+px)
-    &:nth-child(2)
-      display: none
+  &:hover
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22)
+    transition: 0.8s all
 
-  &__img
+  &__img-link
     display: block
     height: 290px
     width: 100%
     overflow: hidden
     margin-bottom: 6px
     cursor: pointer
-    @media (max-width: $md3+px)
-    // height: 360px
-    .goods-img
-      width: 100%
-
-      img
-        height: 100%
-        width: 100%
-        display: block
+  &__img
+    width: 100%
 
   &__info
     text-align: center
     width: 100%
 
-    .goods-name
-      display: inline-block
-      position: relative
-      font-size: 12px
-      line-height: 1.2
-      font-weight: 400
-      text-transform: uppercase
-      letter-spacing: -0.01em
-      color: #373737
-      margin-bottom: 6px
-      cursor: pointer
+  &__name
+    display: inline-block
+    position: relative
+    font-size: 12px
+    line-height: 1.2
+    font-weight: 400
+    text-transform: uppercase
+    letter-spacing: -0.01em
+    color: #373737
+    margin-bottom: 6px
+    cursor: pointer
 
-      &:after
-        display: block
-        position: absolute
-        left: 0
-        width: 0
-        height: 2px
-        background-color: $mainColor
-        content: ""
-        transition: width 0.5s ease-out
+    &:after
+      display: block
+      position: absolute
+      left: 0
+      width: 0
+      height: 2px
+      background-color: $mainColor
+      content: ""
+      transition: width 0.5s ease-out
 
-      &:hover:after,
-      &:focus:after
-        width: 100%
+    &:hover:after,
+    &:focus:after
+      width: 100%
 
-      @media (max-width: $md3+px)
-        +adaptiv-font(18, 12, 0)
+  &__price
+    font-size: 23px
+    line-height: 1.2
+    font-weight: 400
+    text-transform: uppercase
+    letter-spacing: -0.01em
+    color: #373737
+    margin-bottom: 6px
 
-    .goods-price
-      font-size: 23px
-      line-height: 1.2
-      font-weight: 400
-      text-transform: uppercase
-      letter-spacing: -0.01em
-      color: #373737
-      margin-bottom: 6px
-      @media (max-width: $md3+px)
-        +adaptiv-font(27.5, 22, 0)
+  &__button
+    margin: 0 auto 15px
+    width: 7em
+    height: 2em
+    cursor: pointer
+    background-color: $mainColor
+    display: flex
+    align-items: center
+    justify-content: center
+    font-size: 14px
+    font-weight: 400
+    text-transform: uppercase
+    color: #fff
+    box-shadow: 0 14px 28px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.22)
+    transition: all .5s
 
-    .card-button
-      width: 120px
-      height: 32px
-      font-size: 14px
-      margin: 0 auto 15px
-      @media (max-width: $md3+px)
-        width: 9em
-        height: 2.7em
-        line-height: 30px
-        +adaptiv-font(16, 14, 0)
 
-      .btn-icon
-        margin-left: 5px
-        @media (max-width: $md3+px)
-          margin-left: 10px
+
+
 
   .sale
     position: relative

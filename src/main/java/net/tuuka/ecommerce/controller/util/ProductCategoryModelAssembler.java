@@ -30,7 +30,7 @@ public class ProductCategoryModelAssembler implements
                 .getCategory(entity.getId())).withSelfRel());
         if (entity.getProducts() != null)
             entityModel.add(linkTo(methodOn(controllerClass)
-                    .getProducts(entity.getId())).withRel("products"));
+                    .getProducts(entity.getId(), null)).withRel("products"));
         entityModel.add(linkTo(methodOn(controllerClass)
                 .getCategories()).withRel("categories"));
 

@@ -1,7 +1,8 @@
-
-.products {
-    display: flex;
+app-select{
+    margin-right: 1.5em;
 }
+
+
 
 .products__main-block {
     max-width: 740px;
@@ -9,7 +10,7 @@
 
 .products__control {
     display: flex;
-    font-family: ArialMT, serif;
+    font-family: Arial, serif;
     font-size: 14px;
     letter-spacing: -.005em;
     color: #4d4d4d;
@@ -27,7 +28,7 @@
 .sort-form__select {
     width: 100px;
     height: 31px;
-    font-family: ArialMT, serif;
+    font-family: Arial, serif;
     /*font-size: 11px;*/
     letter-spacing: -.005em;
     color: #4d4d4d;
@@ -43,10 +44,6 @@
     letter-spacing: -.01em;
     color: #4d4d4d;
     margin-left: auto;
-}
-
-.pagination-control__label {
-    margin-right: 11px;
 }
 
 :host ::ng-deep .ngx-pagination {

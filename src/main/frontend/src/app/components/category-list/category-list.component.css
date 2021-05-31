@@ -1,0 +1,35 @@
+.categories {
+    margin-top: 2px;
+    margin-bottom: 30px;
+    height: 230px;
+}
+
+.categories__block {
+    font-size: 13px;
+    line-height: 31px;
+    text-transform: uppercase;
+}
+
+.categories__block span {
+    letter-spacing: .2em;
+    display: block;
+    font-size: 15px;
+    color: #fff;
+    background-color: #000;
+    padding: 0 10px;
+}
+
+.category__title {
+    display: block;
+    width: 100%;
+    line-height: 26px;
+    color: #727272;
+    border-bottom: 1px solid #d6d6d6;
+    text-align: left;
+    text-transform: uppercase;
+    outline: 0;
+}
+
+._active {
+    font-weight: bold;
+}
