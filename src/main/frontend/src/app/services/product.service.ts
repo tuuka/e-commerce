@@ -18,14 +18,12 @@ export class ProductService {
     }
 
     getProductList(category_id:number, parameters: HttpParams): Observable<ProductsResponse> {
-        console.log(`category_id=${category_id}; \nparameters:\n${parameters}`);
         let url;
         if (category_id) {
             url = `${this.baseCategoriesUrl}/${category_id}/products`
         } else {
             url = (parameters.get("sku") || parameters.get("name")) ? `${this.baseProductsUrl}/search` : this.baseProductsUrl;
         }
-        console.log(url);
         return this.httpClient.get<ProductsResponse>(url, {responseType: "json", params: parameters});
     }
 

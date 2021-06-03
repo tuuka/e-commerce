@@ -4,13 +4,13 @@
     height: 230px;
 }
 
-.categories__block {
+.categories {
     font-size: 13px;
     line-height: 31px;
     text-transform: uppercase;
 }
 
-.categories__block span {
+.categories a span {
     letter-spacing: .2em;
     display: block;
     font-size: 15px;

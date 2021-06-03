@@ -3,22 +3,22 @@ mat-label {
 }
 
 .mat-form-field-wrapper, .mat-form-field-flex {
-    margin: 0 !important;
-    padding: 0 !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
 }
 
-.mat-form-field-infix{
-    width: 6em !important;
-}
+/*.mat-form-field-infix{*/
+/*    width: 6em !important;*/
+/*}*/
 
-.mat-form-field-underline {
-    bottom: 0!important;
-}
+/*.mat-form-field-underline {*/
+/*    bottom: 0!important;*/
+/*}*/
 
-.mat-form-field-infix {
-    padding: 0.2em 0 0.45em 0 !important;
-}
+/*.mat-form-field-infix {*/
+/*    padding: 0.2em 0 0.45em 0 !important;*/
+/*}*/
 
-.mat-select-arrow-wrapper {
-    transform: translateY(-10%) !important;
-}
+/*.mat-select-arrow-wrapper {*/
+/*    transform: translateY(-10%) !important;*/
+/*}*/

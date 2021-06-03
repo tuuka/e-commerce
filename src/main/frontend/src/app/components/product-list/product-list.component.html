@@ -1,21 +1,22 @@
 <div class="products__main-block">
     <div class="products__control">
-        <app-select (valueChangedEvent)="sortProducts($event)"
+        <app-select [width]="'6em'"
+                    (valueChangedEvent)="sortProducts($event)"
                     [selectOptions]="sortOptions"
                     [selected]="sortOptions[0].value"
                     [label]="'Sort by:'"
         ></app-select>
-        <app-select [width]="'3em'"
+        <app-select [width]="'6em'"
                     (valueChangedEvent)="pageSizeChanged($event)"
                     [selectOptions]="pageSizeOptions"
                     [selected]="pageSizeOptions[0].value"
                     [label]="'Page size:'"
         ></app-select>
         <div class="pagination-control__wrapper">
-            <p class="pagination-control__label">Showing {{page.number * page.size + 1}}
-                - {{(1 + page.number < page.totalPages) ? (1 + page.number) * page.size : page.totalElements}}
-                of {{page.totalElements}} results</p>
-            <pagination-controls
+            <p class="pagination-control__label">Showing <b>{{page.number * page.size + 1}}
+                - {{(1 + page.number < page.totalPages) ? (1 + page.number) * page.size : page.totalElements}}</b>
+                of <b>{{page.totalElements}}</b> results</p>
+            <pagination-controls class="pagination-control__body"
                     id="upper_pagination"
                     (pageChange)="pageChanged($event)"
                     [maxSize]="4"
@@ -38,142 +39,3 @@
     </div>
 </div>
 
-
-<!--    <aside class="products__aside_block">-->
-<!--        <div class="categories">-->
-<!--            <ul class="categories__block prod-title">-->
-<!--                <span>categories</span>-->
-<!--                <li>-->
-<!--                    <button class="categories__block_title">new</button>-->
-<!--                    <ul class="categories__block_links">-->
-<!--                        <li><a href="" class="categories__block_links-link">women</a></li>-->
-<!--                        <li><a href="" class="categories__block_links-link">men</a></li>-->
-<!--                    </ul>-->
-<!--                </li>-->
-<!--                <li>-->
-<!--                    <button class="categories__block_title">designers</button>-->
-<!--                    <ul class="categories__block_links">-->
-<!--                        <li><a href="" class="categories__block_links-link">women</a></li>-->
-<!--                        <li><a href="" class="categories__block_links-link">men</a></li>-->
-<!--                    </ul>-->
-<!--                </li>-->
-<!--                <li>-->
-<!--                    <button class="categories__block_title">women</button>-->
-<!--                    <ul class="categories__block_links">-->
-<!--                        <li><a href="" class="categories__block_links-link">Clothes</a></li>-->
-<!--                        <li><a href="" class="categories__block_links-link">Shoes</a></li>-->
-<!--                    </ul>-->
-<!--                </li>-->
-<!--                <li>-->
-<!--                    <button class="categories__block_title">men</button>-->
-<!--                    <ul class="categories__block_links">-->
-<!--                        <li><a href="" class="categories__block_links-link">Clothes</a></li>-->
-<!--                        <li><a href="" class="categories__block_links-link">Shoes</a></li>-->
-<!--                    </ul>-->
-<!--                </li>-->
-<!--                <li>-->
-<!--                    <button class="categories__block_title">clearance</button>-->
-<!--                    <ul class="categories__block_links">-->
-<!--                        <li><a href="" class="categories__block_links-link">accessories</a></li>-->
-<!--                        <li><a href="" class="categories__block_links-link">Shoes</a></li>-->
-<!--                        <li><a href="" class="categories__block_links-link">Clothes</a></li>-->
-<!--                    </ul>-->
-<!--                </li>-->
-<!--            </ul>-->
-<!--        </div>-->
-<!--        <div class="filter">-->
-<!--            <div class="filter__line"></div>-->
-<!--            <div class="filter__contant">-->
-<!--                <p class="filter__contant_text">Price</p>-->
-<!--                <span class="filter__contant_text" id="skip-value-lower">0</span>-->
-<!--                <span>-</span>-->
-<!--                <span class="filter__contant_text" id="skip-value-upper">200</span>-->
-<!--                <button class="btn-filter">filter</button>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        <div class="select">-->
-<!--            <div class="select__title prod-title">Select your size</div>-->
-<!--            <div class="select__wrapper">-->
-<!--                <label class="select__item">-->
-<!--                    <input type="checkbox" value="xs" id="xs"></input>-->
-<!--                    <span class="_active">xs</span>-->
-<!--                </label>-->
-<!--                <label class="select__item">-->
-<!--                    <input type="checkbox" value="s" id="s"></input>-->
-<!--                    <span>s</span>-->
-<!--                </label>-->
-<!--                <label class="select__item">-->
-<!--                    <input type="checkbox" value="m" id="m"></input>-->
-<!--                    <span>m</span>-->
-<!--                </label>-->
-<!--                <label class="select__item">-->
-<!--                    <input type="checkbox" value="l" id="l"></input>-->
-<!--                    <span>l</span>-->
-<!--                </label>-->
-<!--                <label class="select__item">-->
-<!--                    <input type="checkbox" value="xl" id="xl"></input>-->
-<!--                    <span>xl</span>-->
-<!--                </label>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        <ul class="sale prod-title">-->
-<!--            <span>on sale</span>-->
-<!--            <li class="card-mini">-->
-<!--                <a href="#" class="card__img">-->
-<!--                    <img src="./img/good14.jpg" class="goods-img" alt="" />-->
-<!--                </a>-->
-<!--                <div class="card__info">-->
-<!--                    <a class="goods-name">PINTUCK TANK</a>-->
-<!--                    <p class="goods-price">$96.55</p>-->
-<!--                </div>-->
-<!--            </li>-->
-<!--            <li class="card-mini">-->
-<!--                <a href="#" class="card__img">-->
-<!--                    <img src="./img/good15.jpg" class="goods-img" alt="" />-->
-<!--                </a>-->
-<!--                <div class="card__info">-->
-<!--                    <a class="goods-name">PINTUCK TANK</a>-->
-<!--                    <p class="goods-price">$96.55</p>-->
-<!--                </div>-->
-<!--            </li>-->
-<!--            <li class="card-mini">-->
-<!--                <a href="#" class="card__img">-->
-<!--                    <img src="./img/good16.jpg" class="goods-img" alt="" />-->
-<!--                </a>-->
-<!--                <div class="card__info">-->
-<!--                    <a class="goods-name">PINTUCK TANK</a>-->
-<!--                    <p class="goods-price">$96.55</p>-->
-<!--                </div>-->
-<!--            </li>-->
-<!--        </ul>-->
-<!--        <ul class="featured prod-title">-->
-<!--            <span>featured products</span>-->
-<!--            <li class="card-mini">-->
-<!--                <a href="#" class="card__img">-->
-<!--                    <img src="./img/good17.jpg" class="goods-img" alt="" />-->
-<!--                </a>-->
-<!--                <div class="card__info">-->
-<!--                    <a class="goods-name">PINTUCK TANK</a>-->
-<!--                    <p class="goods-price">$96.55</p>-->
-<!--                </div>-->
-<!--            </li>-->
-<!--            <li class="card-mini">-->
-<!--                <a href="#" class="card__img">-->
-<!--                    <img src="./img/good18.jpg" class="goods-img" alt="" />-->
-<!--                </a>-->
-<!--                <div class="card__info">-->
-<!--                    <a class="goods-name">PINTUCK TANK</a>-->
-<!--                    <p class="goods-price">$96.55</p>-->
-<!--                </div>-->
-<!--            </li>-->
-<!--            <li class="card-mini">-->
-<!--                <a href="#" class="card__img">-->
-<!--                    <img src="./img/good19.jpg" class="goods-img" alt="" />-->
-<!--                </a>-->
-<!--                <div class="card__info">-->
-<!--                    <a class="goods-name">PINTUCK TANK</a>-->
-<!--                    <p class="goods-price">$96.55</p>-->
-<!--                </div>-->
-<!--            </li>-->
-<!--        </ul>-->
-<!--    </aside>-->

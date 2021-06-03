@@ -1,5 +1,5 @@
-<mat-label>{{label}}</mat-label>
-<mat-form-field [style.width]="width" appearance="fill">
+<mat-form-field [style.width]="width" appearance="outline">
+    <mat-label>{{label}}</mat-label>
     <mat-select (valueChange)="valueChanged(selectedValue.value)" [(ngModel)]="selected" #selectedValue>
         <mat-option *ngFor="let option of selectOptions" value="{{option.value}}">{{option.viewValue}}</mat-option>
     </mat-select>
