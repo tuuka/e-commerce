@@ -16,6 +16,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -33,17 +34,20 @@ public class ProductCategoryRestController {
     private final PagedResourcesAssembler<Product> pagedResourcesAssembler;
 
     @GetMapping
+    @PreAuthorize("hasRole('USER') or hasRole('MANAGER') or hasRole('ADMIN')")
     public CollectionModel<?> getCategories() {
         return categoryAssembler
                 .toCollectionModel(categoryService.findAll());
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('MANAGER') or hasRole('ADMIN')")
     public EntityModel<?> getCategory(@PathVariable("id") Long id) {
         return categoryAssembler.toModel(categoryService.findById(id));
     }
 
     @GetMapping("/{id}/products")
+    @PreAuthorize("hasRole('USER') or hasRole('MANAGER') or hasRole('ADMIN')")
     public ResponseEntity<PagedModel<EntityModel<Product>>> getProducts(
             @PathVariable("id") Long id,
             @PageableDefault(size = 20) Pageable pageable) {
@@ -53,11 +57,13 @@ public class ProductCategoryRestController {
     }
 
     @GetMapping("/search")
+    @PreAuthorize("hasRole('USER') or hasRole('MANAGER') or hasRole('ADMIN')")
     public EntityModel<?> search(@RequestParam("name") String name) {
         return categoryAssembler.toModel(categoryService.findByName(name));
     }
 
     @PostMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> saveCategory(
             @RequestBody @Valid CategoryRequestRepresentation categoryRepresentation) {
         EntityModel<ProductCategory> categoryModel = categoryAssembler
@@ -67,6 +73,7 @@ public class ProductCategoryRestController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('MANAGER') or hasRole('ADMIN')")
     public ResponseEntity<?> updateCategory(@PathVariable("id") Long id,
                                             @RequestBody @Valid CategoryRequestRepresentation categoryRepresentation) {
 
@@ -78,6 +85,7 @@ public class ProductCategoryRestController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteCategory(@PathVariable("id") Long id,
                                             @RequestParam(name = "force",
                                                     defaultValue = "false")

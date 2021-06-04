@@ -23,11 +23,19 @@ public class AppProperties {
 
     private final Test test = new Test();
     private final AlpsProps alps = new AlpsProps();
+    private final Security security = new Security();
 
     @Setter
     @Getter
     public static class Test {
         private Boolean integration_test_enabled;
+    }
+
+    @Setter
+    @Getter
+    public static class Security {
+        private Integer token_expires_time_min = 30;
+        private String secret;
     }
 
     @Setter

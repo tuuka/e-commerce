@@ -14,6 +14,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -30,17 +31,20 @@ public class ProductRestController {
     private final PagedResourcesAssembler<Product> pagedResourcesAssembler;
 
     @GetMapping
+    @PreAuthorize("hasRole('USER') or hasRole('MANAGER') or hasRole('ADMIN')")
     public ResponseEntity<PagedModel<EntityModel<Product>>> getAllProducts(@PageableDefault(size = 20) Pageable pageable) {
         return ResponseEntity.ok().body(pagedResourcesAssembler
                 .toModel(productService.findAll(pageable),productAssembler));
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('MANAGER') or hasRole('ADMIN')")
     public EntityModel<?> getProductById(@PathVariable("id") Long id) {
         return productAssembler.toModel(productService.findById(id));
     }
 
     @GetMapping("/{id}/category")
+    @PreAuthorize("hasRole('USER') or hasRole('MANAGER') or hasRole('ADMIN')")
     public ResponseEntity<?> getProductCategory(@PathVariable("id") Long id) {
         ProductCategory category = productService.findById(id).getCategory();
         if (category == null) return ResponseEntity.noContent().build();
@@ -48,6 +52,7 @@ public class ProductRestController {
     }
 
     @GetMapping("/search")
+    @PreAuthorize("hasRole('USER') or hasRole('MANAGER') or hasRole('ADMIN')")
     public ResponseEntity<?> search(@RequestParam(name = "sku", defaultValue = "") String sku,
                                      @RequestParam(name = "name", defaultValue = "") String name,
                                      @PageableDefault(size = 20) Pageable pageable) {
@@ -56,6 +61,7 @@ public class ProductRestController {
     }
 
     @PostMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> saveProduct(@RequestBody @Valid ProductRequestRepresentation productRequestRepresentation) {
         EntityModel<Product> productModel = productAssembler
                 .toModel(productService.save(productRequestRepresentation.getProduct()));
@@ -64,6 +70,7 @@ public class ProductRestController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('MANAGER') or hasRole('ADMIN')")
     public ResponseEntity<?> updateProduct(@RequestBody @Valid ProductRequestRepresentation productRequestRepresentation,
                                            @PathVariable("id") Long id) {
         Product product = productRequestRepresentation.getProduct();
@@ -74,6 +81,7 @@ public class ProductRestController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public EntityModel<?> deleteProductById(@PathVariable("id") Long id) {
         return productAssembler.toModel(productService.deleteById(id));
     }

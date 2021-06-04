@@ -34,7 +34,6 @@ public class RootApiController {
     //    private final LinkRelationProvider linkRelationProvider;
     private final AlpsHelper alpsHelper;
 
-
     @GetMapping
     public RepresentationModel<?> root() {
         return HalModelBuilder.emptyHalModel()
