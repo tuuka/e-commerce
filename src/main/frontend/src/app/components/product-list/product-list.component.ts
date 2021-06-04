@@ -89,6 +89,11 @@ export class ProductListComponent implements OnInit {
         this.page.number = 0;
         this.listProducts();
     }
+
+    search(value: string) {
+        this.name = value;
+        this.listProducts();
+    }
 }
 
 

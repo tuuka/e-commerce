@@ -2,10 +2,10 @@ mat-label {
     margin-right: 0.5em
 }
 
-.mat-form-field-wrapper, .mat-form-field-flex {
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
-}
+/*.mat-form-field-wrapper, .mat-form-field-flex {*/
+/*    margin-bottom: 0 !important;*/
+/*    padding-bottom: 0 !important;*/
+/*}*/
 
 /*.mat-form-field-infix{*/
 /*    width: 6em !important;*/

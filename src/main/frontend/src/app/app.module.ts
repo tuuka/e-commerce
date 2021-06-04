@@ -24,6 +24,7 @@ import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatIconModule} from '@angular/material/icon';
 import {MatListModule} from '@angular/material/list';
 import {MatBadgeModule} from "@angular/material/badge";
+import {MatInputModule} from "@angular/material/input";
 
 @NgModule({
     declarations: [
@@ -53,6 +54,7 @@ import {MatBadgeModule} from "@angular/material/badge";
         MatIconModule,
         MatListModule,
         MatBadgeModule,
+        MatInputModule,
     ],
     providers: [ProductService],
     bootstrap: [AppComponent]

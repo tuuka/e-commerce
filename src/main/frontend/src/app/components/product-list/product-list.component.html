@@ -12,6 +12,16 @@
                     [selected]="pageSizeOptions[0].value"
                     [label]="'Page size:'"
         ></app-select>
+        <mat-form-field class="product-search-form">
+            <mat-label>Search product by name</mat-label>
+            <input matInput type="text"
+                   (keyup.enter)="search(searchInput.value)" #searchInput>
+            <button type="button" mat-icon-button matSuffix
+                    (click)="search(searchInput.value)">
+                <mat-icon>search</mat-icon>
+            </button>
+        </mat-form-field>
+        <span class="spacer"></span>
         <div class="pagination-control__wrapper">
             <p class="pagination-control__label">Showing <b>{{page.number * page.size + 1}}
                 - {{(1 + page.number < page.totalPages) ? (1 + page.number) * page.size : page.totalElements}}</b>
