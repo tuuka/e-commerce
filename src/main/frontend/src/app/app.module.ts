@@ -1,6 +1,5 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {ProductListComponent} from './components/product-list/product-list.component';
@@ -12,19 +11,15 @@ import {ProductCardComponent} from './components/product-card/product-card.compo
 import {NgxPaginationModule} from "ngx-pagination";
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {SelectComponent} from './components/select/select.component';
-import {MatFormFieldModule} from "@angular/material/form-field";
-import {MatSelectModule} from "@angular/material/select";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {AsideComponent} from './components/aside/aside.component';
 import {CategoryListComponent} from './components/category-list/category-list.component';
 import {LayoutModule} from '@angular/cdk/layout';
-import {MatToolbarModule} from '@angular/material/toolbar';
-import {MatButtonModule} from '@angular/material/button';
-import {MatSidenavModule} from '@angular/material/sidenav';
-import {MatIconModule} from '@angular/material/icon';
-import {MatListModule} from '@angular/material/list';
-import {MatBadgeModule} from "@angular/material/badge";
-import {MatInputModule} from "@angular/material/input";
+import {AuthComponent} from './components/auth/auth.component';
+import {SignUpComponent} from './components/sign-up/sign-up.component';
+import {LoginComponent} from './components/login/login.component';
+import {AngularMaterialModule} from "./agular-material.module";
+import {FlexModule} from "@angular/flex-layout";
+import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
 
 @NgModule({
     declarations: [
@@ -34,8 +29,10 @@ import {MatInputModule} from "@angular/material/input";
         MainComponent,
         ProductCardComponent,
         SelectComponent,
-        AsideComponent,
         CategoryListComponent,
+        AuthComponent,
+        SignUpComponent,
+        LoginComponent,
     ],
     imports: [
         BrowserModule,
@@ -43,21 +40,17 @@ import {MatInputModule} from "@angular/material/input";
         HttpClientModule,
         NgxPaginationModule,
         BrowserAnimationsModule,
-        MatFormFieldModule,
-        MatSelectModule,
         ReactiveFormsModule,
         FormsModule,
         LayoutModule,
-        MatToolbarModule,
-        MatButtonModule,
-        MatSidenavModule,
-        MatIconModule,
-        MatListModule,
-        MatBadgeModule,
-        MatInputModule,
+        AngularMaterialModule,
+        FlexModule
     ],
-    providers: [ProductService],
-    bootstrap: [AppComponent]
+    providers: [ProductService,
+        {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {floatLabel: 'always'}}
+    ],
+    bootstrap: [AppComponent],
+    // schemas: [NO_ERRORS_SCHEMA]
 })
 export class AppModule {
 }

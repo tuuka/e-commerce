@@ -1,10 +1,24 @@
+
+.products-category__wrapper {
+    display: flex;
+    justify-content: center;
+    padding-top: 2em;
+}
+
+app-category-list {
+    flex-grow: 0;
+    flex-shrink: 0;
+    min-width: 12em;
+    margin-right: 2em;
+}
+
 app-select {
     margin-right: 1.5em;
 }
 
-/*.products__main-block {*/
-/*    max-width: 740px;*/
-/*}*/
+.products__main-block {
+    flex-grow: 1;
+}
 
 .products__control {
     display: flex;

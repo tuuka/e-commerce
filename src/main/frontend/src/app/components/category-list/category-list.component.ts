@@ -1,5 +1,4 @@
-import {Component, OnInit} from '@angular/core';
-import {ProductService} from "../../services/product.service";
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {Category} from "../../model/Category";
 
 @Component({
@@ -7,23 +6,20 @@ import {Category} from "../../model/Category";
     templateUrl: './category-list.component.html',
     styleUrls: ['./category-list.component.css']
 })
-export class CategoryListComponent implements OnInit {
+export class CategoryListComponent {
 
-    categories?: Category[];
+    selectedId?: number;
 
-    constructor(private productService: ProductService) {
+    @Input() categories?: Category[];
+    @Output() categoryClicked = new EventEmitter<number>();
+
+    onClick($event:Category) {
+        this.selectedId = $event.id;
+        this.categoryClicked.emit(this.selectedId);
     }
 
-    ngOnInit(): void {
-        this.listCategories();
+    resetCategory() {
+        this.selectedId = 0;
+        this.categoryClicked.emit(this.selectedId);
     }
-
-    listCategories() {
-        this.productService.getCategoriesList().subscribe(
-            data => {
-                this.categories = data._embedded.categories;
-            }
-        )
-    }
-
 }

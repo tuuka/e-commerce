@@ -6,6 +6,7 @@ import {Page} from "../../model/Page";
 import {HttpParams} from "@angular/common/http";
 import {SelectOption} from "../select/select.component"
 import {ActivatedRoute} from "@angular/router";
+import {Category} from "../../model/Category";
 
 @Component({
     selector: 'app-product-list',
@@ -14,6 +15,7 @@ import {ActivatedRoute} from "@angular/router";
 })
 export class ProductListComponent implements OnInit {
 
+    categories?: Category[];
     products?: Product[];
     links?: PagedListLinks;
     page: Page = new Page(6, 0, 0, 0);
@@ -43,14 +45,24 @@ export class ProductListComponent implements OnInit {
 
     ngOnInit(): void {
         this.route.paramMap.subscribe(() => {
+            this.listCategories();
             this.listProducts();
         })
     }
 
+    listCategories() {
+        this.productService.getCategoriesList().subscribe(
+            data => {
+                this.categories = data._embedded.categories;
+            }
+        )
+    }
+
     listProducts() {
-        const hasCategoryId: boolean = this.route.snapshot.paramMap.has('id');
-        // @ts-ignore
-        this.currentCategoryId = hasCategoryId ? +this.route.snapshot.paramMap.get('id') : 0;
+        console.log(this.route.snapshot);
+        // const hasCategoryId: boolean = this.route.snapshot.paramMap.has('id');
+        // // @ts-ignore
+        // this.currentCategoryId = hasCategoryId ? +this.route.snapshot.paramMap.get('id') : 0;
         // do not use product search when getting products for current category
         if (this.currentCategoryId) {
             this.sku = '';
@@ -92,6 +104,11 @@ export class ProductListComponent implements OnInit {
 
     search(value: string) {
         this.name = value;
+        this.listProducts();
+    }
+
+    changeCategory($event: number) {
+        this.currentCategoryId = $event;
         this.listProducts();
     }
 }

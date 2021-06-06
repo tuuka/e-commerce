@@ -10,7 +10,7 @@
     text-transform: uppercase;
 }
 
-.categories a span {
+.categories a .title {
     letter-spacing: .2em;
     display: block;
     font-size: 15px;

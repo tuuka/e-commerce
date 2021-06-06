@@ -1,10 +1,15 @@
 <div class="categories">
-    <a routerLink="products"><span>categories</span></a>
+    <a (click)="resetCategory()"><span class="title">categories</span></a>
     <ul class="categories__block">
         <li *ngFor="let category of categories">
-            <a routerLink="category/{{category.id}}"
-               routerLinkActive="_active"
-               class="category__title">{{category.name}}</a>
+<!--            <a routerLink="category/{{category.id}}"-->
+<!--               routerLinkActive="_active"-->
+<!--               class="category__title">{{category.name}}</a>-->
+            <a><span [id]="category.id"
+                     [class._active]="selectedId==category.id"
+                     (click)="onClick(category)"
+                     class="category__title">{{category.name}}</span>
+            </a>
         </li>
     </ul>
 </div>
