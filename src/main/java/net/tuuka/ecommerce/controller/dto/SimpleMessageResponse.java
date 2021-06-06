@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthMessageResponse {
+public class SimpleMessageResponse {
     private String message;
 }

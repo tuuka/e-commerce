@@ -31,20 +31,20 @@ public class ProductRestController {
     private final PagedResourcesAssembler<Product> pagedResourcesAssembler;
 
     @GetMapping
-    @PreAuthorize("hasRole('USER') or hasRole('MANAGER') or hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('USER') or hasRole('MANAGER') or hasRole('ADMIN')")
     public ResponseEntity<PagedModel<EntityModel<Product>>> getAllProducts(@PageableDefault(size = 20) Pageable pageable) {
         return ResponseEntity.ok().body(pagedResourcesAssembler
                 .toModel(productService.findAll(pageable),productAssembler));
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('USER') or hasRole('MANAGER') or hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('USER') or hasRole('MANAGER') or hasRole('ADMIN')")
     public EntityModel<?> getProductById(@PathVariable("id") Long id) {
         return productAssembler.toModel(productService.findById(id));
     }
 
     @GetMapping("/{id}/category")
-    @PreAuthorize("hasRole('USER') or hasRole('MANAGER') or hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('USER') or hasRole('MANAGER') or hasRole('ADMIN')")
     public ResponseEntity<?> getProductCategory(@PathVariable("id") Long id) {
         ProductCategory category = productService.findById(id).getCategory();
         if (category == null) return ResponseEntity.noContent().build();
@@ -52,7 +52,7 @@ public class ProductRestController {
     }
 
     @GetMapping("/search")
-    @PreAuthorize("hasRole('USER') or hasRole('MANAGER') or hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('USER') or hasRole('MANAGER') or hasRole('ADMIN')")
     public ResponseEntity<?> search(@RequestParam(name = "sku", defaultValue = "") String sku,
                                      @RequestParam(name = "name", defaultValue = "") String name,
                                      @PageableDefault(size = 20) Pageable pageable) {

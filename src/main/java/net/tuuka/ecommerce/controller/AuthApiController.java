@@ -1,7 +1,7 @@
 package net.tuuka.ecommerce.controller;
 
 import lombok.RequiredArgsConstructor;
-import net.tuuka.ecommerce.controller.dto.AuthMessageResponse;
+import net.tuuka.ecommerce.controller.dto.SimpleMessageResponse;
 import net.tuuka.ecommerce.controller.dto.JwtResponse;
 import net.tuuka.ecommerce.controller.dto.LoginRequest;
 import net.tuuka.ecommerce.controller.dto.SignUpRequest;
@@ -28,14 +28,14 @@ public class AuthApiController {
 
 
     @PostMapping("/signup")
-    public ResponseEntity<AuthMessageResponse> register(
+    public ResponseEntity<SimpleMessageResponse> register(
             @RequestBody SignUpRequest signUpRequest,
             HttpServletRequest httpRequest) {
 //        UrlUtils.buildRequestUrl(httpRequest);
 //        String baseLink = UrlUtils.buildFullRequestUrl(httpRequest);
         String result = registrationService.register(signUpRequest);
 
-        return ResponseEntity.ok(new AuthMessageResponse(result));
+        return ResponseEntity.ok(new SimpleMessageResponse(result));
 
     }
 
@@ -53,14 +53,14 @@ public class AuthApiController {
     }
 
     @GetMapping("/confirm")
-    public ResponseEntity<AuthMessageResponse> confirmEmail(@RequestParam("token") String token) {
+    public ResponseEntity<SimpleMessageResponse> confirmEmail(@RequestParam("token") String token) {
         String result = "Email confirmed";
         try {
             registrationService.confirmToken(token);
         } catch (IllegalStateException e) {
             result = e.getMessage();
         }
-        return ResponseEntity.ok(new AuthMessageResponse(result));
+        return ResponseEntity.ok(new SimpleMessageResponse(result));
 
     }
 

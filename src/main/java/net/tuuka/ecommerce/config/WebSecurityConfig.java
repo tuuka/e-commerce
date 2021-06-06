@@ -31,14 +31,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtTokenFilter jwtTokenFilter;
     private final PasswordEncoder passwordEncoder;
 
+    private final String[] ALLOWED_PATHS = {"/css/**", "/js/**", "/*.css", "/*.js", "/*.ico",
+            "/resources/**", "/static/**",
+            "/", "/api/auth/**"};
+    private final String[] ANONYMOUS_ALLOWED_PATHS = {"/api",
+            "/api/products/**", "/api/categories/**", "/api/profile/**"};
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/css/**", "/js/**", "/",
-                        "/resources/**", "/static/**", "/api/auth/**")
+                .antMatchers(ALLOWED_PATHS)
                 .permitAll()
+                .antMatchers(ANONYMOUS_ALLOWED_PATHS).anonymous()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
