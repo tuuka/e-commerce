@@ -2,25 +2,14 @@
     <!--    <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">-->
     <!--        <mat-icon>menu</mat-icon>-->
     <!--    </button>-->
-
-
-    <span class="nav-tool-items">
-    <a mat-button routerLink="login" routerLinkActive="active">Log in</a>
-    <a mat-button routerLink="signup" routerLinkActive="active">SignUp</a>
-  </span>
-
-
-
-
-<!--    <div class="header _container">-->
-<!--        <span>LookShop</span>-->
-<!--        <span class="spacer"></span>-->
-<!--        <button mat-raised-button class="btn">-->
-<!--            <mat-icon>perm_identity</mat-icon>-->
-<!--            Account-->
-<!--        </button>-->
-<!--        <button mat-raised-button class="btn" aria-label="Example icon-button with share icon">-->
-<!--            <mat-icon matBadge="15" matBadgeColor="warn">shopping_cart</mat-icon>-->
-<!--        </button>-->
-<!--    </div>-->
+    <div class="header _container">
+        <a mat-button routerLink="/">LookShop</a>
+        <span class="spacer"></span>
+        <a *ngIf="authService.isLoggedIn" mat-stroked-button class="account-link" routerLink="account">Account</a>
+        <a *ngIf="authService.isLoggedIn" mat-stroked-button class="account-link" (click)="authService.logout()">Logout</a>
+        <a *ngIf="!authService.isLoggedIn" mat-stroked-button class="account-link" routerLink="auth">Login</a>
+        <button mat-stroked-button class="btn">
+            <mat-icon matBadge="15" matBadgeColor="accent">shopping_cart</mat-icon>
+        </button>
+    </div>
 </mat-toolbar>

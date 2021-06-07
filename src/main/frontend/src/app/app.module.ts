@@ -15,11 +15,10 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {CategoryListComponent} from './components/category-list/category-list.component';
 import {LayoutModule} from '@angular/cdk/layout';
 import {AuthComponent} from './components/auth/auth.component';
-import {SignUpComponent} from './components/sign-up/sign-up.component';
-import {LoginComponent} from './components/login/login.component';
 import {AngularMaterialModule} from "./agular-material.module";
 import {FlexModule} from "@angular/flex-layout";
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
+import { AccountComponent } from './components/account/account.component';
 
 @NgModule({
     declarations: [
@@ -31,8 +30,7 @@ import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
         SelectComponent,
         CategoryListComponent,
         AuthComponent,
-        SignUpComponent,
-        LoginComponent,
+        AccountComponent,
     ],
     imports: [
         BrowserModule,
@@ -44,10 +42,10 @@ import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
         FormsModule,
         LayoutModule,
         AngularMaterialModule,
-        FlexModule
+        FlexModule,
     ],
     providers: [ProductService,
-        {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {floatLabel: 'always'}}
+        {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {floatLabel: 'auto'}}
     ],
     bootstrap: [AppComponent],
     // schemas: [NO_ERRORS_SCHEMA]

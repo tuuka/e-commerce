@@ -3,6 +3,7 @@ package net.tuuka.ecommerce.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import net.tuuka.ecommerce.controller.dto.JwtResponse;
 import net.tuuka.ecommerce.entity.AppUser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -23,7 +24,7 @@ public class JwtTokenService {
 
     private final Key KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-    public String generateToken(Authentication authentication) {
+    public JwtResponse generateToken(Authentication authentication) {
 
         String id = UUID.randomUUID().toString().replace("-", "");
         AppUser user = (AppUser) authentication.getPrincipal();
@@ -31,14 +32,14 @@ public class JwtTokenService {
         Date exp = Date.from(LocalDateTime.now().plusMinutes(TOKEN_EXPIRES_MIN)
                 .atZone(ZoneId.systemDefault()).toInstant());
 
-        return Jwts.builder()
+        return new JwtResponse(Jwts.builder()
                 .setId(id)
                 .setSubject((user.getUsername()))
                 .setIssuedAt(now)
                 .setNotBefore(now)
                 .setExpiration(exp)
                 .signWith(KEY)
-                .compact();
+                .compact(), user.getUsername(), exp);
 
     }
 

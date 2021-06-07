@@ -5,13 +5,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @RequiredArgsConstructor
 public class JwtResponse {
     private final String token;
     private final String type = "Bearer";
-
-    @Value("${app.security.token_expires_time_min}")
-    private Integer expiresInMin;
+    private final String username;
+    private final Date expiresAt;
 }

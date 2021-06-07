@@ -47,9 +47,9 @@ public class AuthApiController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String jwt = jwtTokenService.generateToken(authentication);
+        JwtResponse jwtResponse = jwtTokenService.generateToken(authentication);
 
-        return ResponseEntity.ok(new JwtResponse(jwt));
+        return ResponseEntity.ok(jwtResponse);
     }
 
     @GetMapping("/confirm")

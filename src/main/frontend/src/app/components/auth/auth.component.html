@@ -1,4 +1,73 @@
-<div class="auth-forms-wrapper" fxLayout="row" fxLayoutAlign="space-between center">
-    <app-login fxFlex="50"></app-login>
-    <app-sign-up fxFlex="50"></app-sign-up>
-</div>
+<mat-card fxLayout="row" fxLayoutAlign="space-between start">
+    <div class="form-wrapper" fxFlex="45">
+        <h2>Log in</h2>
+        <form class="login-form"
+              [formGroup]="loginFormModel" autocomplete="off" (submit)="onLoginSubmit()">
+
+            <mat-form-field class="" appearance="outline">
+                <mat-label>Email*</mat-label>
+                <input matInput formControlName="email">
+                <!--                        <mat-hint>Non Empty valid email is needed</mat-hint>-->
+                <mat-error *ngIf="loginFormModel.get('email')?.touched && loginFormModel.get('email')?.errors?.email">Please enter a valid email address</mat-error>
+                <mat-error *ngIf="loginFormModel.get('email')?.touched && loginFormModel.get('email')?.errors?.required">Email is <strong>required</strong></mat-error>
+            </mat-form-field>
+            <mat-form-field class="" appearance="outline">
+                <mat-label>Password*</mat-label>
+                <input matInput [type]="hide ? 'password' : 'text'" formControlName="password">
+                <mat-error *ngIf="loginFormModel.get('password')?.touched && loginFormModel.get('password')?.errors?.minlength">At least 5 symbols needed</mat-error>
+                <mat-error *ngIf="loginFormModel.get('password')?.touched && loginFormModel.get('password')?.errors?.required">Non empty password is <strong>required</strong></mat-error>
+                <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide"><mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon></button>
+            </mat-form-field>
+            <span style="color: red" *ngIf="loginErrorMessage">{{loginErrorMessage}}</span>
+            <button type="submit" mat-raised-button color="primary" class="submit-button" [disabled]="!loginFormModel.valid"><mat-icon>done_outline</mat-icon>Log In</button>
+        </form>
+    </div>
+
+    <div class="form-wrapper" fxFlex="45">
+        <h2>Sign up</h2>
+        <p *ngIf="justRegistered">Confirmation email has been sent. Please confirm your registration.</p>
+        <form *ngIf="!justRegistered" class="signup-form"
+              [formGroup]="signUpFormModel" autocomplete="off" (submit)="onSignupSubmit()">
+            <mat-form-field class="" appearance="outline">
+                <mat-label>First name</mat-label>
+                <input matInput formControlName="firstName">
+                <mat-error *ngIf="signUpFormModel.get('firstName')?.touched && signUpFormModel.get('firstName')?.errors?.required">First name is <strong>required</strong></mat-error>
+            </mat-form-field>
+            <mat-form-field class="" appearance="outline">
+                <mat-label>Last name</mat-label>
+                <input matInput formControlName="lastName">
+                <mat-error *ngIf="signUpFormModel.get('lastName')?.touched && signUpFormModel.get('lastName')?.errors?.required">Last name is <strong>required</strong></mat-error>
+            </mat-form-field>
+            <mat-form-field class="" appearance="outline">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="email">
+                <mat-hint>Non Empty valid email is needed</mat-hint>
+                <mat-error *ngIf="signUpFormModel.get('email')?.touched && signUpFormModel.get('email')?.errors?.email">Please enter a valid email address</mat-error>
+                <mat-error *ngIf="signUpFormModel.get('email')?.touched && signUpFormModel.get('email')?.errors?.required">Email is <strong>required</strong></mat-error>
+            </mat-form-field>
+            <div formGroupName="passwords">
+                <mat-form-field class="" appearance="outline">
+                    <mat-label>Password</mat-label>
+                    <input matInput [type]="hide ? 'password' : 'text'" formControlName="password">
+                    <mat-error *ngIf="signUpFormModel.get('passwords.password')?.touched && signUpFormModel.get('passwords.password')?.errors?.minlength">At least 5 symbols needed</mat-error>
+                    <mat-error *ngIf="signUpFormModel.get('passwords.password')?.touched && signUpFormModel.get('passwords.password')?.errors?.required">Non empty password is <strong>required</strong></mat-error>
+                    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide"><mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon></button>
+                </mat-form-field>
+                <mat-form-field class="" appearance="outline">
+                    <mat-label>Confirm password</mat-label>
+                    <input matInput [type]="hide ? 'password' : 'text'" formControlName="confirmPassword">
+                    <mat-error *ngIf="signUpFormModel.get('passwords.confirmPassword')?.touched && signUpFormModel.get('passwords.confirmPassword')?.errors?.minlength">At least 5 symbols needed</mat-error>
+                    <mat-error *ngIf="signUpFormModel.get('passwords.confirmPassword')?.touched && signUpFormModel.get('passwords.confirmPassword')?.errors?.required">Non empty password is <strong>required</strong></mat-error>
+                    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide"><mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon></button>
+                </mat-form-field>
+                <mat-error *ngIf="signUpFormModel.get('passwords')?.touched && signUpFormModel.get('passwords')?.errors?.mismatch">Passwords must be equal</mat-error>
+            </div>
+            <span style="color: red" *ngIf="signUpErrorMessage">{{signUpErrorMessage}}</span>
+            <button type="submit" mat-raised-button color="primary" class="submit-button"
+                    [disabled]="!signUpFormModel.valid">
+                <mat-icon>person_add</mat-icon>
+                Sign Up
+            </button>
+        </form>
+    </div>
+</mat-card>

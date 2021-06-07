@@ -39,9 +39,7 @@ export class ProductListComponent implements OnInit {
         .map((s: string) => ({value: '' + s, viewValue: '' + s}))
 
     constructor(private productService: ProductService,
-                private route: ActivatedRoute) {
-
-    }
+                private route: ActivatedRoute) {}
 
     ngOnInit(): void {
         this.route.paramMap.subscribe(() => {
@@ -59,11 +57,6 @@ export class ProductListComponent implements OnInit {
     }
 
     listProducts() {
-        console.log(this.route.snapshot);
-        // const hasCategoryId: boolean = this.route.snapshot.paramMap.has('id');
-        // // @ts-ignore
-        // this.currentCategoryId = hasCategoryId ? +this.route.snapshot.paramMap.get('id') : 0;
-        // do not use product search when getting products for current category
         if (this.currentCategoryId) {
             this.sku = '';
             this.name = '';

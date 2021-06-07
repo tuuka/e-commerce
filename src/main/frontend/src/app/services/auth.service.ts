@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 import {Observable} from "rxjs";
@@ -12,17 +12,18 @@ const httpOptions = {
 @Injectable({
     providedIn: 'root'
 })
-export class AuthService {
+export class AuthService implements OnInit {
 
     private loginUrl = environment.apiUrl + '/api/auth/login';
     private signupUrl = environment.apiUrl + '/api/auth/signup';
+    isLoggedIn?: boolean;
 
     constructor(private http: HttpClient) {
     }
 
     login(credentials: AuthLoginInfo): Observable<JwtResponse> {
         return this.http.post(this.loginUrl, credentials, httpOptions)
-            .pipe(shareReplay())
+        // .pipe(shareReplay())
     }
 
     signUp(info: SignUpInfo): Observable<any> {
@@ -30,35 +31,44 @@ export class AuthService {
     }
 
     setSession(authResult: JwtResponse) {
-        const expiresAt = moment().add(authResult.expiresInMin, 'minutes');
-
-        localStorage.setItem('id_token', <string>authResult.token);
-        localStorage.setItem("expires_at", JSON.stringify(expiresAt.valueOf()));
+        localStorage.setItem('token', JSON.stringify(authResult));
+        this.checkIfLoggedIn();
     }
 
     logout() {
-        localStorage.removeItem("id_token");
-        localStorage.removeItem("expires_at");
+        localStorage.removeItem("token");
+        this.isLoggedIn = false;
     }
 
-    public isLoggedIn() {
-        const expiration = localStorage.getItem("expires_at");
-        if (expiration == null) return false;
-        const expiresAt = JSON.parse(expiration);
+    public checkIfLoggedIn() {
+        const token:JwtResponse = JSON.parse(<string>localStorage.getItem("token"));
+        if (!token || !token.expiresAt) {
+            this.isLoggedIn = false;
+            return false;
+        }
 
-        return moment().isBefore(moment(expiresAt));
+        this.isLoggedIn = new Date() < new Date(token.expiresAt);
+        return this.isLoggedIn;
     }
 
-    isLoggedOut() {
-        return !this.isLoggedIn();
+    ngOnInit(): void {
+        this.checkIfLoggedIn();
     }
+
 }
 
-class SignUpInfo {
-    name?: string;
-    username?: string;
+export class SignUpInfo {
+    firstName?: string;
+    lastName?: string;
     email?: string;
     password?: string;
+
+    constructor(firstName: string, lastName: string, email: string, password: string) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+    }
 }
 
 export class AuthLoginInfo {
@@ -72,8 +82,9 @@ export class AuthLoginInfo {
     }
 }
 
-class JwtResponse {
+export class JwtResponse {
     token?: string;
     type?: string;
-    expiresInMin?: number;
+    expiresAt?: number;
+    username?:string;
 }

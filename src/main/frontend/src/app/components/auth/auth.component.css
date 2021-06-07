@@ -1,4 +1,32 @@
-.auth-forms-wrapper {
-    padding: 2em;
-    font-size: 24px;
+mat-card {
+    width: 100%;
+    padding: 1.5em;
+    margin-top: 1.5em;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 1.5em;
+}
+
+/*mat-card-header {*/
+/*    font-size: 1.5em;*/
+/*    margin-bottom: 1em;*/
+/*    justify-content: center;*/
+/*}*/
+
+/*.auth-forms-wrapper {*/
+/*    padding: 2em 3em;*/
+/*    font-size: 24px;*/
+/*}*/
+
+.submit-button {
+    display: block;
+    margin: 0 auto;
+}
+
+mat-form-field {
+    display: block;
+    font-size: 20px;
+    margin-bottom: 1em;
 }
