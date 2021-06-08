@@ -25,7 +25,7 @@ import static org.springframework.hateoas.mediatype.alps.Alps.doc;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-@CrossOrigin
+//@CrossOrigin
 @RestController
 @RequestMapping(path = "/api", produces = {"application/hal+json"})
 @RequiredArgsConstructor

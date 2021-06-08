@@ -19,6 +19,7 @@ import {AngularMaterialModule} from "./agular-material.module";
 import {FlexModule} from "@angular/flex-layout";
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
 import { AccountComponent } from './components/account/account.component';
+import {httpInterceptorProviders} from "./services/auth.interceptor";
 
 @NgModule({
     declarations: [
@@ -44,7 +45,7 @@ import { AccountComponent } from './components/account/account.component';
         AngularMaterialModule,
         FlexModule,
     ],
-    providers: [ProductService,
+    providers: [ProductService, httpInterceptorProviders,
         {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {floatLabel: 'auto'}}
     ],
     bootstrap: [AppComponent],

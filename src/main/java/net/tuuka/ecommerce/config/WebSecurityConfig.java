@@ -2,12 +2,11 @@ package net.tuuka.ecommerce.config;
 
 import lombok.RequiredArgsConstructor;
 import net.tuuka.ecommerce.security.JwtAuthEntryPoint;
-import net.tuuka.ecommerce.security.JwtTokenService;
 import net.tuuka.ecommerce.security.JwtTokenFilter;
 import net.tuuka.ecommerce.service.AppUserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -16,9 +15,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -34,17 +35,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final String[] ALLOWED_PATHS = {"/css/**", "/js/**", "/*.css", "/*.js", "/*.ico",
             "/resources/**", "/static/**",
             "/", "/api/auth/**"};
-    private final String[] ANONYMOUS_ALLOWED_PATHS = {"/api",
+    private final String[] ANONYMOUS_GET_ALLOWED_PATHS = {"/api",
             "/api/products/**", "/api/categories/**", "/api/profile/**"};
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
+                .cors().and().csrf().disable()
                 .authorizeRequests()
-                .antMatchers(ALLOWED_PATHS)
-                .permitAll()
-                .antMatchers(ANONYMOUS_ALLOWED_PATHS).anonymous()
+                .antMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                .antMatchers(HttpMethod.GET, ANONYMOUS_GET_ALLOWED_PATHS).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
@@ -71,6 +71,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         provider.setPasswordEncoder(passwordEncoder);
         provider.setUserDetailsService(appUserService);
         return provider;
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+
+        CorsConfiguration corsConfiguration = new CorsConfiguration().applyPermitDefaultValues();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+
+        return source;
     }
 
 }

@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.RequiredArgsConstructor;
 import net.tuuka.ecommerce.entity.AppUser;
 import net.tuuka.ecommerce.entity.AppUserAuthority;
+import net.tuuka.ecommerce.entity.AppUserRole;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class AccountResponse {
@@ -25,7 +27,8 @@ public class AccountResponse {
         return appUser.getEmail();
     }
 
-    public Set<AppUserAuthority> getUserAuthorities() {
-        return appUser.getUserAuthorities();
+    public Set<AppUserRole> getUserAuthorities() {
+        return appUser.getUserAuthorities().stream()
+                .map(AppUserAuthority::getRole).collect(Collectors.toSet());
     }
 }

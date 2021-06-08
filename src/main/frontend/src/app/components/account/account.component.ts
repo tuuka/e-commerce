@@ -20,7 +20,6 @@ export class AccountComponent implements OnInit {
     private getAccountDetail() {
         this.accountService.getAccountDetail().subscribe(
             data => {
-                console.log(data);
                 this.accountDetail = data;
             }
         )
@@ -31,7 +30,7 @@ export interface AccountDetail {
     firstName: string;
     lastName: string;
     email: string;
-    roles: string[]
+    userAuthorities: string[]
 
 }
 
