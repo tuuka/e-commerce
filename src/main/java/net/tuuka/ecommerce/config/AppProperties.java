@@ -20,6 +20,7 @@ public class AppProperties {
 
     private Map<String, String> api;
     private String[] api_cross_origins;
+    private Boolean fill_products;
 
     private final Test test = new Test();
     private final AlpsProps alps = new AlpsProps();
@@ -36,6 +37,15 @@ public class AppProperties {
     public static class Security {
         private Integer token_expires_time_min = 30;
         private String secret;
+        private Root root = new Root();
+
+    }
+
+    @Setter
+    @Getter
+    public static class Root {
+        private String email;
+        private String password;
     }
 
     @Setter

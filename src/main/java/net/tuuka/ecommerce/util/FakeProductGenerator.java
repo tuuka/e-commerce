@@ -39,9 +39,7 @@ public class FakeProductGenerator {
                         "description_" + i + j,
                         random.nextInt(100) +
                                 0.01 * random.nextInt(100),
-                        "assets/images/" +
-                                productCategories.get(i).getName() +
-                                "/image_" + i + j + ".jpg",
+                        "assets/images/sku_" + i + j + ".jpg",
                         true,
                         random.nextInt(100));
                 product.setCategory(productCategories.get(i));

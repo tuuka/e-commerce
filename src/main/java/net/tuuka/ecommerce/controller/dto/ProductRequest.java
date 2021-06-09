@@ -3,13 +3,12 @@ package net.tuuka.ecommerce.controller.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import net.tuuka.ecommerce.entity.Product;
 import net.tuuka.ecommerce.entity.ProductCategory;
-import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
-public class ProductRequestRepresentation {
+public class ProductRequest {
 
     @JsonIgnore
     private final Product product = new Product();
@@ -82,7 +81,7 @@ public class ProductRequestRepresentation {
         product.setUnitsInStock(unitsInStock);
     }
 
-    public void setCategory (CategoryRequestRepresentation categoryRepresentation){
+    public void setCategory (CategoryRequest categoryRepresentation){
         product.setCategory(categoryRepresentation.getCategory());
     }
 

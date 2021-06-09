@@ -1,7 +1,7 @@
 package net.tuuka.ecommerce.controller;
 
 import lombok.RequiredArgsConstructor;
-import net.tuuka.ecommerce.controller.dto.ProductRequestRepresentation;
+import net.tuuka.ecommerce.controller.dto.ProductRequest;
 import net.tuuka.ecommerce.controller.util.ProductCategoryModelAssembler;
 import net.tuuka.ecommerce.controller.util.ProductModelAssembler;
 import net.tuuka.ecommerce.entity.Product;
@@ -62,18 +62,18 @@ public class ProductRestController {
 
     @PostMapping()
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> saveProduct(@RequestBody @Valid ProductRequestRepresentation productRequestRepresentation) {
+    public ResponseEntity<?> saveProduct(@RequestBody @Valid ProductRequest productRequest) {
         EntityModel<Product> productModel = productAssembler
-                .toModel(productService.save(productRequestRepresentation.getProduct()));
+                .toModel(productService.save(productRequest.getProduct()));
         return ResponseEntity.created(productModel.getRequiredLink(IanaLinkRelations.SELF)
                 .toUri()).body(productModel);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('MANAGER') or hasRole('ADMIN')")
-    public ResponseEntity<?> updateProduct(@RequestBody @Valid ProductRequestRepresentation productRequestRepresentation,
+    public ResponseEntity<?> updateProduct(@RequestBody @Valid ProductRequest productRequest,
                                            @PathVariable("id") Long id) {
-        Product product = productRequestRepresentation.getProduct();
+        Product product = productRequest.getProduct();
         product.setId(id);
         EntityModel<Product> productModel = productAssembler.toModel(productService.update(product));
         return ResponseEntity.ok().location(productModel.getRequiredLink(IanaLinkRelations.SELF)

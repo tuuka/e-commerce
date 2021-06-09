@@ -1,8 +1,6 @@
 package net.tuuka.ecommerce.entity;
 
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,8 +14,6 @@ import java.util.stream.Collectors;
         uniqueConstraints = {
                 @UniqueConstraint(name = "app_user_email_unique",
                         columnNames = "email")})
-@Getter
-@Setter
 @NoArgsConstructor
 public class AppUser implements UserDetails {
 
@@ -47,18 +43,67 @@ public class AppUser implements UserDetails {
     @Column(name = "locked", columnDefinition = "BOOLEAN")
     private Boolean locked = false;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<AppUserAuthority> userAuthorities = new HashSet<>(Collections
-            .singletonList(new AppUserAuthority(AppUserRole.values()[0])));
+    private Set<AppUserAuthority> authorities = new HashSet<>(
+            Collections.singletonList(new AppUserAuthority(AppUserRole.values()[0]))
+    );
 
     public AppUser(String firstName, String lastName, String email, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public Boolean getLocked() {
+        return locked;
+    }
+
+    public void setLocked(Boolean locked) {
+        this.locked = locked;
     }
 
     //   ------- UserDetail Override ---------------
@@ -98,10 +143,25 @@ public class AppUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return userAuthorities.stream()
-                .map(role ->
-                        new SimpleGrantedAuthority(role.getRole().name()))
+        return authorities.stream()
+                .map(auth ->
+                        new SimpleGrantedAuthority(auth.getRole().name()))
                 .collect(Collectors.toList());
+    }
+
+    public void setAuthorities(Collection<String> userRoles) {
+        Set<String> allowedRoles = Arrays.stream(AppUserRole.values())
+                .map(Enum::name).collect(Collectors.toSet());
+
+        this.authorities = userRoles.stream()
+                .map(r -> r.contains("ROLE_") ? r : "ROLE_" + r)
+                .filter(allowedRoles::contains)
+                .map(r -> new AppUserAuthority(AppUserRole.valueOf(r)))
+                .collect(Collectors.toSet());
+    }
+
+    public void setAuthorities(Set<AppUserAuthority> authorities) {
+        this.authorities = authorities;
     }
 
 }

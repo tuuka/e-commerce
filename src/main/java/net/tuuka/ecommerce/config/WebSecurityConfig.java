@@ -32,11 +32,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtTokenFilter jwtTokenFilter;
     private final PasswordEncoder passwordEncoder;
 
-    private final String[] ALLOWED_PATHS = {"/css/**", "/js/**", "/*.css", "/*.js", "/*.ico",
-            "/resources/**", "/static/**",
-            "/", "/api/auth/**"};
-    private final String[] ANONYMOUS_GET_ALLOWED_PATHS = {"/api",
-            "/api/products/**", "/api/categories/**", "/api/profile/**"};
+//    private final String[] ALLOWED_PATHS = {"/css/**", "/js/**", "/*.css", "/*.js", "/*.ico",
+//            "/resources/**", "/static/**",
+//            "/", "/api/auth/**"};
+    private final String[] ANONYMOUS_GET_ALLOWED_PATHS = {"/api", "/resources/**", "/static/**",
+            "/", "/api/products/**", "/api/categories/**", "/api/profile/**"};
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

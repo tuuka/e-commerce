@@ -1,12 +1,10 @@
 package net.tuuka.ecommerce.service;
 
 import lombok.RequiredArgsConstructor;
+import net.tuuka.ecommerce.controller.dto.AppUserRepresentation;
 import net.tuuka.ecommerce.dao.AppUserRepository;
 import net.tuuka.ecommerce.entity.AppUser;
-import net.tuuka.ecommerce.entity.AppUserAuthority;
-import net.tuuka.ecommerce.entity.AppUserRole;
 import net.tuuka.ecommerce.entity.ConfirmationToken;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,9 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -56,9 +53,8 @@ public class AppUserService implements UserDetailsService {
             }
         } else {
             // It is new AppUser...
-            String encodedPassword = passwordEncoder.encode(appUser.getPassword());
-            appUser.setPassword(encodedPassword);
-            appUserRepository.save(appUser);
+            this.saveAppUser(appUser);
+
         }
 
         return confirmationTokenService.getNewToken(appUser);
@@ -75,17 +71,7 @@ public class AppUserService implements UserDetailsService {
         // delete confirmation token (if needed)
         confirmationTokenService.deleteTokensByUser(appUser);
         appUserRepository.save(appUser);
-    }
 
-    @Transactional
-    public void updateAppUserAuthorities(long userId, String[] roles) {
-
-        AppUser persistedUser = getAppUserById(userId);
-
-        persistedUser.setUserAuthorities(Stream.of(roles)
-                .map(r -> new AppUserAuthority(AppUserRole.valueOf("ROLE_" + r)))
-                .collect(Collectors.toSet()));
-        appUserRepository.save(persistedUser);
     }
 
     public List<AppUser> findAll() {
@@ -98,13 +84,41 @@ public class AppUserService implements UserDetailsService {
         appUserRepository.deleteById(userId);
     }
 
-    private AppUser getAppUserById(long userId) {
+    public AppUser getAppUserById(long userId) {
         return appUserRepository.findById(userId).orElseThrow(() ->
                 new IllegalStateException(String.format(USER_WITH_ID_NOT_FOUND, userId)));
     }
 
     public AppUser getAppUserByEmail(String email) {
         return appUserRepository.findByEmail(email).orElse(null);
+    }
+
+    public AppUser saveAppUser(AppUser appUser) {
+
+        if (getAppUserByEmail(appUser.getEmail()) != null)
+            throw new IllegalStateException("User with email: '" + appUser.getEmail() + "' already exist!");
+        String encodedPassword = passwordEncoder.encode(appUser.getPassword());
+        appUser.setPassword(encodedPassword);
+        return appUserRepository.save(appUser);
+
+    }
+
+    public AppUser updateAppUser(AppUser appUser) {
+
+        AppUser existingUser = getAppUserById(appUser.getId());
+        appUser.setPassword(existingUser.getPassword());
+
+        return appUserRepository.save(appUser);
+
+    }
+
+    @Transactional
+    public void updateAppUserAuthorities(long userId, String[] roles) {
+
+        AppUser persistedUser = getAppUserById(userId);
+
+        persistedUser.setAuthorities(Arrays.asList(roles));
+        appUserRepository.save(persistedUser);
     }
 
 }

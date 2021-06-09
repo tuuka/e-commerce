@@ -7,7 +7,7 @@ import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.NotBlank;
 
-public class CategoryRequestRepresentation {
+public class CategoryRequest {
 
     @JsonIgnore
     private final ProductCategory category = new ProductCategory();

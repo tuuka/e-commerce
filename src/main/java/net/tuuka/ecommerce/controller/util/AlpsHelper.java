@@ -1,6 +1,5 @@
 package net.tuuka.ecommerce.controller.util;
 
-import lombok.var;
 import net.tuuka.ecommerce.config.AppProperties;
 import net.tuuka.ecommerce.controller.RootApiController;
 import net.tuuka.ecommerce.entity.BaseEntity;
@@ -120,7 +119,7 @@ public class AlpsHelper {
 
     private String getMethodAlpsName(Method method, Class<? extends BaseEntity> entityClass) {
 
-        var attr = getRequestMappingAttr(method);
+        AnnotationAttributes attr = getRequestMappingAttr(method);
         String path = extractPathFromRequestMappingAttr(attr);
         String[] segments = path.split("/");
         // may be should check if full path ends with '/' to avoid empty string here
@@ -134,7 +133,7 @@ public class AlpsHelper {
 
         return getExposedProperties(clazz).stream()
                 .map(property -> {
-                    var builder = getSemanticDescriptorBuilder(property.getName());
+                    Descriptor.DescriptorBuilder builder = getSemanticDescriptorBuilder(property.getName());
                     if (PROFILE_HREF_RELATIONS.containsKey(property.getName())) {
                         builder.type(Type.SAFE).href(getProfileRepresentationLink(property.getName()));
                     }
@@ -164,7 +163,7 @@ public class AlpsHelper {
     }
 
     private Descriptor.DescriptorBuilder getSemanticDescriptorBuilder(String name) {
-        var builder = descriptor().id(name).type(Type.SEMANTIC);
+        Descriptor.DescriptorBuilder builder = descriptor().id(name).type(Type.SEMANTIC);
         String text = appProperties.getAlps().getDoc().get(name);
         if (text != null) builder.doc(doc().format(Format.TEXT).value(text).build());
         return builder;

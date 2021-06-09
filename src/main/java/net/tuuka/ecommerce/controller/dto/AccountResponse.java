@@ -3,8 +3,7 @@ package net.tuuka.ecommerce.controller.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.RequiredArgsConstructor;
 import net.tuuka.ecommerce.entity.AppUser;
-import net.tuuka.ecommerce.entity.AppUserAuthority;
-import net.tuuka.ecommerce.entity.AppUserRole;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,8 +26,9 @@ public class AccountResponse {
         return appUser.getEmail();
     }
 
-    public Set<AppUserRole> getUserAuthorities() {
-        return appUser.getUserAuthorities().stream()
-                .map(AppUserAuthority::getRole).collect(Collectors.toSet());
+    public Set<String> getAuthorities() {
+        return appUser.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toSet());
     }
 }
