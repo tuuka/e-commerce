@@ -36,7 +36,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 //        response.addHeader("Access-Control-Allow-Credentials", "true");
 //        response.addIntHeader("Access-Control-Max-Age", 10);
         try {
-//            RequestContextHolder.currentRequestAttributes().getSessionId();
             String jwt = getJwt(request);
             if (jwt != null && jwtTokenService.validateJwtToken(jwt)) {
                 String username = jwtTokenService.getUserNameFromJwtToken(jwt);

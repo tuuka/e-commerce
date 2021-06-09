@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {AccountService} from "../../services/account.service";
+import {AuthService} from "../../services/auth.service";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-account',
@@ -10,7 +12,9 @@ export class AccountComponent implements OnInit {
 
     accountDetail?: AccountDetail
 
-    constructor(private accountService: AccountService) {
+    constructor(private accountService: AccountService,
+                private authService: AuthService,
+                private router: Router) {
     }
 
     ngOnInit(): void {
@@ -18,6 +22,8 @@ export class AccountComponent implements OnInit {
     }
 
     private getAccountDetail() {
+        if (!this.authService.checkIfLoggedIn())
+            this.router.navigateByUrl('/auth')
         this.accountService.getAccountDetail().subscribe(
             data => {
                 this.accountDetail = data;

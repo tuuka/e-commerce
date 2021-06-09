@@ -22,7 +22,7 @@ export class ProductService {
         if (category_id) {
             url = `${this.baseCategoriesUrl}/${category_id}/products`
         } else {
-            url = (parameters.get("sku") || parameters.get("name")) ? `${this.baseProductsUrl}/search` : this.baseProductsUrl;
+            url = parameters.get("name") ? `${this.baseProductsUrl}/search` : this.baseProductsUrl;
         }
         return this.httpClient.get<ProductsResponse>(url, {responseType: "json", params: parameters});
     }

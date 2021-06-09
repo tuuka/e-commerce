@@ -20,7 +20,6 @@ export class ProductListComponent implements OnInit {
     links?: PagedListLinks;
     page: Page = new Page(6, 0, 0, 0);
     sort: string = '';
-    sku: string = '';
     name: string = '';
     currentCategoryId: number = 0;
 
@@ -58,7 +57,6 @@ export class ProductListComponent implements OnInit {
 
     listProducts() {
         if (this.currentCategoryId) {
-            this.sku = '';
             this.name = '';
         }
         this.productService.getProductList(this.currentCategoryId, this.getRequestParams()).subscribe(
@@ -75,7 +73,6 @@ export class ProductListComponent implements OnInit {
             .set("page", this.page.number)
             .set("size", this.page.size)
             .set("sort", this.sort)
-            .set("sku", this.sku)
             .set("name", this.name);
     }
 

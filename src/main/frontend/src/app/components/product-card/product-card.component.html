@@ -1,10 +1,20 @@
-<div *ngIf="product" class="card">
-    <a href="#" class="card__img-link">
-        <img src="assets/images/products/{{product.sku}}.jpg" class="card__img" alt="{{product.sku}}">
+<mat-card *ngIf="product" class="product-card" (mouseenter)="hover($event)" (mouseleave)="unHover($event)">
+    <!--    <mat-card-header>-->
+    <!--        <mat-card-title>Title</mat-card-title>-->
+    <!--        <mat-card-subtitle>SubTitle</mat-card-subtitle>-->
+    <!--    </mat-card-header>-->
+    <a routerLink="/products/{{product.id}}" class="product-card__img-link">
+        <img class="product-card__img" src="assets/images/products/{{product.sku}}.jpg"
+             alt="Product {{product.sku}}">
     </a>
-    <div class="card__info">
-        <a href="{{product._links.self.href}}" class="card__name">{{product.name}}</a>
-        <div class="card__price">{{product.unitPrice | currency}}</div>
-        <button class="card__button">add to cart</button>
-    </div>
-</div>
+    <mat-card-content>
+        <p class="product-card__name">{{product.name}}</p>
+        <p class="product-card__price">{{product.unitPrice | currency}}</p>
+    </mat-card-content>
+    <mat-card-footer>
+        <button class="product-card__button" mat-raised-button color="primary">
+            <mat-icon>add_shopping_cart</mat-icon>
+            Add to cart
+        </button>
+    </mat-card-footer>
+</mat-card>
