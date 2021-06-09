@@ -83,7 +83,7 @@ public class AppUserService implements UserDetailsService {
         AppUser persistedUser = getAppUserById(userId);
 
         persistedUser.setUserAuthorities(Stream.of(roles)
-                .map(r -> new AppUserAuthority(AppUserRole.valueOf(r)))
+                .map(r -> new AppUserAuthority(AppUserRole.valueOf("ROLE_" + r)))
                 .collect(Collectors.toSet()));
         appUserRepository.save(persistedUser);
     }

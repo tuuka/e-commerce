@@ -3,7 +3,6 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 import {Observable} from "rxjs";
 import {shareReplay} from "rxjs/operators";
-import * as moment from "moment";
 
 const httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})

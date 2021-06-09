@@ -1,8 +1,13 @@
 package net.tuuka.ecommerce.controller;
 
 import lombok.var;
+import net.tuuka.ecommerce.controller.dto.JwtResponse;
+import net.tuuka.ecommerce.controller.dto.LoginRequest;
+import net.tuuka.ecommerce.entity.AppUser;
 import net.tuuka.ecommerce.entity.Product;
 import net.tuuka.ecommerce.entity.ProductCategory;
+import net.tuuka.ecommerce.security.JwtTokenService;
+import net.tuuka.ecommerce.service.AppUserService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -16,10 +21,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.client.Traverson;
 import org.springframework.hateoas.server.core.TypeReferences;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.EnabledIf;
 
@@ -40,14 +42,20 @@ public class ProductRestControllerIntegrationTest {
 
 //    @LocalServerPort private int port;
 
-    @Value("http://localhost:${local.server.port}${app.api.path}/products")
+    @Value("http://localhost:${local.server.port}/api/products")
     private String productsUrl;
 
-    @Value("http://localhost:${local.server.port}${app.api.path}/categories")
+    @Value("http://localhost:${local.server.port}/api/categories")
     private String categoriesUrl;
+
+    @Value("http://localhost:${local.server.port}/api/auth/login")
+    private String loginUrl;
 
     @Autowired
     private TestRestTemplate restTemplate;
+
+    @Autowired
+    private AppUserService appUserService;
 
     private final List<ProductCategory> categories = new LinkedList<>(Arrays.asList(
             new ProductCategory("category_test_1"),
@@ -67,6 +75,8 @@ public class ProductRestControllerIntegrationTest {
     private static final List<ProductCategory> savedCategories = new LinkedList<>();
     private static final List<Product> savedProducts = new LinkedList<>();
     private final List<Product> products;
+
+    private static String jwtToken = null;
 
     {
         products = new LinkedList<>(Arrays.asList(
@@ -111,10 +121,24 @@ public class ProductRestControllerIntegrationTest {
 
     @BeforeEach
     void setUp() {
+
+        if (jwtToken == null) {
+            String userEmail = "email@email.com";
+            String userPassword = "password";
+            appUserService.singUpUser(new AppUser("name", "surname", userEmail, userPassword));
+            appUserService.updateAppUserAuthorities(appUserService.getAppUserByEmail(userEmail).getId(), new String[]{"ADMIN"});
+            appUserService.enableAppUser(userEmail);
+            ResponseEntity<JwtResponse> jwtResponse =
+                    restTemplate.exchange(loginUrl, HttpMethod.POST, new HttpEntity<>(new LoginRequest(userEmail, userPassword)),
+                            JwtResponse.class);
+            jwtToken = Objects.requireNonNull(jwtResponse.getBody()).getToken();
+        }
+
         savedCategories.clear();
         savedCategories.addAll(fetchCategoriesList());
         savedProducts.clear();
         savedProducts.addAll(fetchProductList());
+
     }
 
     @Test
@@ -141,8 +165,8 @@ public class ProductRestControllerIntegrationTest {
     void givenCategoryWithNullId_whenSaveCategory_shouldReturnStatusCreatedAndSavedEntityWithId(int i) {
 
         ResponseEntity<EntityModel<ProductCategory>> categoryResponseEntity =
-                restTemplate.exchange(categoriesUrl, HttpMethod.POST, new HttpEntity<>(categories.get(i)),
-                        categoryEntityModelClass);
+                restTemplate.exchange(categoriesUrl, HttpMethod.POST, new HttpEntity<>(categories.get(i),
+                        getAuthorizationHeader()), categoryEntityModelClass);
         assertSame(HttpStatus.CREATED, categoryResponseEntity.getStatusCode());
         ProductCategory savedCategory = Objects.requireNonNull(categoryResponseEntity.getBody()).getContent();
         assertNotNull(savedCategory);
@@ -158,8 +182,8 @@ public class ProductRestControllerIntegrationTest {
         products.get(i).setCategory(i < 2 ? savedCategories.get(0) : savedCategories.get(1));
 
         ResponseEntity<EntityModel<Product>> productResponseEntity =
-                restTemplate.exchange(productsUrl, HttpMethod.POST, new HttpEntity<>(products.get(i)),
-                        productEntityModelClass);
+                restTemplate.exchange(productsUrl, HttpMethod.POST, new HttpEntity<>(products.get(i),
+                        getAuthorizationHeader()), productEntityModelClass);
         assertSame(HttpStatus.CREATED, productResponseEntity.getStatusCode());
         Product savedProduct = Objects.requireNonNull(productResponseEntity.getBody()).getContent();
         assertNotNull(savedProduct);
@@ -253,7 +277,7 @@ public class ProductRestControllerIntegrationTest {
     void givenProductWithChangedCategory_whenUpdateProduct_shouldUpdateAndReturn() {
 
         savedProducts.get(3).setCategory(savedCategories.get(0));
-        HttpEntity<Product> productEntity = new HttpEntity<>(savedProducts.get(3));
+        HttpEntity<Product> productEntity = new HttpEntity<>(savedProducts.get(3), getAuthorizationHeader());
         ResponseEntity<Product> productResponseEntity =
                 restTemplate.exchange(productsUrl + "/{id}", HttpMethod.PUT,
                         productEntity, Product.class, savedProducts.get(3).getId());
@@ -270,7 +294,7 @@ public class ProductRestControllerIntegrationTest {
 
         ResponseEntity<Product> productResponseEntity =
                 restTemplate.exchange(productsUrl + "/{id}", HttpMethod.DELETE,
-                        null, Product.class, savedProducts.get(3).getId());
+                        new HttpEntity<>(null, getAuthorizationHeader()), Product.class, savedProducts.get(3).getId());
         assertSame(HttpStatus.OK, productResponseEntity.getStatusCode());
         Product deletedProduct = productResponseEntity.getBody();
         assertNotNull(deletedProduct);
@@ -286,9 +310,9 @@ public class ProductRestControllerIntegrationTest {
 
         ResponseEntity<ProductCategory> categoryResponseEntity =
                 restTemplate.exchange(categoriesUrl + "/{id}",
-                        HttpMethod.DELETE, null,
+                        HttpMethod.DELETE, new HttpEntity<>(null, getAuthorizationHeader()),
                         ProductCategory.class, savedCategories.get(0).getId());
-        assertSame(HttpStatus.NOT_ACCEPTABLE, categoryResponseEntity.getStatusCode());
+        assertSame(HttpStatus.BAD_REQUEST, categoryResponseEntity.getStatusCode());
 
     }
 
@@ -298,7 +322,7 @@ public class ProductRestControllerIntegrationTest {
 
         ResponseEntity<ProductCategory> categoryResponseEntity =
                 restTemplate.exchange(categoriesUrl + "/{id}?force=true",
-                        HttpMethod.DELETE, null,
+                        HttpMethod.DELETE, new HttpEntity<>(null, getAuthorizationHeader()),
                         ProductCategory.class, savedCategories.get(0).getId());
         assertSame(HttpStatus.OK, categoryResponseEntity.getStatusCode());
 
@@ -312,7 +336,7 @@ public class ProductRestControllerIntegrationTest {
 
         savedCategories.get(0).getProducts().add(products.get(0));
         savedCategories.get(0).setName("another name");
-        HttpEntity<ProductCategory> categoryEntity = new HttpEntity<>(savedCategories.get(0));
+        HttpEntity<ProductCategory> categoryEntity = new HttpEntity<>(savedCategories.get(0), getAuthorizationHeader());
         ResponseEntity<EntityModel<ProductCategory>> categoryResponseEntity =
                 restTemplate.exchange(categoriesUrl + "/{id}",
                         HttpMethod.PUT, categoryEntity,
@@ -348,6 +372,12 @@ public class ProductRestControllerIntegrationTest {
         return collectionModel.getContent().stream()
                 .map(EntityModel::getContent)
                 .collect(Collectors.toList());
+    }
+
+    private HttpHeaders getAuthorizationHeader(){
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + jwtToken);
+        return headers;
     }
 
 }

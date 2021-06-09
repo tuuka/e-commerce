@@ -61,9 +61,11 @@ class ProductServiceIntegrationTest {
         Product fetchedProduct = productService.findById(savedProduct.getId());
 
         // then should get saved product back
-        assertEquals(savedProduct, fetchedProduct);
-        assertNotNull(savedProduct.getId());
-        assertNull(fetchedProduct.getCategory());
+        assertAll(
+                () -> assertEquals(savedProduct.getName(), fetchedProduct.getName()),
+                () -> assertNotNull(savedProduct.getId()),
+                () -> assertNull(fetchedProduct.getCategory())
+        );
 
     }
 

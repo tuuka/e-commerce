@@ -20,6 +20,7 @@ import {FlexModule} from "@angular/flex-layout";
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
 import { AccountComponent } from './components/account/account.component';
 import {httpInterceptorProviders} from "./services/auth.interceptor";
+import { ProductDetailComponent } from './components/product-detail/product-detail.component';
 
 @NgModule({
     declarations: [
@@ -32,6 +33,7 @@ import {httpInterceptorProviders} from "./services/auth.interceptor";
         CategoryListComponent,
         AuthComponent,
         AccountComponent,
+        ProductDetailComponent,
     ],
     imports: [
         BrowserModule,

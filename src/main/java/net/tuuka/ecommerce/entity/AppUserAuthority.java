@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "authority")
@@ -24,6 +26,9 @@ public class AppUserAuthority {
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private AppUserRole role;
+
+    @ManyToMany(mappedBy="userAuthorities", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    private Set<AppUser> users = new HashSet<>();
 
     public AppUserAuthority(AppUserRole role) {
         this.role = role;

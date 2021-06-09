@@ -7,7 +7,7 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "sass"
+          "style": "css"
         },
         "@schematics/angular:application": {
           "strict": true
@@ -26,11 +26,6 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "stylePreprocessorOptions": {
-              "includePaths": [
-                "src/sass"
-              ]
-            },
             "assets": [
               "src/favicon.ico",
               "src/assets"

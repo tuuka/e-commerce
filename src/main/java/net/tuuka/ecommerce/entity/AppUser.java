@@ -22,8 +22,12 @@ import java.util.stream.Collectors;
 public class AppUser implements UserDetails {
 
     @Id
-    @GeneratedValue
-    private UUID id;
+    @SequenceGenerator(name = "appUserSequence",
+            sequenceName = "app_user_sequence",
+            allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "appUserSequence")
+    private Long id;
 
     @Column(name = "first_name")
     private String firstName;
@@ -43,21 +47,18 @@ public class AppUser implements UserDetails {
     @Column(name = "locked", columnDefinition = "BOOLEAN")
     private Boolean locked = false;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<AppUserAuthority> userAuthorities = new HashSet<>(Collections
             .singletonList(new AppUserAuthority(AppUserRole.values()[0])));
-    ;
 
     public AppUser(String firstName, String lastName, String email, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
-//        this.userAuthorities = new HashSet<>(Collections
-//                .singletonList(new AppUserAuthority(AppUserRole.values()[0])));
     }
 
     //   ------- UserDetail Override ---------------

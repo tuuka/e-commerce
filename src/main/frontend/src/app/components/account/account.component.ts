@@ -22,11 +22,14 @@ export class AccountComponent implements OnInit {
     }
 
     private getAccountDetail() {
-        if (!this.authService.checkIfLoggedIn())
-            this.router.navigateByUrl('/auth')
         this.accountService.getAccountDetail().subscribe(
-            data => {
-                this.accountDetail = data;
+            (res: any) => {
+                this.accountDetail = res;
+            }, () => {
+                this.authService.logout();
+            }, () => {
+                if (!this.authService.checkIfLoggedIn())
+                    this.router.navigateByUrl('/auth')
             }
         )
     }

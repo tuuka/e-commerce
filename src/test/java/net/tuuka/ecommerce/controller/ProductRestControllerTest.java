@@ -131,7 +131,7 @@ class ProductRestControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content()
                         .contentTypeCompatibleWith(MediaType.valueOf("application/hal+json")))
-                .andExpect(jsonPath("$.error").value("not found"))
+                .andExpect(jsonPath("$.message").value("not found"))
                 .andDo(MockMvcResultHandlers.print());
 
         then(productService).should().findById(eq(1L));
