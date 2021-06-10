@@ -4,7 +4,7 @@
     <!--        <mat-card-subtitle>SubTitle</mat-card-subtitle>-->
     <!--    </mat-card-header>-->
     <a routerLink="/products/{{product.id}}" class="product-card__img-link">
-        <img class="product-card__img" src="assets/images/products/{{product.sku}}.jpg"
+        <img class="product-card__img" src="{{product.imageUrl}}"
              alt="Product {{product.sku}}">
     </a>
     <mat-card-content>

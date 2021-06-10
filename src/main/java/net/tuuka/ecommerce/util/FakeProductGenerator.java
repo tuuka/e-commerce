@@ -28,6 +28,7 @@ public class FakeProductGenerator {
         // '_' may be using to split and get ids
         Product product;
         ProductCategory productCategory;
+        int counter = 0;
         for (int i = 0; i < numOfCats; i++) {
             productCategory = new ProductCategory("cat_" + i);
             productCategory.setProducts(new ArrayList<>());
@@ -39,7 +40,7 @@ public class FakeProductGenerator {
                         "description_" + i + j,
                         random.nextInt(100) +
                                 0.01 * random.nextInt(100),
-                        "assets/images/sku_" + i + j + ".jpg",
+                        "assets/images/sku_" + (counter < 10 ? "0" + counter++ : counter++) + ".jpg",
                         true,
                         random.nextInt(100));
                 product.setCategory(productCategories.get(i));

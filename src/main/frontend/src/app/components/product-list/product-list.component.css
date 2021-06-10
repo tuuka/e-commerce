@@ -1,23 +1,32 @@
 
 .products-category__wrapper {
     display: flex;
-    justify-content: center;
-    padding-top: 2em;
+    border-top: 1px solid #d6d6d6;
 }
 
 app-category-list {
     flex-grow: 0;
     flex-shrink: 0;
     min-width: 12em;
-    margin-right: 2em;
+    margin-top: 1.9em;
 }
 
 app-select {
     margin-right: 1.5em;
+    align-self: center;
+}
+
+:host ::ng-deep .mat-form-field-infix {
+    padding: 0.5em 0 0.5em 0;
+}
+
+:host ::ng-deep app-select .mat-form-field-wrapper {
+    padding-bottom: 0;
 }
 
 .products__main-block {
     flex-grow: 1;
+    margin-top: 1.5em;
 }
 
 .products__control {
@@ -39,8 +48,9 @@ app-select {
 }
 
 .product-search-form {
-    width: 20em;
+    width: 18em;
     font-size: 1.35em;
+    margin-right: 1.5em;
 }
 
 :host ::ng-deep .ngx-pagination {
@@ -49,63 +59,6 @@ app-select {
     margin-bottom: 0;
     font-size: 1.2em;
 }
-
-/*:host ::ng-deep .ngx-pagination::before, :host ::ng-deep .ngx-pagination::after {*/
-/*    content: ' ';*/
-/*    display: inline-block;*/
-/*}*/
-
-/*.ngx-pagination::after {*/
-/*    clear: both;*/
-/*}*/
-
-/*:host ::ng-deep .ngx-pagination li {*/
-/*    width: 30px;*/
-/*    height: 31px;*/
-/*    background-color: #f4f4f4;*/
-/*    text-align: center;*/
-/*    line-height: 30px;*/
-/*    cursor: pointer;*/
-/*    margin-left: 4px;*/
-/*    -webkit-user-select: none;*/
-/*    -ms-user-select: none;*/
-/*    margin-right: 0;*/
-/*    padding: 2px;*/
-/*}*/
-
-/*.ngx-pagination a:hover,*/
-/*.ngx-pagination button:hover {*/
-/*    background: #e6e6e6;*/
-/*}*/
-
-/*:host ::ng-deep .ngx-pagination .current {*/
-/*    background: #e5e5e5;*/
-/*    padding: 2px;*/
-/*    color: #000000;*/
-/*}*/
-
-/*:host ::ng-deep .ngx-pagination .disabled {*/
-/*    padding: 0;*/
-/*    color: #cacaca;*/
-/*    cursor: default;*/
-/*}*/
-
-/*.ngx-pagination .disabled:hover {*/
-/*    background: transparent;*/
-/*}*/
-
-/*:host ::ng-deep .ngx-pagination a, :host ::ng-deep .ngx-pagination button {*/
-/*    cursor: pointer;*/
-/*    color: #0a0a0a;*/
-/*    display: block;*/
-/*    padding: 0;*/
-/*    border-radius: 0;*/
-/*}*/
-
-/*:host ::ng-deep .ngx-pagination .pagination-previous,*/
-/*:host ::ng-deep .ngx-pagination .pagination-next {*/
-/*    padding: 0;*/
-/*}*/
 
 :host ::ng-deep .ngx-pagination .pagination-previous a::before,
 :host ::ng-deep .ngx-pagination .pagination-previous.disabled::before {
@@ -127,5 +80,5 @@ app-select {
     display: flex;
     flex-wrap: wrap;
     margin-bottom: 1em;
-    border-top: 1px solid #d6d6d6;
+    margin-right: auto;
 }

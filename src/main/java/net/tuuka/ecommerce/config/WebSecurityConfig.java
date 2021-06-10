@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import net.tuuka.ecommerce.security.JwtAuthEntryPoint;
 import net.tuuka.ecommerce.security.JwtTokenFilter;
 import net.tuuka.ecommerce.service.AppUserService;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -32,17 +33,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtTokenFilter jwtTokenFilter;
     private final PasswordEncoder passwordEncoder;
 
-//    private final String[] ALLOWED_PATHS = {"/css/**", "/js/**", "/*.css", "/*.js", "/*.ico",
-//            "/resources/**", "/static/**",
-//            "/", "/api/auth/**"};
-    private final String[] ANONYMOUS_GET_ALLOWED_PATHS = {"/api", "/resources/**", "/static/**",
-            "/", "/api/products/**", "/api/categories/**", "/api/profile/**"};
+    private final String[] ANONYMOUS_GET_ALLOWED_PATHS = {
+            "/api", "/", "/products", "/api/products/**", "/api/categories/**", "/api/profile/**"};
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .cors().and().csrf().disable()
                 .authorizeRequests()
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .antMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
                 .antMatchers(HttpMethod.GET, ANONYMOUS_GET_ALLOWED_PATHS).permitAll()
 //                .antMatchers(ANONYMOUS_ALLOWED_PATHS).anonymous()
