@@ -20,7 +20,9 @@ import {FlexModule} from "@angular/flex-layout";
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
 import { AccountComponent } from './components/account/account.component';
 import {httpInterceptorProviders} from "./services/auth.interceptor";
-import { ProductDetailComponent } from './components/product-detail/product-detail.component';
+import { ProductDetailsComponent } from './components/product-details/product-details.component';
+import { CartStatusComponent } from './components/cart-status/cart-status.component';
+import { CartDetailsComponent } from './components/cart-details/cart-details.component';
 
 @NgModule({
     declarations: [
@@ -33,7 +35,9 @@ import { ProductDetailComponent } from './components/product-detail/product-deta
         CategoryListComponent,
         AuthComponent,
         AccountComponent,
-        ProductDetailComponent,
+        ProductDetailsComponent,
+        CartStatusComponent,
+        CartDetailsComponent,
     ],
     imports: [
         BrowserModule,

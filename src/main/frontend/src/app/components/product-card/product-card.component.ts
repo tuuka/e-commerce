@@ -1,5 +1,7 @@
 import {Component, Input, Renderer2} from '@angular/core';
 import {Product} from "../../model/Product";
+import {CartService} from "../../services/cart.service";
+import {CartItem} from "../../model/CartItem";
 
 @Component({
     selector: 'app-product-card',
@@ -9,7 +11,8 @@ import {Product} from "../../model/Product";
 export class ProductCardComponent {
 
 
-    constructor(private renderer: Renderer2) {
+    constructor(private renderer: Renderer2,
+                private cartService: CartService) {
     }
 
     @Input() product?: Product;
@@ -22,4 +25,7 @@ export class ProductCardComponent {
         this.renderer.removeClass(event.target, 'mat-elevation-z5')
     }
 
+    addToCart(product: Product) {
+        this.cartService.addToCart(new CartItem(product));
+    }
 }

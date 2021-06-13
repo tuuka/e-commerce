@@ -1,0 +1,53 @@
+table {
+    margin-top: 2em;
+    width: 100%;
+}
+
+.mat-header-cell {
+    text-align: center;
+    font-size: 1.5em;
+}
+
+td.mat-cell:first-of-type {
+    width: 2%;
+}
+
+.mat-cell {
+    padding: 0.2em;
+    font-size: 1.5em;
+    text-align: center;
+    width: 15%;
+}
+
+.mat-cell img {
+    height: 120px;
+    display: block;
+    margin: 0 auto;
+}
+
+tr.mat-footer-row {
+    font-weight: bold;
+}
+
+.mat-footer-cell {
+    font-size: 1.5em;
+    text-align: center;
+}
+
+.order-block {
+    margin-top: 2em;
+    padding: 0 2em;
+    display: flex;
+    justify-content: space-between;
+}
+
+.cart-empty-message {
+    margin: 1em auto;
+    font-size: 2em;
+    text-align: center;
+}
+
+.order-button {
+    font-size: 1.5em;
+    text-transform: uppercase;
+}

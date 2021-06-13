@@ -5,19 +5,20 @@ import {Category} from "../model/Category";
 import {Product} from "../model/Product";
 import {PagedListLinks} from "../model/PagedListLinks";
 import {Page} from "../model/Page";
+import {environment} from "../../environments/environment";
 
 @Injectable({
     providedIn: 'root'
 })
 export class ProductService {
 
-    private baseProductsUrl = 'http://localhost:8080/api/products';
-    private baseCategoriesUrl = 'http://localhost:8080/api/categories';
+    private baseProductsUrl = environment.apiUrl + '/api/products';
+    private baseCategoriesUrl = environment.apiUrl + '/api/categories';
 
     constructor(private httpClient: HttpClient) {
     }
 
-    getProductList(category_id:number, parameters: HttpParams): Observable<ProductsResponse> {
+    getProductList(category_id: number, parameters: HttpParams): Observable<ProductsResponse> {
         let url;
         if (category_id) {
             url = `${this.baseCategoriesUrl}/${category_id}/products`
@@ -31,6 +32,11 @@ export class ProductService {
         return this.httpClient.get<CategoriesResponse>(this.baseCategoriesUrl);
     }
 
+    getProduct(productId: number) {
+        const url = `${this.baseProductsUrl}/${productId}`;
+        return this.httpClient.get(url, {responseType: "json"})
+
+    }
 }
 
 class ProductsResponse {

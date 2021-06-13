@@ -8,8 +8,8 @@
         <a *ngIf="authService.isLoggedIn" mat-stroked-button class="account-link" routerLink="account">Account</a>
         <a *ngIf="authService.isLoggedIn" mat-stroked-button class="account-link" (click)="authService.logout()">Logout</a>
         <a *ngIf="!authService.isLoggedIn" mat-stroked-button class="account-link" routerLink="auth">Login</a>
-        <button mat-stroked-button class="btn">
-            <mat-icon matBadge="15" matBadgeColor="accent">shopping_cart</mat-icon>
-        </button>
+
+        <app-cart-status></app-cart-status>
+
     </div>
 </mat-toolbar>

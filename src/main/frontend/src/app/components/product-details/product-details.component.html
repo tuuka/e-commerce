@@ -1,0 +1,38 @@
+<mat-card class="details">
+    <div class="details__image-wrapper">
+        <img src="{{product?.imageUrl}}" class="" alt="{{product?.sku}}">
+    </div>
+    <div class="details__descriptions">
+        <div class="details__description-main-part"><h2>{{product?.name}}</h2>
+            <p class="details__item"><span class="gray-text">Category: </span><span
+                    class="accent-text"> {{product?.category?.name}}</span></p>
+            <p class="details__item">
+                <span class="gray-text">Availability: </span><span class="accent-text">{{product?.unitsInStock}}</span>
+            </p>
+            <p class="details__item"><span class="gray-text">Description: </span>{{product?.description}}</p>
+            <p class="details__descriptions-price"><span class="gray-text">Price: </span><span
+                    class="accent-text">{{product?.unitPrice | currency}}</span></p></div>
+        <div class="details__description-order-part">
+            <div class="details__quantity">
+                <span class="gray-text">Quantity:</span>
+                <button mat-icon-button matTooltip="Remove" (click)="decrement()">
+                    <mat-icon>remove</mat-icon>
+                </button>
+                <span class="details__quantity-to-order">{{quantityToOrder}}</span>
+                <button mat-icon-button matTooltip="Add" (click)="increment()">
+                    <mat-icon>add</mat-icon>
+                </button>
+            </div>
+            <div>
+                <button mat-stroked-button color="primary" matTooltip="Add to cart"
+                (click)="addToCart()">
+                    <mat-icon>add_shopping_cart</mat-icon>
+                    Add to cart
+                </button>
+            </div>
+        </div>
+    <div class="details__home-link-wrapper">
+        <a routerLink="/products">Back to products list</a>
+    </div>
+    </div>
+</mat-card>
