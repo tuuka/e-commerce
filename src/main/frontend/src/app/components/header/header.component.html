@@ -3,7 +3,7 @@
     <!--        <mat-icon>menu</mat-icon>-->
     <!--    </button>-->
     <div class="header _container">
-        <a mat-button routerLink="/">LookShop</a>
+        <a mat-button routerLink="/">HOME</a>
         <span class="spacer"></span>
         <a *ngIf="authService.isLoggedIn" mat-stroked-button class="account-link" routerLink="account">Account</a>
         <a *ngIf="authService.isLoggedIn" mat-stroked-button class="account-link" (click)="authService.logout()">Logout</a>

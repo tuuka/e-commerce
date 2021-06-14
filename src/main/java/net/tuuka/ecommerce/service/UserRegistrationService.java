@@ -5,6 +5,7 @@ import net.tuuka.ecommerce.controller.AuthApiController;
 import net.tuuka.ecommerce.controller.dto.SignUpRequest;
 import net.tuuka.ecommerce.entity.AppUser;
 import net.tuuka.ecommerce.entity.ConfirmationToken;
+import net.tuuka.ecommerce.service.email.EmailSenderService;
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import org.springframework.stereotype.Service;
 
@@ -19,14 +20,14 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class UserRegistrationService {
 
     private final AppUserService appUserService;
-//    private final EmailValidator emailValidator = new EmailValidator();
+    private final EmailValidator emailValidator = new EmailValidator();
     private final ConfirmationTokenService tokenService;
-//    private final EmailSender emailSender;
+    private final EmailSenderService emailSender;
 
     public String register(SignUpRequest signUpRequest) {
-//
-//        if (!emailValidator.isValid(signUpRequest.getEmail(), null))
-//            throw new IllegalStateException("Email not valid.");
+
+        if (!emailValidator.isValid(signUpRequest.getEmail(), null))
+            throw new IllegalStateException("Email not valid.");
 
         ConfirmationToken confirmationToken;
 
@@ -84,9 +85,9 @@ public class UserRegistrationService {
 
         String link = linkTo(methodOn(AuthApiController.class).
                 confirmEmail(confirmationToken.getToken())).toString();
-//        emailSender.send(confirmationToken.getAppUser().getEmail(),
-//                buildEmail(confirmationToken.getAppUser().getFirstName(), link
-//                ));
+        emailSender.send(confirmationToken.getAppUser().getEmail(),
+                buildEmail(confirmationToken.getAppUser().getFirstName(), link
+                ));
         return "Confirmation email sent";
 
     }
@@ -104,7 +105,7 @@ public class UserRegistrationService {
                 "<p style='line-height:21px;font-family:Helvetica,Verdana,Arial,sans-serif;font-size:12px;margin-bottom:25px;background-color:#f7f9fc;padding:15px'>" +
                 "<a style='font-size:2em; color:#4371ab;text-decoration:none' href='" + link + "'<strong>Confirm</strong></a>" +
                 "</p>" +
-                "<p style='line-height:21px;font-family:Helvetica,Verdana,Arial,sans-serif;font-size:12px'>Thank you.<br>Colorlib</p>" +
+                "<p style='line-height:21px;font-family:Helvetica,Verdana,Arial,sans-serif;font-size:12px'>Thank you.<br>Tuuka-Shop</p>" +
                 "</div>" +
                 "</div>";
     }

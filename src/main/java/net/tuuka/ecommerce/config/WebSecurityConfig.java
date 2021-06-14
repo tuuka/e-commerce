@@ -42,7 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().and().csrf().disable()
                 .authorizeRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                .antMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                .antMatchers("/api/auth/**").permitAll()
                 .antMatchers(HttpMethod.GET, ANONYMOUS_GET_ALLOWED_PATHS).permitAll()
 //                .antMatchers(ANONYMOUS_ALLOWED_PATHS).anonymous()
                 .anyRequest().authenticated()

@@ -2,7 +2,6 @@ import {Injectable, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 import {Observable} from "rxjs";
-import {shareReplay} from "rxjs/operators";
 
 const httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
@@ -40,7 +39,7 @@ export class AuthService implements OnInit {
     }
 
     public checkIfLoggedIn() {
-        const token:JwtResponse = JSON.parse(<string>localStorage.getItem("token"));
+        const token: JwtResponse = JSON.parse(<string>localStorage.getItem("token"));
         if (!token || !token.expiresAt) {
             this.isLoggedIn = false;
             return false;
@@ -48,6 +47,14 @@ export class AuthService implements OnInit {
 
         this.isLoggedIn = new Date() < new Date(token.expiresAt);
         return this.isLoggedIn;
+    }
+
+    public getUsername(): string {
+        if (this.checkIfLoggedIn()) {
+            const token: JwtResponse = JSON.parse(<string>localStorage.getItem("token"));
+            return <string>token.username;
+        }
+        return environment.anonymousName;
     }
 
     ngOnInit(): void {
@@ -85,5 +92,5 @@ export class JwtResponse {
     token?: string;
     type?: string;
     expiresAt?: number;
-    username?:string;
+    username?: string;
 }

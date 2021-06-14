@@ -37,6 +37,7 @@ public class AppProperties {
     public static class Security {
         private Integer token_expires_time_min = 30;
         private String secret;
+        private Boolean confirmation_email = true;
         private Root root = new Root();
 
     }

@@ -34,6 +34,10 @@ tr.mat-footer-row {
     text-align: center;
 }
 
+.cart-detail__quantity-span {
+    vertical-align: middle;
+}
+
 .order-block {
     margin-top: 2em;
     padding: 0 2em;
