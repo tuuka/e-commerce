@@ -5,11 +5,13 @@ import {AuthComponent} from "./components/auth/auth.component";
 import {AccountComponent} from "./components/account/account.component";
 import {ProductDetailsComponent} from "./components/product-details/product-details.component";
 import {CartDetailsComponent} from "./components/cart-details/cart-details.component";
+import {CheckoutComponent} from "./components/checkout/checkout.component";
 
 const routes: Routes = [
     {path: 'auth', component: AuthComponent},
     {path: 'account', component: AccountComponent},
     {path: 'cart', component: CartDetailsComponent},
+    {path: 'checkout', component: CheckoutComponent},
     {path: 'products/:id', component: ProductDetailsComponent},
     {path: 'products', component: ProductListComponent},
     {path: '', redirectTo: '/products', pathMatch: 'full'},

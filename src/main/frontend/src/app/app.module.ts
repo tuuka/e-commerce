@@ -23,6 +23,7 @@ import {httpInterceptorProviders} from "./services/auth.interceptor";
 import { ProductDetailsComponent } from './components/product-details/product-details.component';
 import { CartStatusComponent } from './components/cart-status/cart-status.component';
 import { CartDetailsComponent } from './components/cart-details/cart-details.component';
+import { CheckoutComponent } from './components/checkout/checkout.component';
 
 @NgModule({
     declarations: [
@@ -38,6 +39,7 @@ import { CartDetailsComponent } from './components/cart-details/cart-details.com
         ProductDetailsComponent,
         CartStatusComponent,
         CartDetailsComponent,
+        CheckoutComponent,
     ],
     imports: [
         BrowserModule,

@@ -26,10 +26,9 @@ export class CartDetailsComponent implements OnInit {
     }
 
     private getCartDetails() {
-        this.cartItems = this.cartService.getCartFromStorage();
         this.cartService.totalPrice.subscribe(data => this.totalPrice = data);
         this.cartService.totalQuantity.subscribe(data => this.totalQuantity = data);
-        this.cartService.computeCartTotals();
+        this.cartItems = this.cartService.getCartFromStorage();
     }
 
     decrementQuantity(cartItem: CartItem) {
