@@ -1,6 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
+import {SelectOption} from "../select/select.component";
+import {CartService} from "../../services/cart.service";
+import {CheckoutService} from "../../services/checkout.service";
 
 @Component({
     selector: 'app-checkout',
@@ -9,13 +12,39 @@ import {Router} from "@angular/router";
 })
 export class CheckoutComponent implements OnInit {
 
+    cardTypes: SelectOption[] = [
+        {value: 'visa', viewValue: 'Visa'},
+        {value: 'mastercard', viewValue: 'Mastercard'},
+        {value: 'mir', viewValue: 'Mir'}
+    ];
+
+    creditCardMonths: number[] = [];
+    creditCardYears: number[] = [];
+
+    totalPrice: number = 0;
+    totalQuantity: number = 0;
+
     constructor(private fb: FormBuilder,
-                // private authService: AuthService,
-                private router: Router) {
+                private cartService: CartService,
+                private checkoutService: CheckoutService) {
     }
 
     ngOnInit(): void {
+        this.checkoutService.getCreditCardMonths().subscribe(data => {
+            this.creditCardMonths = data;
+        });
+        this.checkoutService.getCreditCardYears().subscribe(data => {
+            this.creditCardYears = data;
+        });
         this.checkoutFormModel.reset();
+        this.cartService.totalQuantity.subscribe(q=>{
+            this.totalQuantity = q;
+        });
+        this.cartService.totalPrice.subscribe(p => {
+            this.totalPrice = p;
+        })
+        this.cartService.computeCartTotals();
+
     }
 
     checkoutFormModel = this.fb.group({
@@ -34,7 +63,7 @@ export class CheckoutComponent implements OnInit {
             }),
             creditCard: this.fb.group({
                 type: ['', [Validators.required]],
-                number: ['', [Validators.required, Validators.minLength(12)]],
+                number: ['', [Validators.required, Validators.minLength(16)]],
                 code: ['', [Validators.required]],
                 expMonth: ['', [Validators.required]],
                 expYear: ['', [Validators.required]]
@@ -44,6 +73,11 @@ export class CheckoutComponent implements OnInit {
 
     onSubmit() {
         console.log(this.checkoutFormModel);
+        // this.checkoutFormModel.reset();
     }
 
+    cardTypeChange(event:any) {
+        this.checkoutFormModel.get('creditCard')?.setValue(event.target.value, {onlySelf: true});
+        console.log(this.checkoutFormModel.get('creditCard'));
+    }
 }

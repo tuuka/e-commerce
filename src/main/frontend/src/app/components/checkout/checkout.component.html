@@ -3,7 +3,7 @@
           [formGroup]="checkoutFormModel" autocomplete="off" (submit)="onSubmit()">
         <div class="checkout-form__flex">
             <div class="checkout-form__side">
-                <fieldset formGroupName="customer">
+                <fieldset class="checkout__fieldset" formGroupName="customer">
                     <legend>Customer</legend>
                     <mat-form-field appearance="outline">
                         <mat-label>First name</mat-label>
@@ -32,11 +32,16 @@
                     </mat-form-field>
                 </fieldset>
 
-                <fieldset formGroupName="creditCard">
+                <fieldset class="checkout__fieldset" formGroupName="creditCard">
                     <legend>Credit card</legend>
+
                     <mat-form-field appearance="outline">
                         <mat-label>Card type</mat-label>
-                        <input matInput formControlName="type">
+                        <mat-select formControlName="type">
+                            <mat-option *ngFor="let cardType of cardTypes" [value]="cardType.value">
+                                {{cardType.viewValue}}
+                            </mat-option>
+                        </mat-select>
                         <mat-error
                                 *ngIf="checkoutFormModel.get('creditCard.type')?.touched && checkoutFormModel.get('creditCard.type')?.errors?.required">
                             Card type is <strong>required</strong></mat-error>
@@ -47,6 +52,10 @@
                         <mat-error
                                 *ngIf="checkoutFormModel.get('creditCard.number')?.touched && checkoutFormModel.get('creditCard.number')?.errors?.required">
                             Card number is <strong>required</strong></mat-error>
+                        <mat-error
+                                *ngIf="checkoutFormModel.get('creditCard.number')?.touched && checkoutFormModel.get('creditCard.number')?.errors?.minlength">
+                            Card number must consist of <strong>16</strong> numbers
+                        </mat-error>
                     </mat-form-field>
                     <mat-form-field appearance="outline">
                         <mat-label>Security code</mat-label>
@@ -57,14 +66,22 @@
                     </mat-form-field>
                     <mat-form-field appearance="outline">
                         <mat-label>Expiration month</mat-label>
-                        <input matInput formControlName="expMonth">
+                        <mat-select formControlName="expMonth">
+                            <mat-option *ngFor="let month of creditCardMonths" [value]="month">
+                                {{month < 10 ? '0' + month : month}}
+                            </mat-option>
+                        </mat-select>
                         <mat-error
                                 *ngIf="checkoutFormModel.get('creditCard.expMonth')?.touched && checkoutFormModel.get('creditCard.expMonth')?.errors?.required">
                             Expiration month is <strong>required</strong></mat-error>
                     </mat-form-field>
                     <mat-form-field appearance="outline">
                         <mat-label>Expiration year</mat-label>
-                        <input matInput formControlName="expYear">
+                        <mat-select formControlName="expYear">
+                            <mat-option *ngFor="let year of creditCardYears" [value]="year">
+                                {{year}}
+                            </mat-option>
+                        </mat-select>
                         <mat-error
                                 *ngIf="checkoutFormModel.get('creditCard.expYear')?.touched && checkoutFormModel.get('creditCard.expYear')?.errors?.required">
                             Expiration year is <strong>required</strong></mat-error>
@@ -73,7 +90,7 @@
             </div>
 
             <div class="checkout-form__side">
-                <fieldset formGroupName="shippingAddress">
+                <fieldset class="checkout__fieldset" formGroupName="shippingAddress">
                     <legend>Shipping address</legend>
                     <mat-form-field appearance="outline">
                         <mat-label>Apartment</mat-label>
@@ -114,6 +131,15 @@
                                 *ngIf="checkoutFormModel.get('shippingAddress.zip')?.touched && checkoutFormModel.get('shippingAddress.zip')?.errors?.required">
                             Zip code is <strong>required</strong></mat-error>
                     </mat-form-field>
+                </fieldset>
+                <fieldset class="checkout__fieldset">
+                    <legend>Order review</legend>
+                    <div class="checkout__totals"><span
+                            class="checkout__totals-text">Total quantity:</span><span><b>{{totalQuantity}}</b></span>
+                    </div>
+                    <div class="checkout__totals"><span
+                            class="checkout__totals-text">Total price:</span><span><b>{{totalPrice | currency}}</b></span>
+                    </div>
                 </fieldset>
             </div>
         </div>

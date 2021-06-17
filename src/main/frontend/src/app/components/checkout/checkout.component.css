@@ -10,13 +10,23 @@ mat-card {
     justify-content: space-between;
 }
 
-fieldset {
+.checkout__fieldset {
     border-style: groove;
     border-color: rgba(0,0,0,0.8);
     border-width: 1px;
     border-radius: 5px;
     margin-bottom: 1.5em;
     padding: 0.5em 1em 0 1em;
+}
+
+.checkout__totals {
+    margin-bottom: 1em;
+    font-size: 1.3em;
+}
+
+.checkout__totals-text {
+    display: inline-block;
+    width: 7em;
 }
 
 .checkout-form__side {
