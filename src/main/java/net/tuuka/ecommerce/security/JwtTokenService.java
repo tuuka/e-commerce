@@ -4,7 +4,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import net.tuuka.ecommerce.controller.dto.JwtResponse;
-import net.tuuka.ecommerce.entity.AppUser;
+import net.tuuka.ecommerce.model.user.AppUser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;

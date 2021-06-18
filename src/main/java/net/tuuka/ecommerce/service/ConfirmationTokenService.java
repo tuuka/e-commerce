@@ -1,8 +1,8 @@
 package net.tuuka.ecommerce.service;
 
 import net.tuuka.ecommerce.dao.ConfirmationTokenRepository;
-import net.tuuka.ecommerce.entity.AppUser;
-import net.tuuka.ecommerce.entity.ConfirmationToken;
+import net.tuuka.ecommerce.model.user.AppUser;
+import net.tuuka.ecommerce.model.user.ConfirmationToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

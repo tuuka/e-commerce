@@ -5,30 +5,30 @@
             <div class="checkout-form__side">
                 <fieldset class="checkout__fieldset" formGroupName="customer">
                     <legend>Customer</legend>
-                    <mat-form-field appearance="outline">
-                        <mat-label>First name</mat-label>
-                        <input matInput formControlName="firstName">
-                        <mat-error
-                                *ngIf="checkoutFormModel.get('customer.firstName')?.touched && checkoutFormModel.get('customer.firstName')?.errors?.required">
-                            First name is <strong>required</strong>
-                        </mat-error>
-                        <mat-error
-                                *ngIf="checkoutFormModel.get('customer.firstName')?.touched && checkoutFormModel.get('customer.firstName')?.errors?.notOnlyWhitespace">
-                            Spaces only are not allowed
-                        </mat-error>
-                    </mat-form-field>
-                    <mat-form-field appearance="outline">
-                        <mat-label>Last name</mat-label>
-                        <input matInput formControlName="lastName">
-                        <mat-error
-                                *ngIf="checkoutFormModel.get('customer.lastName')?.touched && checkoutFormModel.get('customer.lastName')?.errors?.required">
-                            Last name is <strong>required</strong>
-                        </mat-error>
-                        <mat-error
-                                *ngIf="checkoutFormModel.get('customer.lastName')?.touched && checkoutFormModel.get('customer.lastName')?.errors?.notOnlyWhitespace">
-                            Spaces only are not allowed
-                        </mat-error>
-                    </mat-form-field>
+<!--                    <mat-form-field appearance="outline">-->
+<!--                        <mat-label>First name</mat-label>-->
+<!--                        <input matInput formControlName="firstName">-->
+<!--                        <mat-error-->
+<!--                                *ngIf="checkoutFormModel.get('customer.firstName')?.touched && checkoutFormModel.get('customer.firstName')?.errors?.required">-->
+<!--                            First name is <strong>required</strong>-->
+<!--                        </mat-error>-->
+<!--                        <mat-error-->
+<!--                                *ngIf="checkoutFormModel.get('customer.firstName')?.touched && checkoutFormModel.get('customer.firstName')?.errors?.notOnlyWhitespace">-->
+<!--                            Spaces only are not allowed-->
+<!--                        </mat-error>-->
+<!--                    </mat-form-field>-->
+<!--                    <mat-form-field appearance="outline">-->
+<!--                        <mat-label>Last name</mat-label>-->
+<!--                        <input matInput formControlName="lastName">-->
+<!--                        <mat-error-->
+<!--                                *ngIf="checkoutFormModel.get('customer.lastName')?.touched && checkoutFormModel.get('customer.lastName')?.errors?.required">-->
+<!--                            Last name is <strong>required</strong>-->
+<!--                        </mat-error>-->
+<!--                        <mat-error-->
+<!--                                *ngIf="checkoutFormModel.get('customer.lastName')?.touched && checkoutFormModel.get('customer.lastName')?.errors?.notOnlyWhitespace">-->
+<!--                            Spaces only are not allowed-->
+<!--                        </mat-error>-->
+<!--                    </mat-form-field>-->
                     <mat-form-field appearance="outline">
                         <mat-label>Email</mat-label>
                         <input matInput formControlName="email">

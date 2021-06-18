@@ -1,9 +1,7 @@
 package net.tuuka.ecommerce.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import net.tuuka.ecommerce.entity.BaseEntity;
-import net.tuuka.ecommerce.entity.ProductCategory;
-import org.springframework.hateoas.RepresentationModel;
+import net.tuuka.ecommerce.model.ProductCategory;
 
 import javax.validation.constraints.NotBlank;
 

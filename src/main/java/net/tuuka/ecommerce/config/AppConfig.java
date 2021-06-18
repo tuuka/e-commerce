@@ -1,7 +1,7 @@
 package net.tuuka.ecommerce.config;
 
 import net.tuuka.ecommerce.controller.ProductRestController;
-import net.tuuka.ecommerce.entity.Product;
+import net.tuuka.ecommerce.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateCustomizer;
 import org.springframework.context.annotation.Bean;

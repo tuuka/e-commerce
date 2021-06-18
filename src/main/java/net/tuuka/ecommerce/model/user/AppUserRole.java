@@ -1,4 +1,4 @@
-package net.tuuka.ecommerce.entity;
+package net.tuuka.ecommerce.model.user;
 
 public enum AppUserRole {
     ROLE_USER,

@@ -1,10 +1,9 @@
 package net.tuuka.ecommerce.service;
 
 import lombok.RequiredArgsConstructor;
-import net.tuuka.ecommerce.controller.dto.AppUserRepresentation;
 import net.tuuka.ecommerce.dao.AppUserRepository;
-import net.tuuka.ecommerce.entity.AppUser;
-import net.tuuka.ecommerce.entity.ConfirmationToken;
+import net.tuuka.ecommerce.model.user.AppUser;
+import net.tuuka.ecommerce.model.user.ConfirmationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

@@ -1,7 +1,7 @@
 package net.tuuka.ecommerce.dao;
 
-import net.tuuka.ecommerce.entity.Product;
-import net.tuuka.ecommerce.entity.ProductCategory;
+import net.tuuka.ecommerce.model.Product;
+import net.tuuka.ecommerce.model.ProductCategory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

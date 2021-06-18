@@ -1,9 +1,8 @@
-package net.tuuka.ecommerce.entity;
+package net.tuuka.ecommerce.model;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;

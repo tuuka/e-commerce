@@ -1,8 +1,7 @@
 package net.tuuka.ecommerce.controller.util;
 
-import lombok.var;
 import net.tuuka.ecommerce.controller.ProductCategoryRestController;
-import net.tuuka.ecommerce.entity.ProductCategory;
+import net.tuuka.ecommerce.model.ProductCategory;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
@@ -42,7 +41,7 @@ public class ProductCategoryModelAssembler implements
     @NonNull
     public CollectionModel<EntityModel<ProductCategory>> toCollectionModel(@NonNull Iterable<? extends ProductCategory> entities) {
 
-        var collectionModel = _toCollectionModel(entities);
+        CollectionModel<EntityModel<ProductCategory>> collectionModel = _toCollectionModel(entities);
 
         collectionModel.add(linkTo(methodOn(controllerClass).getCategories()).withSelfRel()
                 , linkTo(methodOn(controllerClass).search(null)).withRel("search")
@@ -55,7 +54,7 @@ public class ProductCategoryModelAssembler implements
     public CollectionModel<EntityModel<ProductCategory>> toSearchCollectionModel(Iterable<? extends ProductCategory> entities,
                                                                                  String name) {
 
-        var collectionModel = _toCollectionModel(entities);
+        CollectionModel<EntityModel<ProductCategory>> collectionModel = _toCollectionModel(entities);
 
         collectionModel.add(linkTo(methodOn(controllerClass).search(name)).withSelfRel(),
                 linkTo(methodOn(controllerClass).getCategories()).withRel("categories"));

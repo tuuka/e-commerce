@@ -1,7 +1,7 @@
 package net.tuuka.ecommerce.service;
 
 import net.tuuka.ecommerce.dao.ProductCategoryRepository;
-import net.tuuka.ecommerce.entity.ProductCategory;
+import net.tuuka.ecommerce.model.ProductCategory;
 import net.tuuka.ecommerce.exception.ProductCategoryNotEmptyException;
 import org.springframework.stereotype.Service;
 

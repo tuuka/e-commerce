@@ -1,7 +1,7 @@
 package net.tuuka.ecommerce.util;
 
-import net.tuuka.ecommerce.entity.Product;
-import net.tuuka.ecommerce.entity.ProductCategory;
+import net.tuuka.ecommerce.model.Product;
+import net.tuuka.ecommerce.model.ProductCategory;
 
 import java.util.ArrayList;
 import java.util.List;

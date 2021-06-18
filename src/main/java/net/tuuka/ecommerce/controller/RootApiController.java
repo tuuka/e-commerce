@@ -2,14 +2,13 @@ package net.tuuka.ecommerce.controller;
 
 import lombok.RequiredArgsConstructor;
 import net.tuuka.ecommerce.controller.util.AlpsHelper;
-import net.tuuka.ecommerce.entity.Product;
-import net.tuuka.ecommerce.entity.ProductCategory;
+import net.tuuka.ecommerce.model.Product;
+import net.tuuka.ecommerce.model.ProductCategory;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.mediatype.alps.Alps;
 import org.springframework.hateoas.mediatype.alps.Format;
 import org.springframework.hateoas.mediatype.hal.HalModelBuilder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

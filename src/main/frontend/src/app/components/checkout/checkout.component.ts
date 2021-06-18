@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, ValidationErrors, Validators} from "@angular/forms";
 import {SelectOption} from "../select/select.component";
 import {CartService} from "../../services/cart.service";
-import {CheckoutService} from "../../services/checkout.service";
+import {CheckoutService, OrderFormDto} from "../../services/checkout.service";
 import {AuthService, UserInfo} from "../../services/auth.service";
 
 @Component({
@@ -64,8 +64,8 @@ export class CheckoutComponent implements OnInit {
 
     checkoutFormModel = this.fb.group({
             customer: this.fb.group({
-                firstName: ['', [Validators.required, this.notOnlyWhitespace]],
-                lastName: ['', [Validators.required, this.notOnlyWhitespace]],
+                // firstName: ['', [Validators.required, this.notOnlyWhitespace]],
+                // lastName: ['', [Validators.required, this.notOnlyWhitespace]],
                 email: ['', [Validators.required,
                     Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]]
             }),
@@ -103,7 +103,15 @@ export class CheckoutComponent implements OnInit {
         if (this.checkoutFormModel.invalid) {
             this.checkoutFormModel.markAllAsTouched();
         }
-        console.log(this.checkoutFormModel);
+        // console.log(this.checkoutFormModel);
+        let order = new OrderFormDto(
+            this.checkoutFormModel.get('customer.email')?.value,
+            this.checkoutFormModel.get('creditCard')?.value,
+            this.checkoutFormModel.get('shippingAddress')?.value,
+            this.cartService.getCartFromStorage()
+        )
+        console.log(order);
+        this.checkoutService.sendOrder(order);
         // this.checkoutFormModel.reset();
     }
 
@@ -112,3 +120,4 @@ export class CheckoutComponent implements OnInit {
     //     console.log(this.checkoutFormModel.get('creditCard'));
     // }
 }
+

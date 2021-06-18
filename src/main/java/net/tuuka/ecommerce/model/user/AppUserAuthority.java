@@ -1,4 +1,4 @@
-package net.tuuka.ecommerce.entity;
+package net.tuuka.ecommerce.model.user;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

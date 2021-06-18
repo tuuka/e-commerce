@@ -1,4 +1,4 @@
-package net.tuuka.ecommerce.entity;
+package net.tuuka.ecommerce.model.user;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -6,7 +6,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Entity
 @Table(name="confirmation_token")

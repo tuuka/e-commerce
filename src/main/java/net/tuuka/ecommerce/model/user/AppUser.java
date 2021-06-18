@@ -1,6 +1,8 @@
-package net.tuuka.ecommerce.entity;
+package net.tuuka.ecommerce.model.user;
 
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +17,8 @@ import java.util.stream.Collectors;
                 @UniqueConstraint(name = "app_user_email_unique",
                         columnNames = "email")})
 @NoArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class AppUser implements UserDetails {
 
     @Id

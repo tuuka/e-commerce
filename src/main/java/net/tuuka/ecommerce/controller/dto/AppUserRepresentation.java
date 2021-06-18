@@ -3,7 +3,7 @@ package net.tuuka.ecommerce.controller.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import net.tuuka.ecommerce.entity.AppUser;
+import net.tuuka.ecommerce.model.user.AppUser;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Arrays;

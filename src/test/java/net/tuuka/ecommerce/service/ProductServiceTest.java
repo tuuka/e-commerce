@@ -6,9 +6,9 @@ package net.tuuka.ecommerce.service;
 */
 
 import net.tuuka.ecommerce.dao.ProductRepository;
-import net.tuuka.ecommerce.entity.BaseEntity;
-import net.tuuka.ecommerce.entity.Product;
-import net.tuuka.ecommerce.entity.ProductCategory;
+import net.tuuka.ecommerce.model.BaseEntity;
+import net.tuuka.ecommerce.model.Product;
+import net.tuuka.ecommerce.model.ProductCategory;
 import net.tuuka.ecommerce.util.FakeProductGenerator;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;

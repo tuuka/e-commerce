@@ -1,4 +1,4 @@
-package net.tuuka.ecommerce.entity;
+package net.tuuka.ecommerce.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;

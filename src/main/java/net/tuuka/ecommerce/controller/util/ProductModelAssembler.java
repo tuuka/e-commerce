@@ -1,8 +1,7 @@
 package net.tuuka.ecommerce.controller.util;
 
-import lombok.var;
 import net.tuuka.ecommerce.controller.ProductRestController;
-import net.tuuka.ecommerce.entity.Product;
+import net.tuuka.ecommerce.model.Product;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
@@ -22,7 +21,7 @@ public class ProductModelAssembler implements
     @NonNull
     public EntityModel<Product> toModel(@NonNull Product entity) {
 
-        var entityModel = EntityModel.of(entity);
+        EntityModel<Product> entityModel = EntityModel.of(entity);
 
         entityModel.add(linkTo(methodOn(controllerClass).getProductById(entity.getId())).withSelfRel());
         if (entity.getCategory() != null)

@@ -1,8 +1,9 @@
 import {Injectable, OnInit} from '@angular/core';
-import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {environment} from "../../environments/environment";
-import {BehaviorSubject, Subject, throwError} from "rxjs";
+import {BehaviorSubject, Subject} from "rxjs";
 import {catchError} from "rxjs/operators";
+import {HttpErrorHandler} from "./http-error-handler";
 
 const httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
@@ -28,7 +29,7 @@ export class AuthService implements OnInit {
         const credentials: AuthLoginInfo = new AuthLoginInfo(email, password);
         this.signUpStatus.next('');
         this.http.post<JwtResponse>(this.loginUrl, credentials, httpOptions)
-            .pipe(catchError(AuthService.handleError))
+            .pipe(catchError(HttpErrorHandler.handleError))
             // .pipe(shareReplay())
             .subscribe(
                 (result: any) => {
@@ -45,7 +46,7 @@ export class AuthService implements OnInit {
 
     public signUp(firstName: string, lastName: string, email: string, password: string): void {
         const signUpInfo = new SignUpInfo(firstName, lastName, email, password);
-        this.http.post(this.signupUrl, signUpInfo, httpOptions).pipe(catchError(AuthService.handleError))
+        this.http.post(this.signupUrl, signUpInfo, httpOptions).pipe(catchError(HttpErrorHandler.handleError))
             .subscribe(
                 (result: any) => {
                     console.log(result);
@@ -79,22 +80,6 @@ export class AuthService implements OnInit {
 
     ngOnInit(): void {
         this.refreshLoggedUserDetails();
-    }
-
-    private static handleError(error: HttpErrorResponse) {
-        if (error.status === 0) {
-            // A client-side or network error occurred. Handle it accordingly.
-            console.error('An error occurred:', error.error);
-        } else {
-            // The backend returned an unsuccessful response code.
-            // The response body may contain clues as to what went wrong.
-            console.error(
-                `Backend returned code ${error.status}, ` +
-                `message: ${error.error.message}`);
-        }
-        // Return an observable with a user-facing error message.
-        return throwError(
-            `${error.error.message}`);
     }
 
 }

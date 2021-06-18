@@ -1,8 +1,8 @@
 package net.tuuka.ecommerce.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import net.tuuka.ecommerce.entity.Product;
-import net.tuuka.ecommerce.entity.ProductCategory;
+import net.tuuka.ecommerce.model.Product;
+import net.tuuka.ecommerce.model.ProductCategory;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;

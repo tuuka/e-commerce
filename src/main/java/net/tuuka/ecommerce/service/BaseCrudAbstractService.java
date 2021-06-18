@@ -1,6 +1,6 @@
 package net.tuuka.ecommerce.service;
 
-import net.tuuka.ecommerce.entity.BaseEntity;
+import net.tuuka.ecommerce.model.BaseEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import javax.persistence.EntityNotFoundException;

@@ -2,8 +2,8 @@ package net.tuuka.ecommerce.controller.util;
 
 import net.tuuka.ecommerce.config.AppProperties;
 import net.tuuka.ecommerce.controller.RootApiController;
-import net.tuuka.ecommerce.entity.BaseEntity;
-import net.tuuka.ecommerce.entity.Product;
+import net.tuuka.ecommerce.model.BaseEntity;
+import net.tuuka.ecommerce.model.Product;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.MergedAnnotations;
