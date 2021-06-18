@@ -39,7 +39,10 @@ public class JwtTokenService {
                 .setNotBefore(now)
                 .setExpiration(exp)
                 .signWith(KEY)
-                .compact(), user.getUsername(), exp);
+                .compact(),
+                user.getUsername(),
+                user.getFirstName(),
+                user.getLastName(), exp);
 
     }
 

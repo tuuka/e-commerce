@@ -2,7 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {CartService} from "../../services/cart.service";
 import {CartItem} from "../../model/CartItem";
 import {MatTable} from "@angular/material/table";
-import {environment} from "../../../environments/environment";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
     selector: 'app-cart-details',
@@ -15,14 +15,18 @@ export class CartDetailsComponent implements OnInit {
     totalPrice: number = 0;
     totalQuantity: number = 0;
     displayedColumns: string[] = ['image', 'name', 'price', 'quantity', 'total'];
+    isLoggedIn: boolean = false;
 
-    constructor(private cartService: CartService) {
+    constructor(private cartService: CartService, private authService: AuthService) {
     }
 
     @ViewChild(MatTable) table?: MatTable<CartItem>;
 
     ngOnInit(): void {
         this.getCartDetails();
+        this.authService.userInfo.subscribe(info => {
+            this.isLoggedIn = info.isLoggedIn;
+        })
     }
 
     private getCartDetails() {
@@ -41,7 +45,4 @@ export class CartDetailsComponent implements OnInit {
         if (this.table) this.table.renderRows();
     }
 
-    isLoggedIn(){
-        return this.cartService.getUsername() != environment.anonymousName;
-    }
 }

@@ -55,12 +55,12 @@
 
 <div class="order-block">
     <a routerLink="/products">Back to products</a>
-    <a *ngIf="cartItems.length > 0 && isLoggedIn()" class="order-button"
+    <a *ngIf="cartItems.length > 0 && isLoggedIn" class="order-button"
        routerLink="/checkout"
        mat-raised-button color="primary">
         Checkout
     </a>
-    <a *ngIf="cartItems.length > 0 && !isLoggedIn()" class="order-button"
+    <a *ngIf="cartItems.length > 0 && !isLoggedIn" class="order-button"
        routerLink="/auth"
        mat-raised-button color="primary">
         Log In to checkout

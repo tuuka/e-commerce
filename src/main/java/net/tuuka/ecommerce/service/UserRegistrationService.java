@@ -7,6 +7,7 @@ import net.tuuka.ecommerce.entity.AppUser;
 import net.tuuka.ecommerce.entity.ConfirmationToken;
 import net.tuuka.ecommerce.service.email.EmailSenderService;
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -23,6 +24,9 @@ public class UserRegistrationService {
     private final EmailValidator emailValidator = new EmailValidator();
     private final ConfirmationTokenService tokenService;
     private final EmailSenderService emailSender;
+
+    @Value("${app.security.confirmation_email}")
+    private boolean SEND_CONFIRMATION_EMAIL;
 
     public String register(SignUpRequest signUpRequest) {
 
@@ -43,12 +47,14 @@ public class UserRegistrationService {
                             "Resent confirmation email.", signUpRequest.getEmail()));
         }
 
-        confirmationToken = appUserService.singUpUser(
-                new AppUser(
-                        signUpRequest.getFirstName(),
-                        signUpRequest.getLastName(),
-                        signUpRequest.getEmail(),
-                        signUpRequest.getPassword()));
+        AppUser userToRegister = new AppUser(
+                signUpRequest.getFirstName(),
+                signUpRequest.getLastName(),
+                signUpRequest.getEmail(),
+                signUpRequest.getPassword());
+
+        confirmationToken = appUserService.singUpUser(userToRegister);
+        if (!SEND_CONFIRMATION_EMAIL) appUserService.enableAppUser(userToRegister.getEmail());
 
         return sendConfirmationLink(confirmationToken);
     }
@@ -83,12 +89,15 @@ public class UserRegistrationService {
 
     private String sendConfirmationLink(ConfirmationToken confirmationToken) {
 
-        String link = linkTo(methodOn(AuthApiController.class).
-                confirmEmail(confirmationToken.getToken())).toString();
-        emailSender.send(confirmationToken.getAppUser().getEmail(),
-                buildEmail(confirmationToken.getAppUser().getFirstName(), link
-                ));
-        return "Confirmation email sent";
+        if (SEND_CONFIRMATION_EMAIL) {
+            String link = linkTo(methodOn(AuthApiController.class).
+                    confirmEmail(confirmationToken.getToken())).toString();
+            emailSender.send(confirmationToken.getAppUser().getEmail(),
+                    buildEmail(confirmationToken.getAppUser().getFirstName(), link
+                    ));
+            return "Confirmation email sent";
+        }
+        return "No email sent. User already has been activated.";
 
     }
 

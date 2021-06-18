@@ -18,15 +18,15 @@
                 <mat-error *ngIf="loginFormModel.get('password')?.touched && loginFormModel.get('password')?.errors?.required">Non empty password is <strong>required</strong></mat-error>
                 <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide"><mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon></button>
             </mat-form-field>
-            <span style="color: red" *ngIf="loginErrorMessage">{{loginErrorMessage}}</span>
+            <span style="color: red" *ngIf="loginMessage">{{loginMessage}}</span>
             <button type="submit" mat-raised-button color="primary" class="submit-button" [disabled]="!loginFormModel.valid"><mat-icon>done_outline</mat-icon>Log In</button>
         </form>
     </div>
 
     <div class="form-wrapper" fxFlex="45">
         <h2>Sign up</h2>
-        <p *ngIf="justRegistered">Confirmation email has been sent. Please confirm your registration.</p>
-        <form *ngIf="!justRegistered" class="signup-form"
+        <p *ngIf="signUpMessage">{{signUpMessage}}</p>
+        <form *ngIf="!signUpMessage" class="signup-form"
               [formGroup]="signUpFormModel" autocomplete="off" (submit)="onSignupSubmit()">
             <mat-form-field class="" appearance="outline">
                 <mat-label>First name</mat-label>
@@ -62,7 +62,7 @@
                 </mat-form-field>
                 <mat-error *ngIf="signUpFormModel.get('passwords')?.touched && signUpFormModel.get('passwords')?.errors?.mismatch">Passwords must be equal</mat-error>
             </div>
-            <span style="color: red" *ngIf="signUpErrorMessage">{{signUpErrorMessage}}</span>
+            <span style="color: red" *ngIf="signUpMessage">{{signUpMessage}}</span>
             <button type="submit" mat-raised-button color="primary" class="submit-button"
                     [disabled]="!signUpFormModel.valid">
                 <mat-icon>person_add</mat-icon>

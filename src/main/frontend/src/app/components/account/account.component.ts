@@ -28,7 +28,7 @@ export class AccountComponent implements OnInit {
             }, () => {
                 this.authService.logout();
             }, () => {
-                if (!this.authService.checkIfLoggedIn())
+                if (!this.accountDetail)
                     this.router.navigateByUrl('/auth')
             }
         )
@@ -39,7 +39,7 @@ export interface AccountDetail {
     firstName: string;
     lastName: string;
     email: string;
-    userAuthorities: string[]
+    authorities: string[]
 
 }
 

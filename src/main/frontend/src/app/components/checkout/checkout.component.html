@@ -10,25 +10,36 @@
                         <input matInput formControlName="firstName">
                         <mat-error
                                 *ngIf="checkoutFormModel.get('customer.firstName')?.touched && checkoutFormModel.get('customer.firstName')?.errors?.required">
-                            First name is <strong>required</strong></mat-error>
+                            First name is <strong>required</strong>
+                        </mat-error>
+                        <mat-error
+                                *ngIf="checkoutFormModel.get('customer.firstName')?.touched && checkoutFormModel.get('customer.firstName')?.errors?.notOnlyWhitespace">
+                            Spaces only are not allowed
+                        </mat-error>
                     </mat-form-field>
                     <mat-form-field appearance="outline">
                         <mat-label>Last name</mat-label>
                         <input matInput formControlName="lastName">
                         <mat-error
                                 *ngIf="checkoutFormModel.get('customer.lastName')?.touched && checkoutFormModel.get('customer.lastName')?.errors?.required">
-                            Last name is <strong>required</strong></mat-error>
+                            Last name is <strong>required</strong>
+                        </mat-error>
+                        <mat-error
+                                *ngIf="checkoutFormModel.get('customer.lastName')?.touched && checkoutFormModel.get('customer.lastName')?.errors?.notOnlyWhitespace">
+                            Spaces only are not allowed
+                        </mat-error>
                     </mat-form-field>
                     <mat-form-field appearance="outline">
                         <mat-label>Email</mat-label>
                         <input matInput formControlName="email">
                         <mat-error
-                                *ngIf="checkoutFormModel.get('customer.email')?.touched && checkoutFormModel.get('customer.email')?.errors?.email">
+                                *ngIf="checkoutFormModel.get('customer.email')?.touched && checkoutFormModel.get('customer.email')?.errors?.pattern">
                             Please enter a valid email address
                         </mat-error>
                         <mat-error
                                 *ngIf="checkoutFormModel.get('customer.email')?.touched && checkoutFormModel.get('customer.email')?.errors?.required">
-                            Email is <strong>required</strong></mat-error>
+                            Email is <strong>required</strong>
+                        </mat-error>
                     </mat-form-field>
                 </fieldset>
 
@@ -53,7 +64,7 @@
                                 *ngIf="checkoutFormModel.get('creditCard.number')?.touched && checkoutFormModel.get('creditCard.number')?.errors?.required">
                             Card number is <strong>required</strong></mat-error>
                         <mat-error
-                                *ngIf="checkoutFormModel.get('creditCard.number')?.touched && checkoutFormModel.get('creditCard.number')?.errors?.minlength">
+                                *ngIf="checkoutFormModel.get('creditCard.number')?.touched && checkoutFormModel.get('creditCard.number')?.errors?.pattern">
                             Card number must consist of <strong>16</strong> numbers
                         </mat-error>
                     </mat-form-field>
@@ -63,6 +74,10 @@
                         <mat-error
                                 *ngIf="checkoutFormModel.get('creditCard.code')?.touched && checkoutFormModel.get('creditCard.code')?.errors?.required">
                             Security code is <strong>required</strong></mat-error>
+                        <mat-error
+                                *ngIf="checkoutFormModel.get('creditCard.code')?.touched && checkoutFormModel.get('creditCard.number')?.errors?.pattern">
+                            Security code must consist of <strong>3</strong> numbers
+                        </mat-error>
                     </mat-form-field>
                     <mat-form-field appearance="outline">
                         <mat-label>Expiration month</mat-label>
@@ -143,7 +158,6 @@
                 </fieldset>
             </div>
         </div>
-
 
         <button type="submit" mat-raised-button color="primary" class="submit-button"
                 [disabled]="!checkoutFormModel.valid">Purchase

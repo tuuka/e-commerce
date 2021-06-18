@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators} from "@angular/forms";
-import {AuthLoginInfo, AuthService, SignUpInfo} from "../../services/auth.service";
+import {AuthService} from "../../services/auth.service";
 import {Router} from "@angular/router";
 
 @Component({
@@ -11,14 +11,35 @@ import {Router} from "@angular/router";
 export class AuthComponent implements OnInit {
 
     hide: boolean = true;
-    justRegistered: boolean = false;
-    loginErrorMessage: string = '';
-    signUpErrorMessage: string = '';
+    loginMessage: string = '';
+    signUpMessage: string = '';
+    firstName: string = '';
+    lastName: string = '';
+    email: string = '';
+    isLoggedIn: boolean = false;
 
     constructor(private fb: FormBuilder,
                 private authService: AuthService,
                 private router: Router
     ) {
+    }
+
+    ngOnInit(): void {
+        this.loginFormModel.reset();
+        this.signUpFormModel.reset();
+        this.authService.userInfo.subscribe(info => {
+            this.firstName = info.firstName;
+            this.lastName = info.lastName;
+            this.email = info.email;
+            this.isLoggedIn = info.isLoggedIn;
+        });
+        this.authService.signUpStatus.subscribe(st => {
+            this.signUpMessage = st;
+        })
+        this.authService.loginStatus.subscribe(st => {
+            if (st === 'ok') this.router.navigateByUrl('/products');
+            this.loginMessage = st;
+        })
     }
 
     passwordsMatchValidator: ValidatorFn = (form: AbstractControl): ValidationErrors | null => {
@@ -47,56 +68,13 @@ export class AuthComponent implements OnInit {
     );
 
     onLoginSubmit() {
-        this.authService.login(new AuthLoginInfo(
-            this.loginFormModel.value.email, this.loginFormModel.value.password))
-            .subscribe(
-                (res: any) => {
-                    if (!res.error) {
-                        this.loginErrorMessage = '';
-                        this.loginFormModel.reset();
-                        console.log('Login successful.');
-                        this.authService.setSession(res);
-                        this.justRegistered = false;
-                        this.router.navigateByUrl('/products');
-                        // window.location.href = '/';
-                    } else {
-                        this.loginErrorMessage = res.message;
-                        // handle error
-                    }
-                },
-                err => {
-                    console.log(err.error);
-                    this.loginErrorMessage = err.error.message;
-                }
-            );
+        this.authService.login(this.loginFormModel.value.email, this.loginFormModel.value.password);
     }
 
     onSignupSubmit() {
         let value = this.signUpFormModel.value;
-        this.authService.signUp(
-            new SignUpInfo(value.firstName, value.lastName, value.email, value.passwords.password)
-        ).subscribe(
-            (res: any) => {
-                if (!res.error) {
-                    this.signUpFormModel.reset();
-                    // window.location.href = '/';
-                    this.justRegistered = true;
-                    console.log('New user created!', 'Confirmation email sent.');
-                } else {
-                    this.signUpErrorMessage = res.message;
-                    console.log(res);
-                }
-            },
-            err => {
-                this.signUpErrorMessage = err.error.message;
-                console.log(err);
-            }
-        );
+        this.authService.signUp(value.firstName, value.lastName, value.email, value.passwords.password);
     }
 
-    ngOnInit(): void {
-        this.loginFormModel.reset();
-        this.signUpFormModel.reset();
-    }
 }
 

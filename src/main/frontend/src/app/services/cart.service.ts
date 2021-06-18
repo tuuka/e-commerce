@@ -1,6 +1,6 @@
 import {Injectable, OnInit} from '@angular/core';
 import {CartItem} from "../model/CartItem";
-import {Subject} from "rxjs";
+import {BehaviorSubject, Subject} from "rxjs";
 import {AuthService} from "./auth.service";
 
 @Injectable({
@@ -9,14 +9,21 @@ import {AuthService} from "./auth.service";
 export class CartService implements OnInit {
 
     cartItems: CartItem[] = [];
-    totalPrice: Subject<number> = new Subject<number>();
-    totalQuantity: Subject<number> = new Subject<number>();
+    totalPrice: Subject<number> = new BehaviorSubject<number>(0);
+    totalQuantity: Subject<number> = new BehaviorSubject<number>(0);
+    isLoggedIn: boolean = false;
 
     constructor(private authService: AuthService) {
     }
 
-    addToCart(cartItem: CartItem) {
+    ngOnInit(): void {
+        this.authService.userInfo.subscribe(info => {
+            this.isLoggedIn = info.isLoggedIn;
+        })
+        this.getCartFromStorage();
+    }
 
+    addToCart(cartItem: CartItem) {
         let existingCart = this.findExistingItem(cartItem);
         if (existingCart) {
             existingCart.quantity += cartItem.quantity;
@@ -24,14 +31,11 @@ export class CartService implements OnInit {
             this.cartItems.push(cartItem);
         }
         this.computeCartTotals();
-
     }
 
     computeCartTotals() {
-
         let totalQuantity: number = 0;
         let totalPrice: number = 0;
-
         this.cartItems.forEach((item: CartItem) => {
             totalQuantity += item.quantity;
             totalPrice += item.quantity * item.unitPrice;
@@ -39,7 +43,6 @@ export class CartService implements OnInit {
         this.setStorage();
         this.totalQuantity.next(totalQuantity);
         this.totalPrice.next(totalPrice);
-
     }
 
     decrementQuantity(cartItem: CartItem) {
@@ -78,14 +81,6 @@ export class CartService implements OnInit {
         this.computeCartTotals();
 
         return this.cartItems;
-    }
-
-    getUsername(){
-        return this.authService.getUsername();
-    }
-
-    ngOnInit(): void {
-        this.getCartFromStorage();
     }
 
 }

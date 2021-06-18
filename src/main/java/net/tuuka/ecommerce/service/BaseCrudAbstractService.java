@@ -7,7 +7,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Objects;
 
-public class BaseCrudAbstractService<T extends BaseEntity, ID, R extends JpaRepository<T, ID>>
+public abstract class BaseCrudAbstractService<T extends BaseEntity, ID, R extends JpaRepository<T, ID>>
         implements BaseCrudService<T, ID> {
 
     protected final R repository;
