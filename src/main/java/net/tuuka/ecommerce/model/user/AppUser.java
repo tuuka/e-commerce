@@ -48,7 +48,7 @@ public class AppUser implements UserDetails {
     private Boolean locked = false;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
-    @JoinTable(name = "user_roles",
+    @JoinTable(name = "user_authorities",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<AppUserAuthority> authorities = new HashSet<>(

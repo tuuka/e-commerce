@@ -5,10 +5,10 @@ import net.tuuka.ecommerce.dao.AppUserAuthorityRepository;
 import net.tuuka.ecommerce.dao.AppUserRepository;
 import net.tuuka.ecommerce.dao.ProductCategoryRepository;
 import net.tuuka.ecommerce.dao.ProductRepository;
+import net.tuuka.ecommerce.model.Product;
 import net.tuuka.ecommerce.model.user.AppUser;
 import net.tuuka.ecommerce.model.user.AppUserAuthority;
 import net.tuuka.ecommerce.model.user.AppUserRole;
-import net.tuuka.ecommerce.model.Product;
 import net.tuuka.ecommerce.util.FakeProductGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -47,22 +47,27 @@ public class InitDB implements CommandLineRunner {
 
         if (FILL_PRODUCTS) {
             productRepository.deleteAll();
+            productRepository.flush();
             categoryRepository.deleteAll();
+            categoryRepository.flush();
             List<Product> products = FakeProductGenerator.getNewFakeProductList(5, 3);
             categoryRepository.saveAll(products.stream().map(Product::getCategory).collect(Collectors.toSet()));
             productRepository.saveAll(products);
         }
 
         AppUser rootUser = userRepository.findByEmail(email).orElse(new AppUser());
-        rootUser.setFirstName("admin");
-        rootUser.setLastName("admin");
-        rootUser.setEmail(email);
-        rootUser.setEnabled(true);
+        if (rootUser.getEmail() == null) {
+//            create new admin account
+            rootUser.setFirstName("admin");
+            rootUser.setLastName("admin");
+            rootUser.setEmail(email);
+            rootUser.setEnabled(true);
+            Set<AppUserAuthority> allowedAuthorities = Arrays.stream(AppUserRole.values())
+                    .map(AppUserAuthority::new).collect(Collectors.toSet());
+            allowedAuthorities = new HashSet<>(authorityRepository.saveAll(allowedAuthorities));
+            rootUser.setAuthorities(allowedAuthorities);
+        }
         rootUser.setPassword(new BCryptPasswordEncoder().encode(password));
-        Set<AppUserAuthority> allowedAuthorities = Arrays.stream(AppUserRole.values())
-                .map(AppUserAuthority::new).collect(Collectors.toSet());
-        allowedAuthorities = new HashSet<>(authorityRepository.saveAll(allowedAuthorities));
-        rootUser.setAuthorities(allowedAuthorities);
         userRepository.save(rootUser);
 
     }
