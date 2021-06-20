@@ -34,7 +34,7 @@ public class Order extends BaseEntity {
             @AttributeOverride( name = "city", column = @Column(name = "city")),
             @AttributeOverride( name = "country", column = @Column(name = "country")),
             @AttributeOverride( name = "state", column = @Column(name = "state")),
-            @AttributeOverride( name = "zip", column = @Column(name = "zip_code"))
+            @AttributeOverride( name = "zip", column = @Column(name = "zip"))
     })
     private Address shippingAddress;
 
