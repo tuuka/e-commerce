@@ -1,4 +1,4 @@
-import {Injectable, OnInit} from '@angular/core';
+import {Injectable, OnDestroy, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 import {BehaviorSubject, Subject} from "rxjs";
@@ -12,7 +12,7 @@ const httpOptions = {
 @Injectable({
     providedIn: 'root'
 })
-export class AuthService implements OnInit {
+export class AuthService implements OnInit, OnDestroy {
 
     private loginUrl = environment.apiUrl + '/api/auth/login';
     private signupUrl = environment.apiUrl + '/api/auth/signup';
@@ -21,6 +21,7 @@ export class AuthService implements OnInit {
 
     signUpStatus: Subject<string> = new BehaviorSubject<string>('');
     loginStatus: Subject<string> = new BehaviorSubject<string>('');
+    private loginStatusRefresher?: number;
 
     constructor(private http: HttpClient) {
     }
@@ -79,7 +80,11 @@ export class AuthService implements OnInit {
     }
 
     ngOnInit(): void {
-        this.refreshLoggedUserDetails();
+        this.loginStatusRefresher = setInterval(() => this.refreshLoggedUserDetails(), 10000);
+    }
+
+    ngOnDestroy(): void {
+        clearInterval(this.loginStatusRefresher);
     }
 
 }

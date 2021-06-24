@@ -1,0 +1,46 @@
+<h2>Orders:</h2>
+<table *ngIf="orderItems.length > 0" mat-table [dataSource]="orderItems" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>Tracking number</th>
+        <td mat-cell *matCellDef="let orderItem">
+            {{orderItem.trackingNumber.split("-")[4]}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+    <ng-container matColumnDef="created">
+        <th mat-header-cell *matHeaderCellDef>Date of creation</th>
+        <td mat-cell *matCellDef="let orderItem"> {{orderItem.created | date}} </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let orderItem"> {{orderItem.status}} </td>
+        <td mat-footer-cell *matFooterCellDef style="text-align: end">Total:</td>
+    </ng-container>
+
+    <ng-container matColumnDef="quantity">
+        <th mat-header-cell *matHeaderCellDef>Quantity</th>
+        <td mat-cell *matCellDef="let orderItem">{{orderItem.totalQuantity}}</td>
+        <td mat-footer-cell *matFooterCellDef> {{totalQuantity}} </td>
+    </ng-container>
+
+    <!-- Total Column -->
+    <ng-container matColumnDef="total">
+        <th mat-header-cell *matHeaderCellDef> Total</th>
+        <td mat-cell *matCellDef="let orderItem"> {{orderItem.totalPrice | currency}} </td>
+        <td mat-footer-cell *matFooterCellDef> {{totalPrice | currency}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+</table>
+
+<div *ngIf="orderItems.length < 1" class="orders-empty-message"><span>No orders</span></div>
+
+<div>
+    <a routerLink="/products">Back to products</a>
+</div>

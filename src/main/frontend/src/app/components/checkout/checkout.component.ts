@@ -126,10 +126,5 @@ export class CheckoutComponent implements OnInit {
             }
         );
     }
-
-    // cardTypeChange(event: any) {
-    //     this.checkoutFormModel.get('creditCard')?.setValue(event.target.value, {onlySelf: true});
-    //     console.log(this.checkoutFormModel.get('creditCard'));
-    // }
 }
 

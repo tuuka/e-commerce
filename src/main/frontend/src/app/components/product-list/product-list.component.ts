@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Product} from "../../model/Product";
 import {ProductService} from "../../services/product.service";
-import {PagedListLinks} from "../../model/PagedListLinks";
 import {Page} from "../../model/Page";
 import {HttpParams} from "@angular/common/http";
 import {SelectOption} from "../select/select.component"
@@ -17,7 +16,7 @@ export class ProductListComponent implements OnInit {
 
     categories?: Category[];
     products?: Product[];
-    links?: PagedListLinks;
+    // links?: PagedListLinks;
     page: Page = new Page(6, 0, 0, 0);
     sort: string = '';
     name: string = '';
@@ -62,7 +61,7 @@ export class ProductListComponent implements OnInit {
         this.productService.getProductList(this.currentCategoryId, this.getRequestParams()).subscribe(
             data => {
                 this.products = data._embedded.products;
-                this.links = data._links;
+                // this.links = data._links;
                 this.page = data.page;
             }
         )

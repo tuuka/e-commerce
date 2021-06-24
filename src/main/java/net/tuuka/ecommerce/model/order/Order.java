@@ -6,11 +6,11 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import net.tuuka.ecommerce.model.BaseEntity;
+import net.tuuka.ecommerce.model.user.AppUser;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -48,6 +48,10 @@ public class Order extends BaseEntity {
     @JsonManagedReference
     @OneToMany(mappedBy = "pk.order", cascade = CascadeType.ALL)
     private Set<OrderProduct> orderProducts = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private AppUser appUser;
 
     @Transient
     public Double getTotalOrderPrice() {

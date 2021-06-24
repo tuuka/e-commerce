@@ -27,11 +27,11 @@ export class CartDetailsComponent implements OnInit {
         this.authService.userInfo.subscribe(info => {
             this.isLoggedIn = info.isLoggedIn;
         })
+        this.cartService.totalPrice.subscribe(data => this.totalPrice = data);
+        this.cartService.totalQuantity.subscribe(data => this.totalQuantity = data);
     }
 
     private getCartDetails() {
-        this.cartService.totalPrice.subscribe(data => this.totalPrice = data);
-        this.cartService.totalQuantity.subscribe(data => this.totalQuantity = data);
         this.cartItems = this.cartService.getCartFromStorage();
     }
 

@@ -3,7 +3,6 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Category} from "../model/Category";
 import {Product} from "../model/Product";
-import {PagedListLinks} from "../model/PagedListLinks";
 import {Page} from "../model/Page";
 import {environment} from "../../environments/environment";
 
@@ -51,6 +50,18 @@ class ProductsResponse {
 class CategoriesResponse {
     constructor(
         public _embedded: { categories: Category[] },
+    ) {
+    }
+}
+
+class PagedListLinks {
+    constructor(
+        public first: { href: string, templated: boolean },
+        public prev: { href: string, templated: boolean },
+        public self: { href: string, templated: boolean },
+        public next: { href: string, templated: boolean },
+        public last: { href: string, templated: boolean },
+        public search: { href: string, templated: boolean }
     ) {
     }
 }

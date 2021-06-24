@@ -1,0 +1,39 @@
+h2 {
+    margin-top: 2em;
+}
+
+table {
+    margin: 1em auto;
+    width: 100%;
+}
+
+.mat-header-cell {
+    text-align: center;
+    font-size: 1.5em;
+}
+
+td.mat-cell:first-of-type {
+    width: 5%;
+}
+
+.mat-cell {
+    padding: 0.2em;
+    font-size: 1.5em;
+    text-align: center;
+    width: 15%;
+}
+
+tr.mat-footer-row {
+    font-weight: bold;
+}
+
+.mat-footer-cell {
+    font-size: 1.5em;
+    text-align: center;
+}
+
+.orders-empty-message {
+    margin: 1em auto;
+    font-size: 2em;
+    text-align: center;
+}

@@ -1,6 +1,7 @@
 <h1>{{accountDetail?.firstName!}} {{accountDetail?.lastName!}}</h1>
-<h2>{{accountDetail?.email!}}</h2>
-<ul>
-    <li *ngFor="let authority of accountDetail?.authorities">{{authority}}</li>
-</ul>
+<h2>{{accountDetail?.email!}}
+    <span *ngFor="let authority of accountDetail?.authorities">({{authority}}) </span>
+</h2>
+
+<app-order-list></app-order-list>
 
