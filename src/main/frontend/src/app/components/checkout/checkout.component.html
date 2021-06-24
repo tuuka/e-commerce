@@ -43,68 +43,68 @@
                     </mat-form-field>
                 </fieldset>
 
-                <fieldset class="checkout__fieldset" formGroupName="creditCard">
-                    <legend>Credit card</legend>
+<!--                <fieldset class="checkout__fieldset" formGroupName="creditCard">-->
+<!--                    <legend>Credit card</legend>-->
 
-                    <mat-form-field appearance="outline">
-                        <mat-label>Card type</mat-label>
-                        <mat-select formControlName="type">
-                            <mat-option *ngFor="let cardType of cardTypes" [value]="cardType.value">
-                                {{cardType.viewValue}}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error
-                                *ngIf="checkoutFormModel.get('creditCard.type')?.touched && checkoutFormModel.get('creditCard.type')?.errors?.required">
-                            Card type is <strong>required</strong></mat-error>
-                    </mat-form-field>
-                    <mat-form-field appearance="outline">
-                        <mat-label>Card number</mat-label>
-                        <input matInput formControlName="number">
-                        <mat-error
-                                *ngIf="checkoutFormModel.get('creditCard.number')?.touched && checkoutFormModel.get('creditCard.number')?.errors?.required">
-                            Card number is <strong>required</strong></mat-error>
-                        <mat-error
-                                *ngIf="checkoutFormModel.get('creditCard.number')?.touched && checkoutFormModel.get('creditCard.number')?.errors?.pattern">
-                            Card number must consist of <strong>16</strong> numbers
-                        </mat-error>
-                    </mat-form-field>
-                    <mat-form-field appearance="outline">
-                        <mat-label>Security code</mat-label>
-                        <input matInput formControlName="code">
-                        <mat-error
-                                *ngIf="checkoutFormModel.get('creditCard.code')?.touched && checkoutFormModel.get('creditCard.code')?.errors?.required">
-                            Security code is <strong>required</strong></mat-error>
-                        <mat-error
-                                *ngIf="checkoutFormModel.get('creditCard.code')?.touched && checkoutFormModel.get('creditCard.number')?.errors?.pattern">
-                            Security code must consist of <strong>3</strong> numbers
-                        </mat-error>
-                    </mat-form-field>
-                    <mat-form-field appearance="outline">
-                        <mat-label>Expiration month</mat-label>
-                        <mat-select formControlName="expMonth">
-                            <mat-option *ngFor="let month of creditCardMonths" [value]="month">
-                                {{month < 10 ? '0' + month : month}}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error
-                                *ngIf="checkoutFormModel.get('creditCard.expMonth')?.touched && checkoutFormModel.get('creditCard.expMonth')?.errors?.required">
-                            Expiration month is <strong>required</strong></mat-error>
-                    </mat-form-field>
-                    <mat-form-field appearance="outline">
-                        <mat-label>Expiration year</mat-label>
-                        <mat-select formControlName="expYear">
-                            <mat-option *ngFor="let year of creditCardYears" [value]="year">
-                                {{year}}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error
-                                *ngIf="checkoutFormModel.get('creditCard.expYear')?.touched && checkoutFormModel.get('creditCard.expYear')?.errors?.required">
-                            Expiration year is <strong>required</strong></mat-error>
-                    </mat-form-field>
-                </fieldset>
-            </div>
+<!--                    <mat-form-field appearance="outline">-->
+<!--                        <mat-label>Card type</mat-label>-->
+<!--                        <mat-select formControlName="type">-->
+<!--                            <mat-option *ngFor="let cardType of cardTypes" [value]="cardType.value">-->
+<!--                                {{cardType.viewValue}}-->
+<!--                            </mat-option>-->
+<!--                        </mat-select>-->
+<!--                        <mat-error-->
+<!--                                *ngIf="checkoutFormModel.get('creditCard.type')?.touched && checkoutFormModel.get('creditCard.type')?.errors?.required">-->
+<!--                            Card type is <strong>required</strong></mat-error>-->
+<!--                    </mat-form-field>-->
+<!--                    <mat-form-field appearance="outline">-->
+<!--                        <mat-label>Card number</mat-label>-->
+<!--                        <input matInput formControlName="number">-->
+<!--                        <mat-error-->
+<!--                                *ngIf="checkoutFormModel.get('creditCard.number')?.touched && checkoutFormModel.get('creditCard.number')?.errors?.required">-->
+<!--                            Card number is <strong>required</strong></mat-error>-->
+<!--                        <mat-error-->
+<!--                                *ngIf="checkoutFormModel.get('creditCard.number')?.touched && checkoutFormModel.get('creditCard.number')?.errors?.pattern">-->
+<!--                            Card number must consist of <strong>16</strong> numbers-->
+<!--                        </mat-error>-->
+<!--                    </mat-form-field>-->
+<!--                    <mat-form-field appearance="outline">-->
+<!--                        <mat-label>Security code</mat-label>-->
+<!--                        <input matInput formControlName="code">-->
+<!--                        <mat-error-->
+<!--                                *ngIf="checkoutFormModel.get('creditCard.code')?.touched && checkoutFormModel.get('creditCard.code')?.errors?.required">-->
+<!--                            Security code is <strong>required</strong></mat-error>-->
+<!--                        <mat-error-->
+<!--                                *ngIf="checkoutFormModel.get('creditCard.code')?.touched && checkoutFormModel.get('creditCard.number')?.errors?.pattern">-->
+<!--                            Security code must consist of <strong>3</strong> numbers-->
+<!--                        </mat-error>-->
+<!--                    </mat-form-field>-->
+<!--                    <mat-form-field appearance="outline">-->
+<!--                        <mat-label>Expiration month</mat-label>-->
+<!--                        <mat-select formControlName="expMonth">-->
+<!--                            <mat-option *ngFor="let month of creditCardMonths" [value]="month">-->
+<!--                                {{month < 10 ? '0' + month : month}}-->
+<!--                            </mat-option>-->
+<!--                        </mat-select>-->
+<!--                        <mat-error-->
+<!--                                *ngIf="checkoutFormModel.get('creditCard.expMonth')?.touched && checkoutFormModel.get('creditCard.expMonth')?.errors?.required">-->
+<!--                            Expiration month is <strong>required</strong></mat-error>-->
+<!--                    </mat-form-field>-->
+<!--                    <mat-form-field appearance="outline">-->
+<!--                        <mat-label>Expiration year</mat-label>-->
+<!--                        <mat-select formControlName="expYear">-->
+<!--                            <mat-option *ngFor="let year of creditCardYears" [value]="year">-->
+<!--                                {{year}}-->
+<!--                            </mat-option>-->
+<!--                        </mat-select>-->
+<!--                        <mat-error-->
+<!--                                *ngIf="checkoutFormModel.get('creditCard.expYear')?.touched && checkoutFormModel.get('creditCard.expYear')?.errors?.required">-->
+<!--                            Expiration year is <strong>required</strong></mat-error>-->
+<!--                    </mat-form-field>-->
+<!--                </fieldset>-->
+<!--            </div>-->
 
-            <div class="checkout-form__side">
+<!--            <div class="checkout-form__side">-->
                 <fieldset class="checkout__fieldset" formGroupName="shippingAddress">
                     <legend>Shipping address</legend>
                     <mat-form-field appearance="outline">

@@ -2,8 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, ValidationErrors, Validators} from "@angular/forms";
 import {SelectOption} from "../select/select.component";
 import {CartService} from "../../services/cart.service";
-import {CheckoutService, OrderFormDto} from "../../services/checkout.service";
+import {CheckoutService} from "../../services/checkout.service";
 import {AuthService, UserInfo} from "../../services/auth.service";
+import {Purchase} from "../../model/Purchase";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-checkout',
@@ -29,7 +31,8 @@ export class CheckoutComponent implements OnInit {
     constructor(private fb: FormBuilder,
                 private cartService: CartService,
                 private checkoutService: CheckoutService,
-                private authService: AuthService) {
+                private authService: AuthService,
+                private router: Router) {
     }
 
     ngOnInit(): void {
@@ -77,19 +80,19 @@ export class CheckoutComponent implements OnInit {
                 state: [''],
                 zip: ['', [Validators.required]]
             }),
-            creditCard: this.fb.group({
-                type: ['', [Validators.required]],
-                number: ['', [Validators.required,
-                    Validators.pattern('[0-9]{16}')]],
-                code: ['', [Validators.required,
-                    Validators.pattern('[0-9]{3}')]],
-                expMonth: ['', [Validators.required]],
-                expYear: ['', [Validators.required]]
-            })
+            // creditCard: this.fb.group({
+            //     type: ['', [Validators.required]],
+            //     number: ['', [Validators.required,
+            //         Validators.pattern('[0-9]{16}')]],
+            //     code: ['', [Validators.required,
+            //         Validators.pattern('[0-9]{3}')]],
+            //     expMonth: ['', [Validators.required]],
+            //     expYear: ['', [Validators.required]]
+            // })
         }
     );
 
-    private setUpFormModel(){
+    private setUpFormModel() {
         this.checkoutFormModel.patchValue({
             customer: {
                 firstName: this.userInfo.firstName,
@@ -104,15 +107,24 @@ export class CheckoutComponent implements OnInit {
             this.checkoutFormModel.markAllAsTouched();
         }
         // console.log(this.checkoutFormModel);
-        let order = new OrderFormDto(
+        let purchase = new Purchase(
             this.checkoutFormModel.get('customer.email')?.value,
-            this.checkoutFormModel.get('creditCard')?.value,
+            // this.checkoutFormModel.get('creditCard')?.value,
             this.checkoutFormModel.get('shippingAddress')?.value,
             this.cartService.getCartFromStorage()
         )
-        console.log(order);
-        this.checkoutService.sendOrder(order);
-        // this.checkoutFormModel.reset();
+        // console.log(order);
+        this.checkoutService.sendOrder(purchase).subscribe(
+            (result: any) => {
+                console.log(result);
+                this.cartService.removeFromStorage()
+                this.checkoutFormModel.reset();
+                this.router.navigateByUrl('/');
+            },
+            err => {
+                console.log(err);
+            }
+        );
     }
 
     // cardTypeChange(event: any) {

@@ -40,7 +40,7 @@ export class CartService implements OnInit {
             totalQuantity += item.quantity;
             totalPrice += item.quantity * item.unitPrice;
         })
-        this.setStorage();
+        this.saveIntStorage();
         this.totalQuantity.next(totalQuantity);
         this.totalPrice.next(totalPrice);
     }
@@ -71,8 +71,14 @@ export class CartService implements OnInit {
         this.computeCartTotals();
     }
 
-    setStorage(): void {
+    saveIntStorage(): void {
         localStorage.setItem('cart', JSON.stringify(this.cartItems));
+    }
+
+    removeFromStorage(): void {
+        localStorage.removeItem("cart");
+        this.cartItems = [];
+        this.computeCartTotals()
     }
 
     getCartFromStorage(): CartItem[] {

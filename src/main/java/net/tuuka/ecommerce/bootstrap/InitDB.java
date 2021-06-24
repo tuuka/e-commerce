@@ -45,7 +45,11 @@ public class InitDB implements CommandLineRunner {
     @Transactional
     public void run(String... args) throws Exception {
 
-        if (FILL_PRODUCTS) {
+        // if no products in DB - fill it with some data
+        // if app.fill_products config property is set - fill them anyway
+        boolean isProductsExistInDB = productRepository.findAll().size() > 0
+                && categoryRepository.findAll().size() > 0;
+        if (FILL_PRODUCTS || !isProductsExistInDB) {
             productRepository.deleteAll();
             productRepository.flush();
             categoryRepository.deleteAll();
