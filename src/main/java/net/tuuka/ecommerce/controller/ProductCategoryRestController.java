@@ -1,7 +1,7 @@
 package net.tuuka.ecommerce.controller;
 
 import lombok.RequiredArgsConstructor;
-import net.tuuka.ecommerce.controller.dto.CategoryRequest;
+import net.tuuka.ecommerce.controller.dto.CategoryRepresentation;
 import net.tuuka.ecommerce.controller.util.ProductCategoryModelAssembler;
 import net.tuuka.ecommerce.controller.util.ProductModelAssembler;
 import net.tuuka.ecommerce.model.Product;
@@ -65,7 +65,7 @@ public class ProductCategoryRestController {
     @PostMapping()
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> saveCategory(
-            @RequestBody @Valid CategoryRequest categoryRepresentation) {
+            @RequestBody @Valid CategoryRepresentation categoryRepresentation) {
         EntityModel<ProductCategory> categoryModel = categoryAssembler
                 .toModel(categoryService.save(categoryRepresentation.getCategory()));
         return ResponseEntity.created(categoryModel.getRequiredLink(IanaLinkRelations.SELF)
@@ -75,7 +75,7 @@ public class ProductCategoryRestController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('MANAGER') or hasRole('ADMIN')")
     public ResponseEntity<?> updateCategory(@PathVariable("id") Long id,
-                                            @RequestBody @Valid CategoryRequest categoryRepresentation) {
+                                            @RequestBody @Valid CategoryRepresentation categoryRepresentation) {
 
         categoryRepresentation.setId(id);
         EntityModel<ProductCategory> categoryModel = categoryAssembler

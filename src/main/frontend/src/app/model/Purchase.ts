@@ -40,7 +40,7 @@ class OrderItem {
 //     expYear: string;
 // }
 
-interface Address {
+export interface Address {
     apartment: string;
     street: string;
     city: string;

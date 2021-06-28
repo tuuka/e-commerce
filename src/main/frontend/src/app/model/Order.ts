@@ -1,4 +1,4 @@
-export interface OrderItem {
+export interface Order {
     id: number;
     trackingNumber: string;
     created: Date;

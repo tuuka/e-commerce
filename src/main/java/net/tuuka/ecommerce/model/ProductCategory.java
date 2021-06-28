@@ -1,6 +1,6 @@
 package net.tuuka.ecommerce.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.hateoas.server.core.Relation;
 
@@ -26,9 +26,9 @@ public class ProductCategory extends BaseEntity {
 
     @OneToMany(mappedBy = "category", orphanRemoval = true)
 //    @JsonManagedReference
-//    @JsonIgnore
-    @JsonIgnoreProperties({"description", "unitsInStock", "unitPrice",
-            "imageUrl", "created", "lastUpdated", "active", "category"})
+    @JsonIgnore
+//    @JsonIgnoreProperties({"description", "unitsInStock", "unitPrice",
+//            "imageUrl", "created", "lastUpdated", "active", "category"})
     @ToString.Exclude
     private List<Product> products;
 

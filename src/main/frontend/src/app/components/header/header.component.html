@@ -5,9 +5,11 @@
     <div class="header _container">
         <a mat-button routerLink="/">HOME</a>
         <span class="spacer"></span>
-        <a *ngIf="isLoggedIn" mat-stroked-button class="account-link" routerLink="account">Account</a>
-        <a *ngIf="isLoggedIn" mat-stroked-button class="account-link" (click)="logout()">Logout</a>
-        <a *ngIf="!isLoggedIn" mat-stroked-button class="account-link" routerLink="auth">Login</a>
+        <a *ngIf="userRole==userRoles[2]" mat-stroked-button class="account-link" routerLink="account">Account</a>
+        <a *ngIf="userRole==userRoles[1]" mat-stroked-button class="account-link" routerLink="account">Manager</a>
+        <a *ngIf="userRole==userRoles[0]" mat-stroked-button class="account-link" routerLink="account">Admin</a>
+        <a *ngIf="userRole" mat-stroked-button class="account-link" (click)="logout()">Logout</a>
+        <a *ngIf="!userRole" mat-stroked-button class="account-link" routerLink="auth">Login</a>
 
         <app-cart-status></app-cart-status>
 

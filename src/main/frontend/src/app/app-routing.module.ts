@@ -6,10 +6,19 @@ import {AccountComponent} from "./components/account/account.component";
 import {ProductDetailsComponent} from "./components/product-details/product-details.component";
 import {CartDetailsComponent} from "./components/cart-details/cart-details.component";
 import {CheckoutComponent} from "./components/checkout/checkout.component";
+import {OrdersTableComponent} from "./components/orders-table/orders-table.component";
+import {OrderDetailsComponent} from "./components/order-details/order-details.component";
+import {UsersTableComponent} from "./components/users-table/users-table.component";
 
 const routes: Routes = [
     {path: 'auth', component: AuthComponent},
-    {path: 'account', component: AccountComponent},
+    {path: 'account', component: AccountComponent,
+        children: [
+            {path: 'orders', component: OrdersTableComponent},
+            {path: 'orders/:id', component: OrderDetailsComponent},
+            {path: 'users', component: UsersTableComponent}
+        ]
+    },
     {path: 'cart', component: CartDetailsComponent},
     {path: 'checkout', component: CheckoutComponent},
     {path: 'products/:id', component: ProductDetailsComponent},

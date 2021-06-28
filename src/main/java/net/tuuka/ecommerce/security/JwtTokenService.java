@@ -7,6 +7,7 @@ import net.tuuka.ecommerce.controller.dto.JwtResponse;
 import net.tuuka.ecommerce.model.user.AppUser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -42,7 +44,11 @@ public class JwtTokenService {
                 .compact(),
                 user.getUsername(),
                 user.getFirstName(),
-                user.getLastName(), exp);
+                user.getLastName(),
+                user.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .collect(Collectors.toSet()),
+                exp);
 
     }
 

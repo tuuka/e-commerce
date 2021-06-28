@@ -4,7 +4,8 @@ import {catchError} from "rxjs/operators";
 import {HttpErrorHandler} from "./http-error-handler";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {environment} from "../../environments/environment";
-import {OrderItem} from "../model/OrderItem";
+import {Order} from "../model/Order";
+import {OrderDetails} from "../model/OrderDetails";
 
 const httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
@@ -23,11 +24,15 @@ export class OrdersService implements OnInit{
     ngOnInit(): void {
     }
 
-    public getAccountOrders(): Observable<OrderItem[]> {
-        return this.http.get<OrderItem[]>(this.orderUrl, httpOptions)
+    public getAccountOrders(): Observable<Order[]> {
+        return this.http.get<Order[]>(this.orderUrl, httpOptions)
             .pipe(catchError(HttpErrorHandler.handleError));
     }
 
+    public getOrderDetailsById(id: number): Observable<OrderDetails> {
+        return this.http.get<OrderDetails>(`${this.orderUrl}/${id}`)
+            .pipe(catchError(HttpErrorHandler.handleError));
+    }
 
 }
 

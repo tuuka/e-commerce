@@ -4,9 +4,11 @@ import net.tuuka.ecommerce.model.BaseEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 
+@Transactional
 public abstract class BaseCrudAbstractService<T extends BaseEntity, ID, R extends JpaRepository<T, ID>>
         implements BaseCrudService<T, ID> {
 

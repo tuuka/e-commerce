@@ -1,38 +1,35 @@
 package net.tuuka.ecommerce.model.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import net.tuuka.ecommerce.model.BaseEntity;
 import net.tuuka.ecommerce.model.Product;
 
 import javax.persistence.*;
 
-@Setter
-@Getter
+@Data
+@EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
-@ToString
 @Entity
 @Table(name = "order_product")
-public class OrderProduct {
+public class OrderProduct extends BaseEntity {
 
-    @EmbeddedId
+    @ManyToOne
+    @JoinColumn(name = "order_id")
     @JsonIgnore
-    private OrderProductPK pk;
+    private Order order;
 
-    @Column(nullable = false)
+    @OneToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
+
     private Integer quantity;
 
-    public OrderProduct(Order order, Product product, Integer quantity) {
-        pk = new OrderProductPK();
-        pk.setOrder(order);
-        pk.setProduct(product);
-        this.quantity = quantity;
-    }
 
-    @Transient
-    public Product getProduct() {
-        return this.pk.getProduct();
-    }
 
     @Transient
     public Double getTotalPrice() {

@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from "../../services/auth.service";
 import {Router} from "@angular/router";
+import {UserRoles} from "../../config";
 
 @Component({
     selector: 'app-header',
@@ -12,11 +13,12 @@ export class HeaderComponent implements OnInit {
     constructor(public authService: AuthService, private router: Router) {
     }
 
-    isLoggedIn: boolean = false;
+    userRole: string = '';
+    userRoles = UserRoles;
 
     ngOnInit(): void {
-        this.authService.userInfo.subscribe(info => {
-            this.isLoggedIn = info.isLoggedIn;
+        this.authService.userRole.subscribe(role => {
+            this.userRole = role;
         });
         this.authService.refreshLoggedUserDetails()
     }

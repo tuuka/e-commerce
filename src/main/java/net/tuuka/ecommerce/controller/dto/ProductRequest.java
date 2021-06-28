@@ -81,7 +81,7 @@ public class ProductRequest {
         product.setUnitsInStock(unitsInStock);
     }
 
-    public void setCategory (CategoryRequest categoryRepresentation){
+    public void setCategory (CategoryRepresentation categoryRepresentation){
         product.setCategory(categoryRepresentation.getCategory());
     }
 

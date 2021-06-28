@@ -1,28 +1,22 @@
 package net.tuuka.ecommerce.model.order;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import net.tuuka.ecommerce.model.BaseEntity;
 import net.tuuka.ecommerce.model.user.AppUser;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
-@Setter
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 @EqualsAndHashCode(callSuper = false)
-@ToString
 @Entity
 @Table(name = "orders")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "orderProducts")
 public class Order extends BaseEntity {
 
     @JsonFormat(pattern = "dd/MM/yyyy")
@@ -35,19 +29,19 @@ public class Order extends BaseEntity {
     private OrderStatus status;
 
     @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "apartment", column = @Column(name = "apartment")),
-            @AttributeOverride(name = "street", column = @Column(name = "street")),
-            @AttributeOverride(name = "city", column = @Column(name = "city")),
-            @AttributeOverride(name = "country", column = @Column(name = "country")),
-            @AttributeOverride(name = "state", column = @Column(name = "state")),
-            @AttributeOverride(name = "zip", column = @Column(name = "zip"))
-    })
+//    @AttributeOverrides({
+//            @AttributeOverride(name = "apartment", column = @Column(name = "apartment")),
+//            @AttributeOverride(name = "street", column = @Column(name = "street")),
+//            @AttributeOverride(name = "city", column = @Column(name = "city")),
+//            @AttributeOverride(name = "country", column = @Column(name = "country")),
+//            @AttributeOverride(name = "state", column = @Column(name = "state")),
+//            @AttributeOverride(name = "zip", column = @Column(name = "zip"))
+//    })
     private Address shippingAddress;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "pk.order", cascade = CascadeType.ALL)
-    private Set<OrderProduct> orderProducts = new HashSet<>();
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderProduct> orderProducts = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id")

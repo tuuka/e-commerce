@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {AccountService} from "../../services/account.service";
-import {AuthService} from "../../services/auth.service";
-import {Router} from "@angular/router";
+import {AuthService, UserInfo} from "../../services/auth.service";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
     selector: 'app-account',
@@ -10,36 +9,18 @@ import {Router} from "@angular/router";
 })
 export class AccountComponent implements OnInit {
 
-    accountDetail?: AccountDetail
+    userInfo?: UserInfo;
 
-    constructor(private accountService: AccountService,
-                private authService: AuthService,
-                private router: Router) {
+    constructor(private authService: AuthService,
+                private router: Router,
+                private route: ActivatedRoute) {
     }
 
     ngOnInit(): void {
-        this.getAccountDetail();
+        this.router.navigate(['orders'], {relativeTo: this.route});
+        this.authService.userInfo.subscribe(info => {
+            this.userInfo = info;
+        });
     }
-
-    private getAccountDetail() {
-        this.accountService.getAccountDetail().subscribe(
-            (res: any) => {
-                this.accountDetail = res;
-            }, () => {
-                this.authService.logout();
-            }, () => {
-                if (!this.accountDetail)
-                    this.router.navigateByUrl('/auth')
-            }
-        )
-    }
-}
-
-export interface AccountDetail {
-    firstName: string;
-    lastName: string;
-    email: string;
-    authorities: string[]
-
 }
 

@@ -98,6 +98,9 @@ export class ProductListComponent implements OnInit {
 
     changeCategory($event: number) {
         this.currentCategoryId = $event;
+        this.page = new Page(6, 0, 0, 0);
+        this.sort = '';
+        this.name = '';
         this.listProducts();
     }
 }

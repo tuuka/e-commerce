@@ -1,0 +1,13 @@
+
+.account__menu {
+    font-size: 2em;
+    margin-top: 1em;
+}
+
+a {
+    color: black;
+}
+
+._active {
+    font-weight: bold;
+}

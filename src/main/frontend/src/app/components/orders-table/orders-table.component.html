@@ -1,16 +1,17 @@
-<h2>Orders:</h2>
 <table *ngIf="orderItems.length > 0" mat-table [dataSource]="orderItems" class="mat-elevation-z8">
 
     <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef>Tracking number</th>
+        <th mat-header-cell *matHeaderCellDef>Number</th>
         <td mat-cell *matCellDef="let orderItem">
-            {{orderItem.trackingNumber.split("-")[4]}}
+            <a routerLink="../orders/{{orderItem.id}}">
+                {{orderItem.trackingNumber.split("-")[4]}}
+            </a>
         </td>
         <td mat-footer-cell *matFooterCellDef></td>
     </ng-container>
 
     <ng-container matColumnDef="created">
-        <th mat-header-cell *matHeaderCellDef>Date of creation</th>
+        <th mat-header-cell *matHeaderCellDef>Created</th>
         <td mat-cell *matCellDef="let orderItem"> {{orderItem.created | date}} </td>
         <td mat-footer-cell *matFooterCellDef></td>
     </ng-container>
@@ -34,6 +35,19 @@
         <td mat-footer-cell *matFooterCellDef> {{totalPrice | currency}} </td>
     </ng-container>
 
+    <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let orderItem">
+            <button *ngIf="userMainRole=='admin'" mat-icon-button color="primary" (click)="remove(orderItem)">
+                <mat-icon>remove</mat-icon>
+            </button>
+            <button mat-icon-button color="primary" (click)="edit(orderItem)">
+                <mat-icon>edit</mat-icon>
+            </button>
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
@@ -41,6 +55,3 @@
 
 <div *ngIf="orderItems.length < 1" class="orders-empty-message"><span>No orders</span></div>
 
-<div>
-    <a routerLink="/products">Back to products</a>
-</div>

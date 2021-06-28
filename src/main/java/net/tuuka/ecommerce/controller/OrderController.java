@@ -1,10 +1,10 @@
 package net.tuuka.ecommerce.controller;
 
 import lombok.RequiredArgsConstructor;
+import net.tuuka.ecommerce.controller.dto.OrderDetailsResponse;
 import net.tuuka.ecommerce.controller.dto.OrderResponse;
 import net.tuuka.ecommerce.controller.dto.PurchaseRequest;
 import net.tuuka.ecommerce.controller.dto.SimpleMessageResponse;
-import net.tuuka.ecommerce.model.order.Order;
 import net.tuuka.ecommerce.model.user.AppUser;
 import net.tuuka.ecommerce.model.user.AppUserRole;
 import net.tuuka.ecommerce.service.AppUserService;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -45,8 +44,16 @@ public class OrderController {
         boolean notACustomer = authorities.stream().anyMatch(auth ->
                 auth.getAuthority().equals(AppUserRole.ROLE_ADMIN.name()) ||
                         auth.getAuthority().equals(AppUserRole.ROLE_MANAGER.name()));
-        List<Order> orders = notACustomer ? orderService.findAll() : orderService.findByUserId(loggedUser.getId());
-        return orders.stream().map(OrderResponse::new).collect(Collectors.toList());
+        return notACustomer ? orderService.findAllRepresentation() :
+                orderService.findByUserIdRepresentation(loggedUser.getId());
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('MANAGER') or hasRole('ADMIN')")
+    public OrderDetailsResponse getOrderById(@PathVariable("id") Long id, Authentication authentication) {
+        AppUser loggedUser = appUserService.getAppUserByEmail(authentication.getName());
+        if (loggedUser == null) throw new UsernameNotFoundException("User does not exist");
+        return orderService.findByIdRepresentation(id);
     }
 
 }

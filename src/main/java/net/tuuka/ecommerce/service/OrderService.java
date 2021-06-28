@@ -1,5 +1,8 @@
 package net.tuuka.ecommerce.service;
 
+import net.tuuka.ecommerce.controller.dto.AppUserRepresentation;
+import net.tuuka.ecommerce.controller.dto.OrderDetailsResponse;
+import net.tuuka.ecommerce.controller.dto.OrderResponse;
 import net.tuuka.ecommerce.controller.dto.PurchaseRequest;
 import net.tuuka.ecommerce.dao.OrderRepository;
 import net.tuuka.ecommerce.model.order.Order;
@@ -8,10 +11,10 @@ import net.tuuka.ecommerce.model.order.OrderStatus;
 import net.tuuka.ecommerce.model.user.AppUser;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -38,13 +41,13 @@ public class OrderService extends BaseCrudAbstractService<Order, Long, OrderRepo
         Order order = new Order();
         order.setAppUser(appUser);
         order.setTrackingNumber(UUID.randomUUID().toString());
-        Set<OrderProduct> orderProducts = purchaseRequest.getOrderItems()
+        List<OrderProduct> orderProducts = purchaseRequest.getOrderItems()
                 .stream()
                 .map(item -> new OrderProduct(
                         order,
                         productService.findById(item.getId()),
                         item.getQuantity()))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
         order.setOrderProducts(orderProducts);
         order.setStatus(OrderStatus.NEW);
         order.setShippingAddress(purchaseRequest.getShippingAddress());
@@ -52,7 +55,25 @@ public class OrderService extends BaseCrudAbstractService<Order, Long, OrderRepo
 
     }
 
-    public List<Order> findByUserId(Long id) {
-        return repository.findAllByAppUserId(id);
+    public List<OrderResponse> findAllRepresentation() {
+        List<Order> orders = super.findAll();
+        return orders.stream().map(OrderResponse::new).collect(Collectors.toList());
+    }
+
+    public List<OrderResponse> findByUserIdRepresentation(Long id) {
+        return repository.findAllByAppUserId(id).stream()
+                .map(OrderResponse::new).collect(Collectors.toList());
+    }
+
+    public OrderDetailsResponse findByIdRepresentation(Long id) {
+        Order order = repository.findById(id)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Order with id= " + id + " not found."));
+
+        return new OrderDetailsResponse(
+                new OrderResponse(order),
+                order.getShippingAddress(),
+                order.getOrderProducts(),
+                new AppUserRepresentation(order.getAppUser()));
     }
 }

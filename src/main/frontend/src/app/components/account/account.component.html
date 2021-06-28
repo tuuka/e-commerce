@@ -1,7 +1,19 @@
-<h1>{{accountDetail?.firstName!}} {{accountDetail?.lastName!}}</h1>
-<h2>{{accountDetail?.email!}}
-    <span *ngFor="let authority of accountDetail?.authorities">({{authority}}) </span>
-</h2>
+<mat-card fxLayout="row" fxLayoutAlign="space-between start">
+    <div fxFlex="20">
+        <h2>{{userInfo?.firstName!}} {{userInfo?.lastName!}}</h2>
+        <h3>{{userInfo?.email!}}</h3>
+        <div>[<span *ngFor="let role of userInfo?.roles">{{role}}  </span>]</div>
+        <ul class="account__menu">
+            <li><a routerLink="orders" routerLinkActive="_active">Orders</a></li>
+            <li *ngIf="userInfo?.roles?.includes('admin')"><a routerLink="users" routerLinkActive="_active">Users</a></li>
+        </ul>
+    </div>
 
-<app-order-list></app-order-list>
+    <div fxFlex="80">
+        <router-outlet></router-outlet>
+    </div>
+</mat-card>
+
+
+
 

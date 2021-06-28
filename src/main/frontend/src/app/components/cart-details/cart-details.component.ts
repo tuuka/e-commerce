@@ -1,8 +1,8 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {CartService} from "../../services/cart.service";
 import {CartItem} from "../../model/CartItem";
-import {MatTable} from "@angular/material/table";
 import {AuthService} from "../../services/auth.service";
+import {ProductsTableComponent} from "../products-table/products-table.component";
 
 @Component({
     selector: 'app-cart-details',
@@ -20,12 +20,12 @@ export class CartDetailsComponent implements OnInit {
     constructor(private cartService: CartService, private authService: AuthService) {
     }
 
-    @ViewChild(MatTable) table?: MatTable<CartItem>;
+    @ViewChild(ProductsTableComponent) table?: ProductsTableComponent;
 
     ngOnInit(): void {
         this.getCartDetails();
-        this.authService.userInfo.subscribe(info => {
-            this.isLoggedIn = info.isLoggedIn;
+        this.authService.userRole.subscribe(role => {
+            this.isLoggedIn = !!role;
         })
         this.cartService.totalPrice.subscribe(data => this.totalPrice = data);
         this.cartService.totalQuantity.subscribe(data => this.totalQuantity = data);
@@ -37,12 +37,12 @@ export class CartDetailsComponent implements OnInit {
 
     decrementQuantity(cartItem: CartItem) {
         this.cartService.decrementQuantity(cartItem);
-        if (this.table) this.table.renderRows();
+        this.table?.renderRows()
     }
 
     incrementQuantity(cartItem: CartItem) {
         this.cartService.incrementQuantity(cartItem);
-        if (this.table) this.table.renderRows();
+        this.table?.renderRows()
     }
 
 }

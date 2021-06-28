@@ -1,14 +1,20 @@
 package net.tuuka.ecommerce.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.NoArgsConstructor;
 import net.tuuka.ecommerce.model.ProductCategory;
 
 import javax.validation.constraints.NotBlank;
 
-public class CategoryRequest {
+@NoArgsConstructor
+public class CategoryRepresentation {
 
     @JsonIgnore
-    private final ProductCategory category = new ProductCategory();
+    private ProductCategory category = new ProductCategory();
+
+    public CategoryRepresentation(ProductCategory category) {
+        this.category = category;
+    }
 
     public void setId(Long id) { category.setId(id); }
 

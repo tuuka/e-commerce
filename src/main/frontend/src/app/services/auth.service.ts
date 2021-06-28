@@ -1,9 +1,11 @@
 import {Injectable, OnDestroy, OnInit} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {environment} from "../../environments/environment";
-import {BehaviorSubject, Subject} from "rxjs";
+import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {catchError} from "rxjs/operators";
 import {HttpErrorHandler} from "./http-error-handler";
+import {UserRoles} from "../config";
+import {UserDetails} from "../model/user-details";
 
 const httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
@@ -16,11 +18,16 @@ export class AuthService implements OnInit, OnDestroy {
 
     private loginUrl = environment.apiUrl + '/api/auth/login';
     private signupUrl = environment.apiUrl + '/api/auth/signup';
+    private accountUrl = environment.apiUrl + '/api/users';
 
     userInfo: Subject<UserInfo> = new BehaviorSubject<UserInfo>(new UserInfo());
+    userRole: Subject<string> = new BehaviorSubject<string>('');
 
+    // messages to display after login/registration
     signUpStatus: Subject<string> = new BehaviorSubject<string>('');
     loginStatus: Subject<string> = new BehaviorSubject<string>('');
+
+    // for setInterval
     private loginStatusRefresher?: number;
 
     constructor(private http: HttpClient) {
@@ -49,8 +56,7 @@ export class AuthService implements OnInit, OnDestroy {
         const signUpInfo = new SignUpInfo(firstName, lastName, email, password);
         this.http.post(this.signupUrl, signUpInfo, httpOptions).pipe(catchError(HttpErrorHandler.handleError))
             .subscribe(
-                (result: any) => {
-                    console.log(result);
+                () => {
                     this.signUpStatus.next('Registration successful. Check email to activate your account.')
                 },
                 err => {
@@ -65,6 +71,15 @@ export class AuthService implements OnInit, OnDestroy {
         this.refreshLoggedUserDetails();
     }
 
+    public getAccountDetail(email: string): Observable<UserDetails> {
+        return this.http.get<UserDetails>(this.accountUrl,
+            {params: new HttpParams().set('email', email)});
+    }
+
+    public getAccounts(): Observable<UserDetails[]>  {
+        return this.http.get<UserDetails[]>(this.accountUrl);
+    }
+
     private saveAuthInStorage(authResult: JwtResponse) {
         localStorage.setItem('token', JSON.stringify(authResult));
         this.refreshLoggedUserDetails();
@@ -73,9 +88,19 @@ export class AuthService implements OnInit, OnDestroy {
     public refreshLoggedUserDetails() {
         const token: JwtResponse = JSON.parse(<string>localStorage.getItem("token"));
         if (token && token.expiresAt && (new Date() < new Date(token.expiresAt))) {
-            this.userInfo.next(new UserInfo(token.firstName, token.lastName, token.email, true));
+            let roles = token.authorities ? token.authorities.reduce((acc: string[], auth) => {
+                acc.push(auth.toLowerCase().replace("role_", ""));
+                return acc;
+            }, []) : []
+            this.userInfo.next(new UserInfo(token.firstName, token.lastName, token.email, roles, true));
+            if (roles.length > 0) {
+                if (roles.includes("user")) this.userRole.next(UserRoles[2]);
+                if (roles.includes("manager")) this.userRole.next(UserRoles[1]);
+                if (roles.includes("admin")) this.userRole.next(UserRoles[0]);
+            } else this.userRole.next('');
         } else {
             this.userInfo.next(new UserInfo());
+            this.userRole.next('');
         }
     }
 
@@ -119,6 +144,7 @@ export class JwtResponse {
     type?: string;
     expiresAt?: number;
     email?: string;
+    authorities?: string[];
     firstName?: string;
     lastName?: string
 }
@@ -127,12 +153,14 @@ export class UserInfo {
     firstName: string;
     lastName: string;
     email: string;
+    roles: string[];
     isLoggedIn: boolean;
 
-    constructor(firstName?: string, lastName?: string, email?: string, isLoggedIn?: boolean) {
+    constructor(firstName?: string, lastName?: string, email?: string, roles?: string[], isLoggedIn?: boolean) {
         this.firstName = firstName ? firstName : '';
         this.lastName = lastName ? lastName : '';
         this.email = email ? email : '';
+        this.roles = roles ? roles : [];
         this.isLoggedIn = !!isLoggedIn;
     }
 }

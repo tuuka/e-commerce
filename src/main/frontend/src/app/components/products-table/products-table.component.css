@@ -1,9 +1,5 @@
-h2 {
-    margin-top: 2em;
-}
-
 table {
-    margin: 1em auto;
+    margin-top: 2em;
     width: 100%;
 }
 
@@ -13,7 +9,7 @@ table {
 }
 
 td.mat-cell:first-of-type {
-    width: 5%;
+    width: 2%;
 }
 
 .mat-cell {
@@ -21,6 +17,12 @@ td.mat-cell:first-of-type {
     font-size: 1.5em;
     text-align: center;
     width: 15%;
+}
+
+.mat-cell img {
+    height: 120px;
+    display: block;
+    margin: 0 auto;
 }
 
 tr.mat-footer-row {
@@ -32,8 +34,6 @@ tr.mat-footer-row {
     text-align: center;
 }
 
-.orders-empty-message {
-    margin: 1em auto;
-    font-size: 2em;
-    text-align: center;
+.cart-detail__quantity-span {
+    vertical-align: middle;
 }
