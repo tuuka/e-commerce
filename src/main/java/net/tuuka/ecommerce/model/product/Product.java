@@ -1,10 +1,11 @@
-package net.tuuka.ecommerce.model;
+package net.tuuka.ecommerce.model.product;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
+import net.tuuka.ecommerce.model.BaseEntity;
 import net.tuuka.ecommerce.util.DateUtil;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;

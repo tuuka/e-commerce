@@ -6,8 +6,8 @@ package net.tuuka.ecommerce.service;
 */
 
 import net.tuuka.ecommerce.dao.ProductCategoryRepository;
-import net.tuuka.ecommerce.model.Product;
-import net.tuuka.ecommerce.model.ProductCategory;
+import net.tuuka.ecommerce.model.product.Product;
+import net.tuuka.ecommerce.model.product.ProductCategory;
 import net.tuuka.ecommerce.exception.ProductCategoryNotEmptyException;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;

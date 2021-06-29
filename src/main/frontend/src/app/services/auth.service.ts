@@ -6,6 +6,7 @@ import {catchError} from "rxjs/operators";
 import {HttpErrorHandler} from "./http-error-handler";
 import {UserRoles} from "../config";
 import {UserDetails} from "../model/user-details";
+import {Router} from "@angular/router";
 
 const httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
@@ -30,7 +31,7 @@ export class AuthService implements OnInit, OnDestroy {
     // for setInterval
     private loginStatusRefresher?: number;
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private router: Router) {
     }
 
     public login(email: string, password: string): void {
@@ -69,6 +70,7 @@ export class AuthService implements OnInit, OnDestroy {
         localStorage.removeItem("token");
         this.loginStatus.next('');
         this.refreshLoggedUserDetails();
+        this.router.navigateByUrl('/');
     }
 
     public getAccountDetail(email: string): Observable<UserDetails> {
@@ -76,7 +78,7 @@ export class AuthService implements OnInit, OnDestroy {
             {params: new HttpParams().set('email', email)});
     }
 
-    public getAccounts(): Observable<UserDetails[]>  {
+    public getAccounts(): Observable<UserDetails[]> {
         return this.http.get<UserDetails[]>(this.accountUrl);
     }
 
@@ -87,21 +89,30 @@ export class AuthService implements OnInit, OnDestroy {
 
     public refreshLoggedUserDetails() {
         const token: JwtResponse = JSON.parse(<string>localStorage.getItem("token"));
-        if (token && token.expiresAt && (new Date() < new Date(token.expiresAt))) {
+
+        // if token expired remove it and redirect at home page
+        if (token && token.expiresAt && (new Date() > new Date(token.expiresAt))) {
+            localStorage.removeItem("token");
+            this.router.navigateByUrl('/');
+            return;
+        }
+        if (token) {
             let roles = token.authorities ? token.authorities.reduce((acc: string[], auth) => {
                 acc.push(auth.toLowerCase().replace("role_", ""));
                 return acc;
             }, []) : []
-            this.userInfo.next(new UserInfo(token.firstName, token.lastName, token.email, roles, true));
-            if (roles.length > 0) {
-                if (roles.includes("user")) this.userRole.next(UserRoles[2]);
-                if (roles.includes("manager")) this.userRole.next(UserRoles[1]);
-                if (roles.includes("admin")) this.userRole.next(UserRoles[0]);
-            } else this.userRole.next('');
-        } else {
-            this.userInfo.next(new UserInfo());
-            this.userRole.next('');
+
+            // assign 'most significant' role (less index - more significant)
+            for (let r of UserRoles) {
+                if (roles.includes(r)) {
+                    this.userInfo.next(new UserInfo(token.firstName, token.lastName, token.email, roles, true));
+                    this.userRole.next(r);
+                    return;
+                }
+            }
         }
+        this.userInfo.next(new UserInfo());
+        this.userRole.next('');
     }
 
     ngOnInit(): void {

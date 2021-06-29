@@ -2,7 +2,7 @@ package net.tuuka.ecommerce.service;
 
 import net.tuuka.ecommerce.dao.ProductCategoryRepository;
 import net.tuuka.ecommerce.dao.ProductRepository;
-import net.tuuka.ecommerce.model.Product;
+import net.tuuka.ecommerce.model.product.Product;
 import net.tuuka.ecommerce.util.FakeProductGenerator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

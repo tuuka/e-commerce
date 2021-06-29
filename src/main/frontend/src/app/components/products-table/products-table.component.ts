@@ -9,6 +9,7 @@ import {MatTable} from "@angular/material/table";
 })
 export class ProductsTableComponent implements OnInit {
 
+    @Input() changeQuantityDisabled: boolean = false;
     @Input() items: CartItem[] = [];
     @Input() totalPrice: number = 0;
     @Input() totalQuantity: number = 0;

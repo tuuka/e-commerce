@@ -2,7 +2,7 @@ package net.tuuka.ecommerce.exception.aspect;
 
 import net.tuuka.ecommerce.controller.ProductCategoryRestController;
 import net.tuuka.ecommerce.controller.ProductRestController;
-import net.tuuka.ecommerce.controller.dto.SimpleMessageResponse;
+import net.tuuka.ecommerce.dto.SimpleMessageResponse;
 import net.tuuka.ecommerce.exception.ProductCategoryNotEmptyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

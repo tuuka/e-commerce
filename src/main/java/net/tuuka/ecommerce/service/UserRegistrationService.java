@@ -2,7 +2,7 @@ package net.tuuka.ecommerce.service;
 
 import lombok.RequiredArgsConstructor;
 import net.tuuka.ecommerce.controller.AuthApiController;
-import net.tuuka.ecommerce.controller.dto.SignUpRequest;
+import net.tuuka.ecommerce.dto.SignUpRequest;
 import net.tuuka.ecommerce.model.user.AppUser;
 import net.tuuka.ecommerce.model.user.ConfirmationToken;
 import net.tuuka.ecommerce.service.email.EmailSenderService;

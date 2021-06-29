@@ -1,10 +1,8 @@
 package net.tuuka.ecommerce.controller;
 
 import lombok.RequiredArgsConstructor;
-import net.tuuka.ecommerce.controller.dto.OrderDetailsResponse;
-import net.tuuka.ecommerce.controller.dto.OrderResponse;
-import net.tuuka.ecommerce.controller.dto.PurchaseRequest;
-import net.tuuka.ecommerce.controller.dto.SimpleMessageResponse;
+import net.tuuka.ecommerce.dto.*;
+import net.tuuka.ecommerce.model.order.OrderStatus;
 import net.tuuka.ecommerce.model.user.AppUser;
 import net.tuuka.ecommerce.model.user.AppUserRole;
 import net.tuuka.ecommerce.service.AppUserService;
@@ -27,12 +25,24 @@ public class OrderController {
     private final OrderService orderService;
     private final AppUserService appUserService;
 
+    @GetMapping("/status")
+    @PreAuthorize("hasRole('USER') or hasRole('MANAGER') or hasRole('ADMIN')")
+    public ResponseEntity<?> getOrderStatuses() {
+        return ResponseEntity.ok(OrderStatus.values());
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> addOrder(@RequestBody PurchaseRequest purchaseRequest) {
-        System.out.println(purchaseRequest);
         String orderNumber = orderService.placeOrder(purchaseRequest).getTrackingNumber();
         return ResponseEntity.ok(new SimpleMessageResponse("Order saved: " + orderNumber));
+    }
+
+    @PutMapping
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> updateOrder(@RequestBody OrderRequest orderRequest) {
+        String orderNumber = orderService.updateOrder(orderRequest).getTrackingNumber();
+        return ResponseEntity.ok(new SimpleMessageResponse("Order updated: " + orderNumber));
     }
 
     @GetMapping

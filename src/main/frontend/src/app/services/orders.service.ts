@@ -6,6 +6,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 import {Order} from "../model/Order";
 import {OrderDetails} from "../model/OrderDetails";
+import {OrderRequest} from "../model/OrderRequest";
 
 const httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
@@ -14,7 +15,7 @@ const httpOptions = {
 @Injectable({
     providedIn: 'root'
 })
-export class OrdersService implements OnInit{
+export class OrdersService implements OnInit {
 
     private orderUrl = environment.apiUrl + '/api/orders';
 
@@ -34,5 +35,14 @@ export class OrdersService implements OnInit{
             .pipe(catchError(HttpErrorHandler.handleError));
     }
 
+    public getOrderStatusList() {
+        return this.http.get<string[]>(`${this.orderUrl}/status`, httpOptions)
+            .pipe(catchError(HttpErrorHandler.handleError));
+    }
+
+    public putOrder(order: OrderRequest) {
+        return this.http.put(this.orderUrl, order, httpOptions)
+            .pipe(catchError(HttpErrorHandler.handleError));
+    }
 }
 

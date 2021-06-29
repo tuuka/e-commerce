@@ -1,7 +1,8 @@
-package net.tuuka.ecommerce.model;
+package net.tuuka.ecommerce.model.product;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import net.tuuka.ecommerce.model.BaseEntity;
 import org.springframework.hateoas.server.core.Relation;
 
 import javax.persistence.*;

@@ -1,8 +1,8 @@
 package net.tuuka.ecommerce.service;
 
 import net.tuuka.ecommerce.dao.ProductRepository;
-import net.tuuka.ecommerce.model.Product;
-import net.tuuka.ecommerce.model.ProductCategory;
+import net.tuuka.ecommerce.model.product.Product;
+import net.tuuka.ecommerce.model.product.ProductCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

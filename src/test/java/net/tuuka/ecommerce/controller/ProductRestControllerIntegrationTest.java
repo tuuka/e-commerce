@@ -1,11 +1,11 @@
 package net.tuuka.ecommerce.controller;
 
 import lombok.var;
-import net.tuuka.ecommerce.controller.dto.JwtResponse;
-import net.tuuka.ecommerce.controller.dto.LoginRequest;
+import net.tuuka.ecommerce.dto.JwtResponse;
+import net.tuuka.ecommerce.dto.LoginRequest;
 import net.tuuka.ecommerce.model.user.AppUser;
-import net.tuuka.ecommerce.model.Product;
-import net.tuuka.ecommerce.model.ProductCategory;
+import net.tuuka.ecommerce.model.product.Product;
+import net.tuuka.ecommerce.model.product.ProductCategory;
 import net.tuuka.ecommerce.service.AppUserService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -207,7 +207,7 @@ public class ProductRestControllerIntegrationTest {
 
     @Test
     @Order(15)
-    void givenIdOfSavedCategory_whenGetById_shouldReturnCategoryWithProducts() {
+    void givenIdOfSavedCategory_whenGetById_shouldReturnCategory() {
 
         ResponseEntity<EntityModel<ProductCategory>> categoryResponseEntity =
                 restTemplate.exchange(categoriesUrl + "/{id}",
@@ -218,7 +218,6 @@ public class ProductRestControllerIntegrationTest {
         ProductCategory fetchedCategory = Objects.requireNonNull(categoryResponseEntity.getBody()).getContent();
         assertNotNull(fetchedCategory);
         assertEquals(savedCategories.get(0).getName(), fetchedCategory.getName());
-        assertEquals(savedCategories.get(0).getProducts().size(), fetchedCategory.getProducts().size());
 
     }
 
@@ -233,8 +232,7 @@ public class ProductRestControllerIntegrationTest {
         assertSame(HttpStatus.OK, categoryResponseEntity.getStatusCode());
         ProductCategory fetchedCategory = Objects.requireNonNull(categoryResponseEntity.getBody()).getContent();
         assertNotNull(fetchedCategory);
-        assertEquals(2, fetchedCategory.getProducts().size());
-//        assertEquals(savedCategories.get(1).getProducts(), fetchedCategory.getProducts());
+        assertEquals(categories.get(1).getName(), fetchedCategory.getName());
 
     }
 
@@ -333,7 +331,6 @@ public class ProductRestControllerIntegrationTest {
     @Order(55)
     void givenChangedCategory_whenUpdateCategory_shouldUpdateAndReturn() {
 
-        savedCategories.get(0).getProducts().add(products.get(0));
         savedCategories.get(0).setName("another name");
         HttpEntity<ProductCategory> categoryEntity = new HttpEntity<>(savedCategories.get(0), getAuthorizationHeader());
         ResponseEntity<EntityModel<ProductCategory>> categoryResponseEntity =
@@ -344,7 +341,7 @@ public class ProductRestControllerIntegrationTest {
 
         List<ProductCategory> fetchedCategoryList = fetchCategoriesList();
         assertEquals(1, fetchedCategoryList.size());
-        assertEquals(1, fetchedCategoryList.get(0).getProducts().size());
+        assertEquals(savedCategories.get(0).getName(), fetchedCategoryList.get(0).getName());
 
     }
 

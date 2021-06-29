@@ -5,5 +5,4 @@ export interface Order {
     status: string;
     totalQuantity: number;
     totalPrice: number;
-
 }

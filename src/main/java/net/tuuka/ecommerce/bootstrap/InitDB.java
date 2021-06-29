@@ -5,7 +5,7 @@ import net.tuuka.ecommerce.dao.AppUserAuthorityRepository;
 import net.tuuka.ecommerce.dao.AppUserRepository;
 import net.tuuka.ecommerce.dao.ProductCategoryRepository;
 import net.tuuka.ecommerce.dao.ProductRepository;
-import net.tuuka.ecommerce.model.Product;
+import net.tuuka.ecommerce.model.product.Product;
 import net.tuuka.ecommerce.model.user.AppUser;
 import net.tuuka.ecommerce.model.user.AppUserAuthority;
 import net.tuuka.ecommerce.model.user.AppUserRole;
@@ -49,7 +49,7 @@ public class InitDB implements CommandLineRunner {
         // if app.fill_products config property is set - fill them anyway
         boolean isProductsExistInDB = productRepository.findAll().size() > 0
                 && categoryRepository.findAll().size() > 0;
-        if (FILL_PRODUCTS || !isProductsExistInDB) {
+        if (FILL_PRODUCTS && !isProductsExistInDB) {
             productRepository.deleteAll();
             productRepository.flush();
             categoryRepository.deleteAll();

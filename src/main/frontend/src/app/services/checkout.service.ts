@@ -40,9 +40,7 @@ export class CheckoutService {
 
     public sendOrder(order: Purchase): Observable<any> {
         return this.http.post(this.orderUrl, order, httpOptions)
-            .pipe(catchError(HttpErrorHandler.handleError))
-            // .pipe(shareReplay())
-            ;
+            .pipe(catchError(HttpErrorHandler.handleError));
     }
 
 }

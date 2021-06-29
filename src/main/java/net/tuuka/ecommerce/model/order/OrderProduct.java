@@ -6,9 +6,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import net.tuuka.ecommerce.model.BaseEntity;
-import net.tuuka.ecommerce.model.Product;
+import net.tuuka.ecommerce.model.product.Product;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -29,11 +30,19 @@ public class OrderProduct extends BaseEntity {
 
     private Integer quantity;
 
-
-
     @Transient
     public Double getTotalPrice() {
         return getProduct().getUnitPrice() * getQuantity();
+    }
+
+    @Override
+    public String toString() {
+        return "OrderProduct{" +
+                "id=" + id +
+                ", order=" + order.getId() +
+                ", product=" + product.getId() + "-" + product.getName() +
+                ", quantity=" + quantity +
+                '}';
     }
 
 }

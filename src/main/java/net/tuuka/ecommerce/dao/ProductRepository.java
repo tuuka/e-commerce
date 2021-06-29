@@ -1,6 +1,6 @@
 package net.tuuka.ecommerce.dao;
 
-import net.tuuka.ecommerce.model.Product;
+import net.tuuka.ecommerce.model.product.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

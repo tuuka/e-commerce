@@ -1,10 +1,7 @@
-package net.tuuka.ecommerce.controller.dto;
+package net.tuuka.ecommerce.dto;
 
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 import net.tuuka.ecommerce.model.order.Address;
 import net.tuuka.ecommerce.model.order.CreditCard;
 
@@ -12,15 +9,6 @@ import java.util.List;
 
 @Data
 public class PurchaseRequest {
-
-    @Getter
-    @Setter
-    @ToString
-    public static class OrderItem {
-        private Long id;
-        private Integer quantity;
-//        private Double price;
-    }
 
     private final List<OrderItem> orderItems;
 

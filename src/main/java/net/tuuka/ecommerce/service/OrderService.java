@@ -1,10 +1,7 @@
 package net.tuuka.ecommerce.service;
 
-import net.tuuka.ecommerce.controller.dto.AppUserRepresentation;
-import net.tuuka.ecommerce.controller.dto.OrderDetailsResponse;
-import net.tuuka.ecommerce.controller.dto.OrderResponse;
-import net.tuuka.ecommerce.controller.dto.PurchaseRequest;
 import net.tuuka.ecommerce.dao.OrderRepository;
+import net.tuuka.ecommerce.dto.*;
 import net.tuuka.ecommerce.model.order.Order;
 import net.tuuka.ecommerce.model.order.OrderProduct;
 import net.tuuka.ecommerce.model.order.OrderStatus;
@@ -15,6 +12,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -45,7 +43,7 @@ public class OrderService extends BaseCrudAbstractService<Order, Long, OrderRepo
                 .stream()
                 .map(item -> new OrderProduct(
                         order,
-                        productService.findById(item.getId()),
+                        productService.findById(item.getProductId()),
                         item.getQuantity()))
                 .collect(Collectors.toList());
         order.setOrderProducts(orderProducts);
@@ -75,5 +73,33 @@ public class OrderService extends BaseCrudAbstractService<Order, Long, OrderRepo
                 order.getShippingAddress(),
                 order.getOrderProducts(),
                 new AppUserRepresentation(order.getAppUser()));
+    }
+
+    public Order updateOrder(OrderRequest orderRequest) {
+
+        Order existingOrder = repository.findById(orderRequest.getOrderId())
+                .orElseThrow(() -> new EntityNotFoundException("Order with id= " +
+                        orderRequest.getOrderId() + " not found"));
+        existingOrder.setShippingAddress(orderRequest.getShippingAddress());
+        existingOrder.setStatus(OrderStatus.valueOf(orderRequest.getStatus()));
+
+        // extracting products & quantities from existing order
+        List<OrderProduct> orderProducts = existingOrder.getOrderProducts();
+
+
+        // mapping productId to quantity in requests list of products
+        Map<Long, Integer> idQuantityMap = orderRequest.getOrderItems().stream()
+                .collect(Collectors.toMap(OrderItem::getProductId, OrderItem::getQuantity));
+
+        // removing deleted products
+        orderProducts.removeIf(orderProduct -> !idQuantityMap.containsKey(orderProduct.getProduct().getId()));
+
+        // updating quantities
+        for (OrderProduct op : orderProducts) {
+            op.setQuantity(idQuantityMap.get(op.getProduct().getId()));
+        }
+
+        return repository.save(existingOrder);
+
     }
 }

@@ -1,17 +1,17 @@
 import {Product} from "./Product";
 import {Address} from "./Purchase";
+import {Order} from "./Order";
+import {UserDetails} from "./user-details";
 
 export interface OrderDetails {
-    id: number;
+    order: Order;
     orderProducts: OrderProduct[];
     shippingAddress: Address;
-    status: string;
-    totalQuantity: number;
-    totalPrice: number;
+    user: UserDetails
 
 }
 
-interface OrderProduct {
+export interface OrderProduct {
     product: Product;
     quantity: number;
 }

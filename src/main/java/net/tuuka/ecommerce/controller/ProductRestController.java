@@ -1,11 +1,11 @@
 package net.tuuka.ecommerce.controller;
 
 import lombok.RequiredArgsConstructor;
-import net.tuuka.ecommerce.controller.dto.ProductRequest;
-import net.tuuka.ecommerce.controller.util.ProductCategoryModelAssembler;
-import net.tuuka.ecommerce.controller.util.ProductModelAssembler;
-import net.tuuka.ecommerce.model.Product;
-import net.tuuka.ecommerce.model.ProductCategory;
+import net.tuuka.ecommerce.dto.ProductRequest;
+import net.tuuka.ecommerce.util.ProductCategoryModelAssembler;
+import net.tuuka.ecommerce.util.ProductModelAssembler;
+import net.tuuka.ecommerce.model.product.Product;
+import net.tuuka.ecommerce.model.product.ProductCategory;
 import net.tuuka.ecommerce.service.ProductService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;

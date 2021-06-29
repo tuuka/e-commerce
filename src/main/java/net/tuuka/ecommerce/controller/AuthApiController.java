@@ -1,10 +1,10 @@
 package net.tuuka.ecommerce.controller;
 
 import lombok.RequiredArgsConstructor;
-import net.tuuka.ecommerce.controller.dto.SimpleMessageResponse;
-import net.tuuka.ecommerce.controller.dto.JwtResponse;
-import net.tuuka.ecommerce.controller.dto.LoginRequest;
-import net.tuuka.ecommerce.controller.dto.SignUpRequest;
+import net.tuuka.ecommerce.dto.SimpleMessageResponse;
+import net.tuuka.ecommerce.dto.JwtResponse;
+import net.tuuka.ecommerce.dto.LoginRequest;
+import net.tuuka.ecommerce.dto.SignUpRequest;
 import net.tuuka.ecommerce.security.JwtTokenService;
 import net.tuuka.ecommerce.service.UserRegistrationService;
 import org.springframework.http.ResponseEntity;

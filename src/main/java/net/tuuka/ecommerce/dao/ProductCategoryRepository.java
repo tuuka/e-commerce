@@ -1,6 +1,6 @@
 package net.tuuka.ecommerce.dao;
 
-import net.tuuka.ecommerce.model.ProductCategory;
+import net.tuuka.ecommerce.model.product.ProductCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

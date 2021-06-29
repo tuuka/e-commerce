@@ -1,10 +1,10 @@
 package net.tuuka.ecommerce.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.tuuka.ecommerce.controller.util.ProductCategoryModelAssembler;
-import net.tuuka.ecommerce.controller.util.ProductModelAssembler;
-import net.tuuka.ecommerce.model.Product;
-import net.tuuka.ecommerce.model.ProductCategory;
+import net.tuuka.ecommerce.util.ProductCategoryModelAssembler;
+import net.tuuka.ecommerce.util.ProductModelAssembler;
+import net.tuuka.ecommerce.model.product.Product;
+import net.tuuka.ecommerce.model.product.ProductCategory;
 import net.tuuka.ecommerce.exception.aspect.ProductControllerAdvice;
 import net.tuuka.ecommerce.service.ProductCategoryService;
 import org.hamcrest.Matchers;

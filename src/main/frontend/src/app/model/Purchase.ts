@@ -1,4 +1,5 @@
 import {CartItem} from "./CartItem";
+import {OrderItem} from "./OrderItem";
 
 export class Purchase {
     email: string;
@@ -14,23 +15,10 @@ export class Purchase {
         this.email = email;
         // this.creditCard = card;
         this.shippingAddress = shippingAddress;
-        this.orderItems = cartItems.map(item => new OrderItem(item));
+        this.orderItems = cartItems.map(item => new OrderItem(item.id, item.quantity));
     }
 }
 
-class OrderItem {
-    id: number = 0;
-    // unitPrice: number = 0;
-    quantity: number = 0;
-
-    constructor(cartItem: CartItem) {
-        if (cartItem) {
-            this.id = cartItem.id;
-            // this.unitPrice = cartItem.unitPrice;
-            this.quantity = cartItem.quantity;
-        }
-    }
-}
 
 // interface Card {
 //     type: string;

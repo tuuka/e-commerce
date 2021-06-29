@@ -1,7 +1,7 @@
 package net.tuuka.ecommerce.controller;
 
 import lombok.RequiredArgsConstructor;
-import net.tuuka.ecommerce.controller.dto.AppUserRepresentation;
+import net.tuuka.ecommerce.dto.AppUserRepresentation;
 import net.tuuka.ecommerce.service.AppUserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

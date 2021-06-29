@@ -40,7 +40,7 @@ public class Order extends BaseEntity {
     private Address shippingAddress;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderProduct> orderProducts = new ArrayList<>();
 
     @ManyToOne
@@ -66,4 +66,16 @@ public class Order extends BaseEntity {
                 });
     }
 
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", dateCreated=" + dateCreated +
+                ", trackingNumber='" + trackingNumber + '\'' +
+                ", status=" + status +
+                ", shippingAddress=" + shippingAddress +
+                ", orderProducts=" + orderProducts +
+                ", appUser=" + appUser +
+                '}';
+    }
 }

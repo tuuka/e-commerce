@@ -1,7 +1,7 @@
-package net.tuuka.ecommerce.controller.util;
+package net.tuuka.ecommerce.util;
 
 import net.tuuka.ecommerce.controller.ProductRestController;
-import net.tuuka.ecommerce.model.Product;
+import net.tuuka.ecommerce.model.product.Product;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;

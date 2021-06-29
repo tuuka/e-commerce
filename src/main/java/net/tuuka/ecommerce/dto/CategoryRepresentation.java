@@ -1,8 +1,8 @@
-package net.tuuka.ecommerce.controller.dto;
+package net.tuuka.ecommerce.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.NoArgsConstructor;
-import net.tuuka.ecommerce.model.ProductCategory;
+import net.tuuka.ecommerce.model.product.ProductCategory;
 
 import javax.validation.constraints.NotBlank;
 

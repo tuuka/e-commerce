@@ -1,4 +1,8 @@
 
+mat-card {
+    margin: 1em auto;
+}
+
 .account__menu {
     font-size: 2em;
     margin-top: 1em;

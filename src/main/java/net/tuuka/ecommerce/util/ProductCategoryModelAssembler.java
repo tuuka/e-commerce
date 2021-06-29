@@ -1,7 +1,7 @@
-package net.tuuka.ecommerce.controller.util;
+package net.tuuka.ecommerce.util;
 
 import net.tuuka.ecommerce.controller.ProductCategoryRestController;
-import net.tuuka.ecommerce.model.ProductCategory;
+import net.tuuka.ecommerce.model.product.ProductCategory;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;

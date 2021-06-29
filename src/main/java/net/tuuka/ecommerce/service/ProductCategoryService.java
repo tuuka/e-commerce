@@ -1,15 +1,12 @@
 package net.tuuka.ecommerce.service;
 
-import net.tuuka.ecommerce.controller.dto.CategoryRepresentation;
 import net.tuuka.ecommerce.dao.ProductCategoryRepository;
-import net.tuuka.ecommerce.model.ProductCategory;
 import net.tuuka.ecommerce.exception.ProductCategoryNotEmptyException;
+import net.tuuka.ecommerce.model.product.ProductCategory;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -52,9 +49,4 @@ public class ProductCategoryService extends
                         "Category with name='%s' not found", name)));
     }
 
-    public List<CategoryRepresentation> findAllWithoutProducts() {
-        return repository
-                .findAll().stream().map(CategoryRepresentation::new)
-                .collect(Collectors.toList());
-    }
 }

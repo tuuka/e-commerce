@@ -1,4 +1,4 @@
-package net.tuuka.ecommerce.controller.dto;
+package net.tuuka.ecommerce.dto;
 
 import lombok.Getter;
 import net.tuuka.ecommerce.model.order.Order;

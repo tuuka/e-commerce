@@ -1,9 +1,8 @@
-package net.tuuka.ecommerce.controller.dto;
+package net.tuuka.ecommerce.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import net.tuuka.ecommerce.model.user.AppUserRole;
 
 import java.util.Date;
 import java.util.Set;
